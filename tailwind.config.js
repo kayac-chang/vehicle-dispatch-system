@@ -9,6 +9,7 @@ module.exports = {
           dark: "#00628F",
         },
         green: {
+          DEFAULT: "#4B8530",
           dark: "#57746E",
         },
         gold: {
@@ -18,6 +19,9 @@ module.exports = {
         gray: {
           DEFAULT: "#747474",
         },
+      },
+      letterSpacing: {
+        widest: ".28em",
       },
     },
   },
