@@ -10,6 +10,7 @@ module.exports = {
         },
         green: {
           DEFAULT: "#4B8530",
+          darkest: "#425B56",
           dark: "#57746E",
         },
         gold: {
@@ -22,6 +23,9 @@ module.exports = {
       },
       letterSpacing: {
         widest: ".28em",
+      },
+      zIndex: {
+        "-10": "-10",
       },
     },
   },
