@@ -1,7 +1,7 @@
 import { Icon, Transition } from "components/atoms";
 import { Disclosure } from "@headlessui/react";
 import Link from "next/link";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
 type Link = {
@@ -51,6 +51,29 @@ function Account() {
   );
 }
 
+function useCurrentFocus<T extends HTMLElement>(initialValue: T | null) {
+  const [isFocus, setFocus] = useState(false);
+  const ref = useRef<T>(initialValue);
+
+  useEffect(() => {
+    function whenTabClick(event: KeyboardEvent) {
+      if (event.key === "Tab") {
+        requestAnimationFrame(() => {
+          const include = ref.current?.contains(document.activeElement);
+
+          setFocus(Boolean(include));
+        });
+      }
+    }
+
+    window.addEventListener("keydown", whenTabClick);
+
+    return () => window.removeEventListener("keydown", whenTabClick);
+  }, [setFocus]);
+
+  return { ref, isFocus };
+}
+
 type ExpandedProps = {
   label: string;
   icon: ReactNode;
@@ -59,9 +82,16 @@ type ExpandedProps = {
 };
 function Expanded({ label, icon, items, className }: ExpandedProps) {
   const [isExpanded, setExpand] = useState(false);
+  const { ref, isFocus } = useCurrentFocus<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    setExpand(isFocus);
+  }, [isFocus, isExpanded, setExpand]);
 
   return (
-    <>
+    <div className="w-full" ref={ref}>
       <button
         className={clsx(
           className,
@@ -94,7 +124,7 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
           ))}
         </ul>
       </Transition.Fade>
-    </>
+    </div>
   );
 }
 
