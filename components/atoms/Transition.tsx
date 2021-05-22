@@ -2,11 +2,13 @@ import { ReactNode } from "react";
 import { Transition as Trans } from "@headlessui/react";
 
 type Props = {
+  show?: boolean;
   children: ReactNode;
 };
-function Fade({ children }: Props) {
+function Fade({ show, children }: Props) {
   return (
     <Trans
+      show={show}
       enter="transition-opacity duration-300 ease-out-expo"
       enterFrom="opacity-0"
       enterTo="opacity-100"

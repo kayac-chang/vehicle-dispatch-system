@@ -1,5 +1,6 @@
 import { Icon, Logo } from "components/atoms";
 import { Disclosure } from "@headlessui/react";
+import Link from "next/link";
 import { Menu } from "components/molecules";
 
 const links = [
@@ -26,18 +27,12 @@ export function Header() {
           <div className="shadow flex relative z-10 bg-white lg:bg-green-dark">
             <Logo />
 
-            <div className="flex-1">
-              <nav
-                className="flex flex-col py-8"
-                aria-label="Navigation Dropdown"
-                role="navigation"
-              ></nav>
-            </div>
+            <Menu.Desktop items={links} />
 
             <Menu.Button open={open} />
           </div>
 
-          <Menu.Panel items={links} />
+          <Menu.Mobile items={links} />
         </header>
       )}
     </Disclosure>

@@ -27,6 +27,9 @@ module.exports = {
       zIndex: {
         "-10": "-10",
       },
+      fontSize: {
+        xxs: ".625rem",
+      },
       backgroundImage: {
         mask: "url('/images/mask.png')",
       },
