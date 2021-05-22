@@ -1,5 +1,5 @@
 import { Icon, Transition } from "components/atoms";
-import { Disclosure, Menu } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import clsx from "clsx";
@@ -104,7 +104,7 @@ type Link = {
   label: string;
   icon?: ReactNode;
   items?: Link[];
-  href: string;
+  href?: string;
 };
 
 type PanelProps = {

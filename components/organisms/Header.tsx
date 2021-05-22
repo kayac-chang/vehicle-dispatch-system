@@ -1,6 +1,5 @@
 import { Icon, Logo } from "components/atoms";
 import { Disclosure } from "@headlessui/react";
-import { ReactNode } from "react";
 import { Menu } from "components/molecules";
 
 const links = [
