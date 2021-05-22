@@ -22,8 +22,8 @@ export function Header() {
   return (
     <Disclosure>
       {({ open }) => (
-        <header className="bg-none lg:bg-green-dark">
-          <div className="shadow flex relative z-10">
+        <header>
+          <div className="shadow flex relative z-10 bg-white lg:bg-green-dark">
             <Logo />
 
             <div className="flex-1">
