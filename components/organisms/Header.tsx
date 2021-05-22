@@ -22,9 +22,17 @@ export function Header() {
   return (
     <Disclosure>
       {({ open }) => (
-        <header>
-          <div className="shadow flex relative bg-white z-10">
+        <header className="bg-none lg:bg-green-dark">
+          <div className="shadow flex relative z-10">
             <Logo />
+
+            <div className="flex-1">
+              <nav
+                className="flex flex-col py-8"
+                aria-label="Navigation Dropdown"
+                role="navigation"
+              ></nav>
+            </div>
 
             <Menu.Button open={open} />
           </div>

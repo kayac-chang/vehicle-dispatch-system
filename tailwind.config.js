@@ -27,6 +27,9 @@ module.exports = {
       zIndex: {
         "-10": "-10",
       },
+      backgroundImage: {
+        mask: "url('/images/mask.png')",
+      },
     },
   },
   variants: {

@@ -10,7 +10,7 @@ type ButtonProps = {
 function Button({ open }: ButtonProps) {
   return (
     <Disclosure.Button
-      className="bg-green-dark text-white p-5 rounded-bl-3xl"
+      className="lg:hidden bg-green-dark text-white p-5 rounded-bl-3xl"
       aria-label={open ? "Close Menu" : "Open Menu"}
     >
       <span className="block w-6">
