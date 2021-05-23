@@ -6,4 +6,7 @@
 
 body {
   font-family: "Noto Sans HK", sans-serif;
+  background-image: url("/images/background.png");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
