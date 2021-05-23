@@ -6,6 +6,9 @@ import User from "assets/icons/user.svg";
 import Customer from "assets/icons/customer.svg";
 import QA from "assets/icons/qa.svg";
 import Login from "assets/icons/login.svg";
+import Clock from "assets/icons/clock.svg";
+import Map from "assets/icons/map.svg";
+import Phone from "assets/icons/phone.svg";
 
 const Icon = {
   Menu,
@@ -16,6 +19,9 @@ const Icon = {
   Customer,
   QA,
   Login,
+  Clock,
+  Map,
+  Phone,
 };
 
 export default Icon;

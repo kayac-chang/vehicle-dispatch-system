@@ -19,6 +19,7 @@ module.exports = {
         },
         gray: {
           DEFAULT: "#747474",
+          "copy-right": "#595959",
         },
       },
       letterSpacing: {
