@@ -9,6 +9,7 @@ import Login from "assets/icons/login.svg";
 import Clock from "assets/icons/clock.svg";
 import Map from "assets/icons/map.svg";
 import Phone from "assets/icons/phone.svg";
+import Car from "assets/icons/car.svg";
 
 const Icon = {
   Menu,
@@ -22,6 +23,7 @@ const Icon = {
   Clock,
   Map,
   Phone,
+  Car,
 };
 
 export default Icon;

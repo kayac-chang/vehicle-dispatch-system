@@ -4,9 +4,16 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@100;300;400;500;700;900&display=swap");
 
+html,
+body {
+  height: 100vh;
+}
 body {
   font-family: "Noto Sans HK", sans-serif;
-  background-image: url("/images/background.png");
-  background-repeat: no-repeat;
-  background-size: contain;
+}
+
+#__next {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
 }

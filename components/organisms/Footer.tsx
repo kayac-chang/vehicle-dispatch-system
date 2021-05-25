@@ -41,7 +41,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="bg-gray-copy-right p-3 flex justify-center text-sm">
+      <div className="bg-gray-dark p-3 flex justify-center text-sm">
         <p>COPYRIGHT © 2021 高雄市政府衛生局</p>
       </div>
     </footer>

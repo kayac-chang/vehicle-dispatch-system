@@ -9,7 +9,7 @@ module.exports = {
           dark: "#00628F",
         },
         green: {
-          DEFAULT: "#4B8530",
+          DEFAULT: "#376422",
           darkest: "#425B56",
           dark: "#57746E",
         },
@@ -18,12 +18,15 @@ module.exports = {
           dark: "#C0A236",
         },
         gray: {
-          DEFAULT: "#747474",
-          "copy-right": "#595959",
+          light: "#747474",
+          DEFAULT: "#676767",
+          dark: "#595959",
         },
       },
       letterSpacing: {
-        widest: ".28em",
+        wide: "0.08em",
+        wider: "0.2em",
+        widest: "0.28em",
       },
       zIndex: {
         "-10": "-10",
@@ -33,6 +36,11 @@ module.exports = {
       },
       backgroundImage: {
         mask: "url('/images/mask.png')",
+      },
+
+      borderRadius: {
+        "4xl": "2rem",
+        "5xl": "3rem",
       },
     },
   },

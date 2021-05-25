@@ -3,3 +3,4 @@ import Transition from "./Transition";
 
 export { Icon, Transition };
 export * from "./Logo";
+export * from "./Background";
