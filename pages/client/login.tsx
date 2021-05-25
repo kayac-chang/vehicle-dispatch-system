@@ -1,4 +1,4 @@
-import { Icon, Form } from "components/atoms";
+import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
@@ -72,12 +72,7 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <button
-              type="submit"
-              className="bg-gold-darker text-white w-full py-2 rounded-sm"
-            >
-              登入
-            </button>
+            <Button.Flat type="submit">登入</Button.Flat>
 
             <div className="flex text-gold-darker justify-end space-x-4">
               <Link href="/client/registration">
