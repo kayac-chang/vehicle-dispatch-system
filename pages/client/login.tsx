@@ -2,6 +2,7 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import clsx from "clsx";
 
 interface LoginRequest {
   username: string;
@@ -30,16 +31,17 @@ export default function Login() {
 
       <div className="space-y-4 md:space-y-6">
         <div className="space-y-4">
-          {(errors.password || errors.username) && (
-            <p
-              role="alert"
-              aria-atomic
-              id="login-alert"
-              className="text-red-light"
-            >
-              帳號或密碼錯誤
-            </p>
-          )}
+          <p
+            role="alert"
+            aria-atomic
+            id="login-alert"
+            className={clsx(
+              "hidden text-red-light",
+              (errors.password || errors.username) && "block"
+            )}
+          >
+            帳號或密碼錯誤
+          </p>
 
           <Form.Input
             type="text"
