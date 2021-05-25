@@ -9,6 +9,7 @@ import {
   ChangeEvent,
 } from "react";
 import { Path, useForm, UseFormRegister, FieldError } from "react-hook-form";
+import Link from "next/link";
 
 type InputProps<T> = {
   type: "text" | "password";
@@ -120,64 +121,77 @@ export default function Login() {
   } = useForm<LoginRequest>();
 
   function onSubmit(data: LoginRequest) {
+    // @TODO submit logic
     console.log(data);
   }
 
   return (
     <Layout.Form title="登入">
-      <form className="text-sm space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-gold-darker space-y-2">
-          <h2 className="text-2xl">登入</h2>
+      <form
+        className="text-sm md:text-base space-y-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="text-gold-darker space-y-2 md:space-y-4">
+          <h2 className="text-2xl md:text-4xl md:font-semibold">登入</h2>
 
           <p>為了保障您的帳號安全，建議您最少於三個月變更一次密碼。</p>
         </div>
 
-        <div className="space-y-4">
-          {(errors.password || errors.username) && (
-            <p
-              role="alert"
-              aria-atomic
-              id="login-alert"
-              className="text-red-light"
+        <div className="space-y-4 md:space-y-6">
+          <div className="space-y-4">
+            {(errors.password || errors.username) && (
+              <p
+                role="alert"
+                aria-atomic
+                id="login-alert"
+                className="text-red-light"
+              >
+                帳號或密碼錯誤
+              </p>
+            )}
+
+            <Input
+              type="text"
+              icon={<Icon.User />}
+              label="請輸入您的帳號"
+              name="username"
+              register={register}
+              value={getValues("username")}
+              error={errors.username}
+              describedby="login-alert"
+              required
+            />
+
+            <Input
+              type="password"
+              icon={<Icon.Lock />}
+              label="請輸入您的密碼"
+              name="password"
+              register={register}
+              value={getValues("password")}
+              error={errors.password}
+              describedby="login-alert"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <button
+              type="submit"
+              className="bg-gold-darker text-white w-full py-2 rounded-sm"
             >
-              帳號或密碼錯誤
-            </p>
-          )}
+              登入
+            </button>
 
-          <Input
-            type="text"
-            icon={<Icon.User />}
-            label="請輸入您的帳號"
-            name="username"
-            register={register}
-            value={getValues("username")}
-            error={errors.username}
-            describedby="login-alert"
-            required
-          />
+            <div className="flex text-gold-darker justify-end space-x-4">
+              <Link href="/client/registration">
+                <a title="前往註冊">註冊</a>
+              </Link>
 
-          <Input
-            type="password"
-            icon={<Icon.Lock />}
-            label="請輸入您的密碼"
-            name="password"
-            register={register}
-            value={getValues("password")}
-            error={errors.password}
-            describedby="login-alert"
-            required
-          />
-
-          <button
-            type="submit"
-            className="bg-gold-darker text-white w-full py-2 rounded-sm"
-          >
-            登入
-          </button>
-
-          <div className="flex text-gold-darker justify-end space-x-4">
-            <a href="">註冊</a>
-            <a href="">忘記密碼？</a>
+              <Link href="/client/forgot-password">
+                <a title="前往忘記密碼">忘記密碼？</a>
+              </Link>
+            </div>
           </div>
         </div>
 
