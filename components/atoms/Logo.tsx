@@ -12,7 +12,7 @@ export function Logo() {
       <img
         className="w-14"
         src="/images/logo.png"
-        alt="高雄市政府預約訂平台"
+        alt="高雄市政府之商標"
         aria-hidden
       />
 
