@@ -16,11 +16,16 @@ module.exports = {
         gold: {
           light: "#FFE074",
           dark: "#C0A236",
+          darker: "#A98E2F",
         },
         gray: {
+          lighter: "#848484",
           light: "#747474",
           DEFAULT: "#676767",
           dark: "#595959",
+        },
+        red: {
+          light: "#FF0000",
         },
       },
       letterSpacing: {
@@ -46,10 +51,15 @@ module.exports = {
         "1/2": "50%",
         "3/4": "75%",
       },
+      listStyleType: {
+        square: "square",
+      },
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      opacity: ["group-focus"],
+    },
   },
   plugins: [require("@whiterussianstudio/tailwind-easing")],
 };

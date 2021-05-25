@@ -22,7 +22,7 @@ export function Header() {
   return (
     <Disclosure>
       {({ open }) => (
-        <header>
+        <header className="z-10">
           <div className="shadow flex relative z-10 bg-white lg:bg-green-dark">
             <Logo />
 

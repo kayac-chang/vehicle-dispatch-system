@@ -48,7 +48,7 @@ export function Form({ title, children }: FormProps) {
 
         <section
           className={clsx(
-            "w-full h-full bg-white rounded-t-5xl shadow-2xl",
+            "w-full h-full bg-white rounded-t-5xl shadow-2xl px-8 py-6",
             "md:rounded-lg"
           )}
         >
