@@ -35,11 +35,23 @@ type FormProps = {
 };
 export function Form({ title, children }: FormProps) {
   return (
-    <Base title={title} className="flex-1 md:py-40" footer={false}>
-      <div className="xl:container mx-auto flex flex-col lg:flex-row items-center h-full space-x-4 px-8">
+    <Base title={title} className="flex-1 md:py-36" footer={false}>
+      <div
+        className={clsx(
+          "mx-auto flex flex-col items-center h-full",
+          "md:px-8",
+          "lg:flex-row lg:space-x-4",
+          "xl:container"
+        )}
+      >
         <Banner className="lg:w-1/2" />
 
-        <section className="w-full h-full bg-white rounded-t-5xl md:rounded-lg shadow-2xl">
+        <section
+          className={clsx(
+            "w-full h-full bg-white rounded-t-5xl shadow-2xl",
+            "md:rounded-lg"
+          )}
+        >
           {children}
         </section>
       </div>

@@ -37,10 +37,14 @@ module.exports = {
       backgroundImage: {
         mask: "url('/images/mask.png')",
       },
-
       borderRadius: {
         "4xl": "2rem",
         "5xl": "3rem",
+      },
+      maxHeight: {
+        "1/4": "25%",
+        "1/2": "50%",
+        "3/4": "75%",
       },
     },
   },
