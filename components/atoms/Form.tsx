@@ -9,28 +9,28 @@ import {
 } from "react";
 import { Path, UseFormRegister, FieldError } from "react-hook-form";
 
-type InputProps<T> = {
+type TextInputProps<T> = {
   type: "text" | "password";
-  icon?: ReactNode;
-  label: string;
   name: Path<T>;
   register: UseFormRegister<T>;
+  icon?: ReactNode;
+  label?: string;
   error?: FieldError;
   required?: string | boolean;
   describedby?: string;
   children?: ReactNode;
 };
-
-function Base<T>({
+function TextInput<T>({
   type,
-  label,
   name,
   register,
+  icon,
+  label,
   error,
   required,
   describedby,
   children,
-}: InputProps<T>) {
+}: TextInputProps<T>) {
   const [isFocus, setFocus] = useState(false);
   const [hasValue, setHasValue] = useState(false);
   const { onBlur, onChange, ...props } = register(name, { required });
@@ -52,21 +52,20 @@ function Base<T>({
   );
 
   return (
-    <div className="flex items-center relative group">
-      <label
-        htmlFor={name}
-        className={clsx(
-          "text-gray-lighter absolute ml-8 pointer-events-none",
-          "transition-transform transform origin-top-left",
-          (hasValue || isFocus) && "scale-75 -translate-y-1/2"
-        )}
-      >
-        {label}
-      </label>
+    <div className="flex flex-col justify-center relative">
+      <Label
+        active={hasValue || isFocus}
+        name={name}
+        icon={icon}
+        label={label}
+        required={required}
+      />
 
       <input
+        id={name}
         className={clsx(
-          "w-full h-12 pt-2 pl-8 pr-2 border rounded-sm",
+          "w-full border rounded-sm",
+          icon ? "h-12 pt-2 pl-8 pr-4" : "py-2 px-4",
           error &&
             "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
         )}
@@ -85,23 +84,54 @@ function Base<T>({
   );
 }
 
-function WithIcon<T>({ icon, children, ...props }: InputProps<T>) {
-  return (
-    <Base {...props}>
-      <span className="absolute w-4 ml-3 pointer-events-none" aria-hidden>
-        {icon}
-      </span>
+type LabelProps = {
+  label?: string;
+  name: string;
+  active: boolean;
+  icon?: ReactNode;
+  required?: string | boolean;
+};
 
-      {children}
-    </Base>
+function Label({ label, name, active, icon, required }: LabelProps) {
+  if (icon) {
+    return (
+      <>
+        <label
+          htmlFor={name}
+          className={clsx(
+            "text-gray-lighter absolute pointer-events-none ml-8",
+            "transition-transform transform origin-top-left",
+            active && "scale-75 -translate-y-1/2"
+          )}
+        >
+          {label}
+        </label>
+
+        <span className="absolute w-4 ml-3 pointer-events-none" aria-hidden>
+          {icon}
+        </span>
+      </>
+    );
+  }
+
+  return (
+    <div className="mb-2">
+      <label htmlFor={name}>{label}</label>
+
+      {required && (
+        <span className="text-red-light" aria-label="必填欄位">
+          *
+        </span>
+      )}
+    </div>
   );
 }
 
-function Password<T>({ type, children, ...props }: InputProps<T>) {
+function Password<T>({ type, ...props }: TextInputProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <WithIcon type={showPassword ? "text" : "password"} {...props}>
+    <TextInput type={showPassword ? "text" : "password"} {...props}>
       <button
         type="button"
         className="absolute right-0 mr-2 w-8 p-2"
@@ -112,18 +142,59 @@ function Password<T>({ type, children, ...props }: InputProps<T>) {
       >
         <Icon.Eye />
       </button>
-
-      {children}
-    </WithIcon>
+    </TextInput>
   );
 }
 
-function Input<T>(props: InputProps<T>) {
+type RadioProps<T> = {
+  type: "radio";
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  label?: string;
+  required?: string | boolean;
+  options: {
+    id: string;
+    value: string;
+    label: string;
+  }[];
+};
+function Radio<T>({ register, name, required, label, options }: RadioProps<T>) {
+  return (
+    <fieldset>
+      <div className="flex mb-2">
+        <legend>{label}</legend>
+
+        {required && (
+          <span className="text-red-light" aria-label="必填欄位">
+            *
+          </span>
+        )}
+      </div>
+
+      <div className="flex space-x-4">
+        {options.map(({ id, value, label }) => (
+          <div key={id} className="space-x-2">
+            <input
+              type="radio"
+              id={id}
+              value={value}
+              {...register(name)}
+              checked
+            />
+            <label htmlFor={id}>{label}</label>
+          </div>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function Input<T>(props: TextInputProps<T> | RadioProps<T>) {
+  if (props.type === "radio") return <Radio {...props} />;
+
   if (props.type === "password" && props.icon) return <Password {...props} />;
 
-  if (props.icon) return <WithIcon {...props} />;
-
-  return <Base {...props} />;
+  return <TextInput {...props} />;
 }
 
 const Form = {

@@ -61,5 +61,8 @@ module.exports = {
       opacity: ["group-focus"],
     },
   },
-  plugins: [require("@whiterussianstudio/tailwind-easing")],
+  plugins: [
+    require("@whiterussianstudio/tailwind-easing"),
+    require("@tailwindcss/custom-forms"),
+  ],
 };
