@@ -22,7 +22,6 @@ type InputProps<T> = {
 };
 
 function Base<T>({
-  icon,
   type,
   label,
   name,
@@ -54,12 +53,6 @@ function Base<T>({
 
   return (
     <div className="flex items-center relative group">
-      {icon && (
-        <span className="absolute w-4 ml-3 pointer-events-none" aria-hidden>
-          {icon}
-        </span>
-      )}
-
       <label
         htmlFor={name}
         className={clsx(
@@ -92,11 +85,23 @@ function Base<T>({
   );
 }
 
+function WithIcon<T>({ icon, children, ...props }: InputProps<T>) {
+  return (
+    <Base {...props}>
+      <span className="absolute w-4 ml-3 pointer-events-none" aria-hidden>
+        {icon}
+      </span>
+
+      {children}
+    </Base>
+  );
+}
+
 function Password<T>({ type, children, ...props }: InputProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Base type={showPassword ? "text" : "password"} {...props}>
+    <WithIcon type={showPassword ? "text" : "password"} {...props}>
       <button
         type="button"
         className="absolute right-0 mr-2 w-8 p-2"
@@ -109,12 +114,14 @@ function Password<T>({ type, children, ...props }: InputProps<T>) {
       </button>
 
       {children}
-    </Base>
+    </WithIcon>
   );
 }
 
 function Input<T>(props: InputProps<T>) {
-  if (props.type === "password") return <Password {...props} />;
+  if (props.type === "password" && props.icon) return <Password {...props} />;
+
+  if (props.icon) return <WithIcon {...props} />;
 
   return <Base {...props} />;
 }
