@@ -1,21 +1,64 @@
 import clsx from "clsx";
 import { Icon } from "components/atoms";
 import Layout from "components/templates";
-import { ReactNode, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useState,
+  FocusEvent,
+  ChangeEvent,
+} from "react";
+import { Path, useForm, UseFormRegister, FieldError } from "react-hook-form";
 
-type InputProps = {
+type InputProps<T> = {
   type: "text" | "password";
   icon?: ReactNode;
   label: string;
-  name: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  value?: string;
+  error?: FieldError;
+  required?: string | boolean;
+  describedby?: string;
 };
-function Input({ type, icon, label, name }: InputProps) {
+function Input<T>({
+  type,
+  icon,
+  label,
+  name,
+  register,
+  error,
+  required,
+  describedby,
+}: InputProps<T>) {
   const [isFocus, setFocus] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { onBlur, onChange, ...props } = register(name, { required });
+
+  const change = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setHasValue(Boolean(event.target.value));
+    },
+    [onChange]
+  );
+
+  const focus = useCallback(() => {
+    setFocus(true);
+  }, [setFocus]);
+
+  const blur = useCallback(
+    (event: FocusEvent) => {
+      onBlur(event);
+      setFocus(false);
+    },
+    [onBlur, setFocus]
+  );
 
   return (
     <div className="flex items-center relative group">
       {icon && (
-        <span className="absolute w-4 mx-2 pointer-events-none" aria-hidden>
+        <span className="absolute w-4 ml-3 pointer-events-none" aria-hidden>
           {icon}
         </span>
       )}
@@ -23,29 +66,66 @@ function Input({ type, icon, label, name }: InputProps) {
       <label
         htmlFor={name}
         className={clsx(
-          "text-gray-lighter absolute ml-7 pointer-events-none",
-          isFocus && "opacity-0"
+          "text-gray-lighter absolute ml-8 pointer-events-none",
+          "transition-transform transform origin-top-left",
+          (hasValue || isFocus) && "scale-75 -translate-y-1/2"
         )}
       >
         {label}
       </label>
 
       <input
-        className="w-full py-2 pl-7 pr-2 border"
-        type={type}
-        name={name}
-        id={name}
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        className={clsx(
+          "w-full h-12 pt-2 pl-8 pr-2 border rounded-sm",
+          error &&
+            "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
+        )}
+        type={type === "password" && showPassword ? "text" : type}
+        onChange={change}
+        onFocus={focus}
+        onBlur={blur}
+        aria-required={required ? "true" : "false"}
+        aria-invalid={Boolean(error)}
+        aria-describedby={describedby}
+        {...props}
       />
+
+      {type === "password" && (
+        <button
+          type="button"
+          className="absolute right-0 mr-2 w-8 p-2"
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
+          aria-live="assertive"
+          aria-atomic
+        >
+          <Icon.Eye />
+        </button>
+      )}
     </div>
   );
 }
 
+interface LoginRequest {
+  username: string;
+  password: string;
+}
+
 export default function Login() {
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<LoginRequest>();
+
+  function onSubmit(data: LoginRequest) {
+    console.log(data);
+  }
+
   return (
     <Layout.Form title="登入">
-      <form className="text-sm space-y-4">
+      <form className="text-sm space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="text-gold-darker space-y-2">
           <h2 className="text-2xl">登入</h2>
 
@@ -53,13 +133,27 @@ export default function Login() {
         </div>
 
         <div className="space-y-4">
-          <p className="text-red-light">帳號或密碼錯誤</p>
+          {(errors.password || errors.username) && (
+            <p
+              role="alert"
+              aria-atomic
+              id="login-alert"
+              className="text-red-light"
+            >
+              帳號或密碼錯誤
+            </p>
+          )}
 
           <Input
             type="text"
             icon={<Icon.User />}
             label="請輸入您的帳號"
             name="username"
+            register={register}
+            value={getValues("username")}
+            error={errors.username}
+            describedby="login-alert"
+            required
           />
 
           <Input
@@ -67,9 +161,17 @@ export default function Login() {
             icon={<Icon.Lock />}
             label="請輸入您的密碼"
             name="password"
+            register={register}
+            value={getValues("password")}
+            error={errors.password}
+            describedby="login-alert"
+            required
           />
 
-          <button className="bg-gold-darker text-white w-full py-2 rounded-sm">
+          <button
+            type="submit"
+            className="bg-gold-darker text-white w-full py-2 rounded-sm"
+          >
             登入
           </button>
 
