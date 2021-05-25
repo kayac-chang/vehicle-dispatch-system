@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, FormEvent } from "react";
 import clsx from "clsx";
 import Head from "next/head";
 import { Header, Footer } from "components/organisms";
@@ -32,8 +32,9 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
 type FormProps = {
   title: string;
   children?: ReactNode;
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
 };
-export function Form({ title, children }: FormProps) {
+export function Form({ title, children, onSubmit }: FormProps) {
   return (
     <Base title={title} className="flex-1 md:py-36" footer={false}>
       <div
@@ -52,7 +53,9 @@ export function Form({ title, children }: FormProps) {
             "md:rounded-lg"
           )}
         >
-          {children}
+          <form className="text-sm md:text-base space-y-4" onSubmit={onSubmit}>
+            {children}
+          </form>
         </section>
       </div>
     </Base>

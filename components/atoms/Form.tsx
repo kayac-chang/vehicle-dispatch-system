@@ -15,24 +15,25 @@ type InputProps<T> = {
   label: string;
   name: Path<T>;
   register: UseFormRegister<T>;
-  value?: string;
   error?: FieldError;
   required?: string | boolean;
   describedby?: string;
+  children?: ReactNode;
 };
-function Input<T>({
-  type,
+
+function Base<T>({
   icon,
+  type,
   label,
   name,
   register,
   error,
   required,
   describedby,
+  children,
 }: InputProps<T>) {
   const [isFocus, setFocus] = useState(false);
   const [hasValue, setHasValue] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const { onBlur, onChange, ...props } = register(name, { required });
 
   const change = useCallback(
@@ -76,7 +77,7 @@ function Input<T>({
           error &&
             "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
         )}
-        type={type === "password" && showPassword ? "text" : type}
+        type={type}
         onChange={change}
         onFocus={focus}
         onBlur={blur}
@@ -86,20 +87,36 @@ function Input<T>({
         {...props}
       />
 
-      {type === "password" && (
-        <button
-          type="button"
-          className="absolute right-0 mr-2 w-8 p-2"
-          onClick={() => setShowPassword(!showPassword)}
-          aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
-          aria-live="assertive"
-          aria-atomic
-        >
-          <Icon.Eye />
-        </button>
-      )}
+      {children}
     </div>
   );
+}
+
+function Password<T>({ type, children, ...props }: InputProps<T>) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <Base type={showPassword ? "text" : "password"} {...props}>
+      <button
+        type="button"
+        className="absolute right-0 mr-2 w-8 p-2"
+        onClick={() => setShowPassword(!showPassword)}
+        aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
+        aria-live="assertive"
+        aria-atomic
+      >
+        <Icon.Eye />
+      </button>
+
+      {children}
+    </Base>
+  );
+}
+
+function Input<T>(props: InputProps<T>) {
+  if (props.type === "password") return <Password {...props} />;
+
+  return <Base {...props} />;
 }
 
 const Form = {
