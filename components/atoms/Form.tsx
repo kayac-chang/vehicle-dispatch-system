@@ -246,6 +246,24 @@ function Select<T>({ name, register, options }: SelectProps<T>) {
   );
 }
 
+type AlertProps = {
+  id: string;
+  show?: boolean;
+  children?: ReactNode;
+};
+function Alert({ id, show, children }: AlertProps) {
+  return (
+    <p
+      role="alert"
+      aria-atomic
+      id={id}
+      className={clsx("text-red-light", show ? "block" : "hidden")}
+    >
+      {children}
+    </p>
+  );
+}
+
 function Input<T>(props: TextInputProps<T> | RadioProps<T> | SelectProps<T>) {
   if (props.type === "select") return <Select {...props} />;
 
@@ -259,6 +277,7 @@ function Input<T>(props: TextInputProps<T> | RadioProps<T> | SelectProps<T>) {
 const Form = {
   Input,
   FieldSet,
+  Alert,
 };
 
 export default Form;

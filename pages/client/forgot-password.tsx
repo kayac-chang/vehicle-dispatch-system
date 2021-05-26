@@ -1,7 +1,6 @@
 import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
-import clsx from "clsx";
 
 interface Request {
   identity: string;
@@ -30,17 +29,12 @@ export default function ForgotPassword() {
 
       <div className="space-y-4 md:space-y-6">
         <div className="space-y-4">
-          <p
-            role="alert"
-            aria-atomic
+          <Form.Alert
             id="alert"
-            className={clsx(
-              "text-red-light",
-              errors.identity || errors.captcha ? "block" : "hidden"
-            )}
+            show={Boolean(errors.identity || errors.captcha)}
           >
             身分證格式錯誤
-          </p>
+          </Form.Alert>
 
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">

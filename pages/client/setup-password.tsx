@@ -1,7 +1,6 @@
 import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
-import clsx from "clsx";
 
 interface Request {
   password: string;
@@ -30,17 +29,12 @@ export default function SetupPassword() {
 
       <div className="space-y-4 md:space-y-6">
         <div className="space-y-4">
-          <p
-            role="alert"
-            aria-atomic
+          <Form.Alert
             id="alert"
-            className={clsx(
-              "text-red-light",
-              errors.password || errors.repeat ? "block" : "hidden"
-            )}
+            show={Boolean(errors.password || errors.repeat)}
           >
             輸入格式錯誤
-          </p>
+          </Form.Alert>
 
           <Form.Input
             type="password"
