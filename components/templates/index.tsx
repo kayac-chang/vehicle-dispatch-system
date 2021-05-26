@@ -1,4 +1,4 @@
-import { ReactNode, FormEvent } from "react";
+import { ReactNode, FormEvent, Children } from "react";
 import clsx from "clsx";
 import Head from "next/head";
 import { Header, Footer } from "components/organisms";
@@ -29,9 +29,7 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
   );
 }
 
-type FormProps = {
-  title: string;
-  children?: ReactNode;
+type FormProps = BaseProps & {
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
 };
 export function Form({ title, children, onSubmit }: FormProps) {
@@ -62,8 +60,26 @@ export function Form({ title, children, onSubmit }: FormProps) {
   );
 }
 
+type NormalProps = BaseProps & {};
+function Normal({ title, children }: NormalProps) {
+  return (
+    <Base title={title} footer>
+      <div className="container">
+        <div className="bg-white w-56 py-2 m-6">
+          <h2 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
+            {title}
+          </h2>
+        </div>
+
+        {children}
+      </div>
+    </Base>
+  );
+}
+
 const Layout = {
   Base,
   Form,
+  Normal,
 };
 export default Layout;
