@@ -146,7 +146,7 @@ function Password<T>({ type, ...props }: TextInputProps<T>) {
         aria-live="assertive"
         aria-atomic
       >
-        {showPassword ? <Icon.Visible /> : <Icon.Invisible />}
+        {showPassword ? <Icon.Invisible /> : <Icon.Visible />}
       </button>
     </TextInput>
   );

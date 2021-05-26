@@ -34,10 +34,10 @@ export default function Login() {
           <p
             role="alert"
             aria-atomic
-            id="login-alert"
+            id="alert"
             className={clsx(
-              "hidden text-red-light",
-              (errors.password || errors.username) && "block"
+              "text-red-light",
+              errors.password || errors.username ? "block" : "repeat"
             )}
           >
             帳號或密碼錯誤
@@ -50,7 +50,7 @@ export default function Login() {
             name="username"
             register={register}
             error={errors.username}
-            describedby="login-alert"
+            describedby="alert"
             required
           />
 
@@ -61,7 +61,7 @@ export default function Login() {
             name="password"
             register={register}
             error={errors.password}
-            describedby="login-alert"
+            describedby="alert"
             required
           />
         </div>

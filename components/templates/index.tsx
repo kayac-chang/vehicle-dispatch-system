@@ -50,7 +50,7 @@ export function Form({ title, children, onSubmit }: FormProps) {
         <section
           className={clsx(
             "w-full h-full bg-white rounded-t-5xl shadow-2xl px-8 py-6",
-            "md:rounded-lg"
+            "md:h-auto md:rounded-lg md:px-12 md:py-12"
           )}
         >
           <form className="text-sm md:text-base space-y-4" onSubmit={onSubmit}>
