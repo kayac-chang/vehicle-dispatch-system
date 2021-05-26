@@ -9,14 +9,17 @@ import {
 } from "react";
 import { Path, UseFormRegister, FieldError } from "react-hook-form";
 
-type TextInputProps<T> = {
-  type: "text" | "password";
+type CommonProps<T> = {
   name: Path<T>;
   register: UseFormRegister<T>;
-  icon?: ReactNode;
   label?: string;
-  error?: FieldError;
   required?: string | boolean;
+};
+
+type TextInputProps<T> = CommonProps<T> & {
+  type: "text" | "password";
+  icon?: ReactNode;
+  error?: FieldError;
   describedby?: string;
   children?: ReactNode;
 };
@@ -53,13 +56,15 @@ function TextInput<T>({
 
   return (
     <div className="flex flex-col justify-center relative">
-      <Label
-        active={hasValue || isFocus}
-        name={name}
-        icon={icon}
-        label={label}
-        required={required}
-      />
+      {label && (
+        <Label
+          active={hasValue || isFocus}
+          name={name}
+          icon={icon}
+          label={label}
+          required={required}
+        />
+      )}
 
       <input
         id={name}
@@ -85,7 +90,7 @@ function TextInput<T>({
 }
 
 type LabelProps = {
-  label?: string;
+  label: string;
   name: string;
   active: boolean;
   icon?: ReactNode;
@@ -146,19 +151,12 @@ function Password<T>({ type, ...props }: TextInputProps<T>) {
   );
 }
 
-type RadioProps<T> = {
-  type: "radio";
-  name: Path<T>;
-  register: UseFormRegister<T>;
-  label?: string;
+type FieldSetProps = {
+  label: string;
   required?: string | boolean;
-  options: {
-    id: string;
-    value: string;
-    label: string;
-  }[];
+  children?: ReactNode;
 };
-function Radio<T>({ register, name, required, label, options }: RadioProps<T>) {
+function FieldSet({ label, required, children }: FieldSetProps) {
   return (
     <fieldset>
       <div className="flex mb-2">
@@ -171,25 +169,82 @@ function Radio<T>({ register, name, required, label, options }: RadioProps<T>) {
         )}
       </div>
 
-      <div className="flex space-x-4">
-        {options.map(({ id, value, label }) => (
-          <div key={id} className="space-x-2">
-            <input
-              type="radio"
-              id={id}
-              value={value}
-              {...register(name)}
-              checked
-            />
-            <label htmlFor={id}>{label}</label>
-          </div>
-        ))}
-      </div>
+      {children}
     </fieldset>
   );
 }
 
-function Input<T>(props: TextInputProps<T> | RadioProps<T>) {
+type RadioProps<T> = CommonProps<T> & {
+  type: "radio";
+  value?: string;
+  options: {
+    id: string;
+    value: string;
+    label: string;
+  }[];
+};
+function Radio<T>({
+  register,
+  name,
+  required,
+  label,
+  options,
+  value: current = options[0].value,
+}: RadioProps<T>) {
+  const el = (
+    <div className="flex space-x-4">
+      {options.map(({ id, value, label }) => (
+        <div key={id} className="space-x-2">
+          <input
+            type="radio"
+            id={id}
+            value={value}
+            {...register(name)}
+            defaultChecked={value === current}
+          />
+          <label htmlFor={id}>{label}</label>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (label) {
+    return (
+      <FieldSet label={label} required={required}>
+        {el}
+      </FieldSet>
+    );
+  }
+
+  return el;
+}
+
+type SelectProps<T> = CommonProps<T> & {
+  type: "select";
+  options: {
+    id: string;
+    value: string;
+    label: string;
+  }[];
+};
+function Select<T>({ name, register, options }: SelectProps<T>) {
+  return (
+    <select
+      className="form-select border rounded-sm w-full"
+      {...register(name)}
+    >
+      {options.map(({ id, value, label }) => (
+        <option key={id} value={value}>
+          {label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function Input<T>(props: TextInputProps<T> | RadioProps<T> | SelectProps<T>) {
+  if (props.type === "select") return <Select {...props} />;
+
   if (props.type === "radio") return <Radio {...props} />;
 
   if (props.type === "password" && props.icon) return <Password {...props} />;
@@ -199,6 +254,7 @@ function Input<T>(props: TextInputProps<T> | RadioProps<T>) {
 
 const Form = {
   Input,
+  FieldSet,
 };
 
 export default Form;

@@ -3,13 +3,16 @@ import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 
-interface LoginRequest {
+interface Request {
   name: string;
   phone: string;
   birthday: string;
   identity: string;
   easycard: string;
   gender: "man" | "woman";
+  city: string;
+  district: string;
+  street: string;
 }
 
 export default function Registration() {
@@ -17,9 +20,9 @@ export default function Registration() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginRequest>();
+  } = useForm<Request>();
 
-  function onSubmit(data: LoginRequest) {
+  function onSubmit(data: Request) {
     // @TODO submit logic
     console.log(data);
   }
@@ -86,38 +89,37 @@ export default function Registration() {
           register={register}
         />
 
-        {/* Address */}
-        <fieldset>
-          <div className="flex mb-2">
-            <legend>通訊地址</legend>
-            <span className="text-red-light" aria-label="必填欄位">
-              *
-            </span>
-          </div>
-
+        <Form.FieldSet label="通訊地址" required>
           <div className="space-y-2">
-            {/* City */}
-            <select className="form-select border rounded-sm w-full">
-              <option value="8.01.1">Lecture 01: Powers of Ten</option>
-              <option value="8.01.2">Lecture 02: 1D Kinematics</option>
-              <option value="8.01.3">Lecture 03: Vectors</option>
-            </select>
+            <Form.Input
+              type="select"
+              name="city"
+              register={register}
+              options={[
+                {
+                  id: "8.01.1",
+                  value: "8.01.1",
+                  label: "Lecture 01: Powers of Ten",
+                },
+              ]}
+            />
 
-            {/* District */}
-            <select className="form-select border rounded-sm w-full">
-              <option value="8.01.1">Lecture 01: Powers of Ten</option>
-              <option value="8.01.2">Lecture 02: 1D Kinematics</option>
-              <option value="8.01.3">Lecture 03: Vectors</option>
-            </select>
+            <Form.Input
+              type="select"
+              name="district"
+              register={register}
+              options={[
+                {
+                  id: "8.01.1",
+                  value: "8.01.1",
+                  label: "Lecture 01: Powers of Ten",
+                },
+              ]}
+            />
 
-            {/* Street */}
-            <select className="form-select border rounded-sm w-full">
-              <option value="8.01.1">Lecture 01: Powers of Ten</option>
-              <option value="8.01.2">Lecture 02: 1D Kinematics</option>
-              <option value="8.01.3">Lecture 03: Vectors</option>
-            </select>
+            <Form.Input type="text" name="street" register={register} />
           </div>
-        </fieldset>
+        </Form.FieldSet>
 
         <div className="space-y-2">
           <Button.Flat type="submit">註冊</Button.Flat>

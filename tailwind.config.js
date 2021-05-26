@@ -16,7 +16,7 @@ module.exports = {
         gold: {
           light: "#FFE074",
           dark: "#C0A236",
-          darker: "#A98E2F",
+          darker: "#A1882E",
         },
         gray: {
           lighter: "#848484",

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import clsx from "clsx";
 
-interface LoginRequest {
+interface Request {
   username: string;
   password: string;
 }
@@ -14,9 +14,9 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginRequest>();
+  } = useForm<Request>();
 
-  function onSubmit(data: LoginRequest) {
+  function onSubmit(data: Request) {
     // @TODO submit logic
     console.log(data);
   }
