@@ -14,6 +14,7 @@ type CommonProps<T> = {
   register: UseFormRegister<T>;
   label?: string;
   required?: string | boolean;
+  className?: string;
 };
 
 type TextInputProps<T> = CommonProps<T> & {
@@ -69,7 +70,7 @@ function TextInput<T>({
       <input
         id={name}
         className={clsx(
-          "w-full border rounded-sm",
+          "w-full border border-black rounded-sm",
           icon ? "h-12 pt-2 pl-8 pr-4" : "py-2 px-4",
           error &&
             "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
@@ -104,7 +105,7 @@ function Label({ label, name, active, icon, required }: LabelProps) {
         <label
           htmlFor={name}
           className={clsx(
-            "text-gray-lighter absolute pointer-events-none ml-8",
+            "absolute pointer-events-none ml-8",
             "transition-transform transform origin-top-left",
             active && "scale-75 -translate-y-1/2"
           )}
@@ -145,20 +146,23 @@ function Password<T>({ type, ...props }: TextInputProps<T>) {
         aria-live="assertive"
         aria-atomic
       >
-        <Icon.Eye />
+        {showPassword ? <Icon.Visible /> : <Icon.Invisible />}
       </button>
     </TextInput>
   );
 }
 
-type FieldSetProps = {
-  label: string;
-  required?: string | boolean;
+type FieldSetProps<T> = Omit<CommonProps<T>, "name" | "register"> & {
   children?: ReactNode;
 };
-function FieldSet({ label, required, children }: FieldSetProps) {
+function FieldSet<T>({
+  label,
+  required,
+  children,
+  className,
+}: FieldSetProps<T>) {
   return (
-    <fieldset>
+    <fieldset className={className}>
       <div className="flex mb-2">
         <legend>{label}</legend>
 
@@ -230,7 +234,7 @@ type SelectProps<T> = CommonProps<T> & {
 function Select<T>({ name, register, options }: SelectProps<T>) {
   return (
     <select
-      className="form-select border rounded-sm w-full"
+      className="form-select border border-black rounded-sm w-full"
       {...register(name)}
     >
       {options.map(({ id, value, label }) => (

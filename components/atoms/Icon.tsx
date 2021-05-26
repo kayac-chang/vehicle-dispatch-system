@@ -10,8 +10,10 @@ import Clock from "assets/icons/clock.svg";
 import Map from "assets/icons/map.svg";
 import Phone from "assets/icons/phone.svg";
 import Car from "assets/icons/car.svg";
-import Eye from "assets/icons/eye.svg";
 import Lock from "assets/icons/lock.svg";
+import Visible from "assets/icons/visible.svg";
+import Invisible from "assets/icons/invisible.svg";
+import Loader from "assets/icons/loader.svg";
 
 const Icon = {
   Menu,
@@ -26,8 +28,10 @@ const Icon = {
   Map,
   Phone,
   Car,
-  Eye,
   Lock,
+  Visible,
+  Invisible,
+  Loader,
 };
 
 export default Icon;

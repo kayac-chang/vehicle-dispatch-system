@@ -33,7 +33,7 @@ export default function Registration() {
         <h2 className="text-2xl md:text-4xl md:font-semibold">註冊</h2>
       </div>
 
-      <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
         <Form.Input
           type="text"
           label="姓名"
@@ -89,7 +89,7 @@ export default function Registration() {
           register={register}
         />
 
-        <Form.FieldSet label="通訊地址" required>
+        <Form.FieldSet label="通訊地址" required className="col-span-2">
           <div className="space-y-2">
             <Form.Input
               type="select"
@@ -121,7 +121,7 @@ export default function Registration() {
           </div>
         </Form.FieldSet>
 
-        <div className="space-y-2">
+        <div className="space-y-2 col-span-2">
           <Button.Flat type="submit">註冊</Button.Flat>
 
           <div className="flex justify-end">
