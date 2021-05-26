@@ -14,6 +14,8 @@ import Lock from "assets/icons/lock.svg";
 import Visible from "assets/icons/visible.svg";
 import Invisible from "assets/icons/invisible.svg";
 import Loader from "assets/icons/loader.svg";
+import Identification from "assets/icons/identification.svg";
+import Message from "assets/icons/message.svg";
 
 const Icon = {
   Menu,
@@ -32,6 +34,8 @@ const Icon = {
   Visible,
   Invisible,
   Loader,
+  Identification,
+  Message,
 };
 
 export default Icon;
