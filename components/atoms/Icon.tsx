@@ -22,6 +22,7 @@ import ChevronUp from "assets/icons/chevron-up.svg";
 import ChevronLeft from "assets/icons/chevron-left.svg";
 import ChevronRight from "assets/icons/chevron-right.svg";
 import Calendar from "assets/icons/calendar.svg";
+import ArrowRight from "assets/icons/arrow-right.svg";
 
 const Icon = {
   Menu,
@@ -48,6 +49,7 @@ const Icon = {
   ChevronLeft,
   ChevronRight,
   Calendar,
+  ArrowRight,
 };
 
 export default Icon;
