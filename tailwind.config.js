@@ -27,6 +27,10 @@ module.exports = {
         red: {
           light: "#FF0000",
         },
+        orange: {
+          light: "#FFF3E0",
+          dark: "#EF6C00",
+        },
       },
       letterSpacing: {
         wide: "0.08em",

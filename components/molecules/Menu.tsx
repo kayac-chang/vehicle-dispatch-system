@@ -91,7 +91,7 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
   }, [isFocus, isExpanded, setExpand]);
 
   return (
-    <div className="w-full" ref={ref}>
+    <div className="relative" ref={ref}>
       <button
         className={clsx(
           className,
@@ -113,7 +113,7 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
           role="menu"
           aria-label={label}
           className={clsx(
-            "lg:absolute lg:bg-white lg:right-0 lg:top-full lg:shadow-md lg:divide-y lg:rounded-b-lg lg:w-full"
+            "lg:absolute lg:bg-white lg:right-0 lg:top-full lg:shadow-md lg:divide-y lg:rounded-b-lg overflow-hidden lg:w-full"
           )}
         >
           {items.map((item) => (
@@ -137,6 +137,7 @@ function Item(props: ItemProps) {
   const defaultClass = clsx(
     "flex items-center space-x-4 text-white w-full py-4",
     "lg:flex-col lg:space-x-0 xl:w-32",
+    "lg:border-b-4 lg:border-transparent",
     "hover:bg-green-darkest hover:text-gold-light"
   );
 

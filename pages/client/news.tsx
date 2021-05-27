@@ -1,6 +1,8 @@
 import Layout from "components/templates";
 import { Pagination } from "components/molecules";
 import { Form, Button, Icon } from "components/atoms";
+import { ReactNode } from "react";
+import clsx from "clsx";
 
 const news = [
   {
@@ -59,15 +61,31 @@ const news = [
   },
 ];
 
+type TagProps = {
+  children?: ReactNode;
+};
+function Tag({ children }: TagProps) {
+  return (
+    <span
+      className={clsx(
+        "border border-black px-2 py-0.5 text-xs",
+        "border-orange-dark bg-orange-light text-orange-dark"
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
 function CardView() {
   return (
     <div className="bg-white divide-y shadow-lg lg:hidden">
       {news.map(({ topic, title, date }, index) => (
         <article className="px-6 py-2 space-y-2" key={index}>
-          <div className="flex justify-between items-center text-xs">
-            <span className="border border-black px-2 py-0.5">{topic}</span>
+          <div className="flex justify-between items-center">
+            <Tag>{topic}</Tag>
 
-            <span>{date}</span>
+            <span className="text-xs">{date}</span>
           </div>
 
           <h3 className="text-sm">{title}</h3>
@@ -92,7 +110,9 @@ function TableView() {
       <tbody className="divide-y">
         {news.map(({ topic, title, date }, index) => (
           <tr className="bg-white" key={index}>
-            <td className="w-1/12 py-2 pl-4">{topic}</td>
+            <td className="w-1/12 py-2 pl-4">
+              <Tag>{topic}</Tag>
+            </td>
             <td className="w-1/12 py-2">{date}</td>
             <td className="w-9/12 py-2">{title}</td>
             <td className="w-1/12 py-2">
