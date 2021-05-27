@@ -1,7 +1,6 @@
 import Layout from "components/templates";
 import { Pagination } from "components/molecules";
 import { Form, Button } from "components/atoms";
-import { useState } from "react";
 
 const news = [
   {
@@ -80,39 +79,48 @@ function Card({ topic, title, date }: CardProps) {
 }
 
 export default function News() {
-  const [current, setCurrent] = useState(1);
-
   return (
     <Layout.Normal title="最新消息">
       <div className="space-y-6">
-        <div className="space-y-4">
-          <Form.Input
-            name="topic"
-            type="select"
-            options={[
-              { id: "all", label: "全部公告", value: "all" },
-              { id: "no", label: "no", value: "no" },
-            ]}
-            onChange={(event) => console.log(event.target.value)}
-          />
+        <div className="lg:flex lg:justify-end">
+          <div className="lg:w-1/2 flex flex-col lg:flex-row gap-4">
+            <div className="lg:w-1/3">
+              <Form.Input
+                name="topic"
+                type="select"
+                options={[
+                  { id: "all", label: "全部公告", value: "all" },
+                  { id: "no", label: "no", value: "no" },
+                ]}
+                onChange={(event) => console.log(event.target.value)}
+              />
+            </div>
 
-          <Form.Input
-            type="date-range"
-            from={{ name: "start", onChange: (event) => console.log(event) }}
-            to={{ name: "end", onChange: (event) => console.log(event) }}
-          />
+            <div className="flex-1">
+              <Form.Input
+                type="date-range"
+                from={{
+                  name: "start",
+                  onChange: (event) => console.log(event),
+                }}
+                to={{ name: "end", onChange: (event) => console.log(event) }}
+              />
+            </div>
 
-          <Button.Flat>查詢</Button.Flat>
+            <div className="lg:w-20">
+              <Button.Flat>查詢</Button.Flat>
+            </div>
+          </div>
         </div>
 
-        <div className="-mx-6 bg-white pb-8 space-y-4">
-          <div className="divide-y shadow-lg">
+        <div className="-mx-6 lg:m-0 pb-8 space-y-4 bg-white lg:bg-transparent">
+          <div className="bg-white divide-y shadow-lg">
             {news.map((props, index) => (
               <Card key={index} {...props} />
             ))}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center lg:justify-end">
             <Pagination current={6} total={10} />
           </div>
         </div>

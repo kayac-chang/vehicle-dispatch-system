@@ -17,7 +17,7 @@ function Button({
   children,
   current = false,
 }: ButtonProps) {
-  const base = "border flex rounded-sm shadow font-sans";
+  const base = "border flex rounded-sm shadow font-sans bg-white";
 
   if (current) {
     return (
@@ -47,7 +47,7 @@ type PageButtonProps = ButtonProps & {
 function PageButton({ type }: PageButtonProps) {
   return (
     <Button
-      className="p-2"
+      className="w-8 h-8 flex justify-center items-center"
       role={type}
       aria-label={type === "next" ? "Next Page" : "Prev Page"}
     >
@@ -148,7 +148,7 @@ export function Pagination({
             {Number.isInteger(item) && (
               <Button
                 aria-label={`Goto Page ${item}`}
-                className="px-3 py-1"
+                className="w-8 h-8 flex justify-center items-center"
                 current={current + 1 === item}
               >
                 {item}
