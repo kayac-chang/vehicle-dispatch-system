@@ -16,6 +16,12 @@ import Invisible from "assets/icons/invisible.svg";
 import Loader from "assets/icons/loader.svg";
 import Identification from "assets/icons/identification.svg";
 import Message from "assets/icons/message.svg";
+import SwapRight from "assets/icons/swap-right.svg";
+import ChevronDown from "assets/icons/chevron-down.svg";
+import ChevronUp from "assets/icons/chevron-up.svg";
+import ChevronLeft from "assets/icons/chevron-left.svg";
+import ChevronRight from "assets/icons/chevron-right.svg";
+import Calendar from "assets/icons/calendar.svg";
 
 const Icon = {
   Menu,
@@ -36,6 +42,12 @@ const Icon = {
   Loader,
   Identification,
   Message,
+  SwapRight,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
 };
 
 export default Icon;

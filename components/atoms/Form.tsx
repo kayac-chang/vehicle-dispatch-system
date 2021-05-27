@@ -2,19 +2,24 @@ import clsx from "clsx";
 import { Icon } from "components/atoms";
 import {
   ReactNode,
-  useCallback,
   useState,
   FocusEvent,
   ChangeEvent,
+  useCallback,
 } from "react";
 import { Path, UseFormRegister, FieldError } from "react-hook-form";
+import { _Date, DateProps, DateRange, DateRangeProps } from "./DatePicker";
+
+type FormElement = HTMLInputElement | HTMLSelectElement;
 
 type CommonProps<T> = {
-  name: Path<T>;
-  register: UseFormRegister<T>;
+  name: Path<T> | string;
+  register?: UseFormRegister<T>;
   label?: string;
   required?: string | boolean;
   className?: string;
+  value?: string;
+  onChange?: (event: ChangeEvent<FormElement>) => void;
 };
 
 type TextInputProps<T> = CommonProps<T> & {
@@ -24,6 +29,50 @@ type TextInputProps<T> = CommonProps<T> & {
   describedby?: string;
   children?: ReactNode;
 };
+function useFormInput<T, E extends FormElement>({
+  name,
+  required,
+  register,
+  onChange,
+}: CommonProps<T>) {
+  const [isFocus, setFocus] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+
+  const focus = useCallback(() => setFocus(true), [setFocus]);
+  const blur = useCallback(() => setFocus(false), [setFocus]);
+
+  const change = useCallback((event: ChangeEvent<E>) => {
+    setHasValue(Boolean(event.target.value));
+    onChange?.(event);
+  }, []);
+
+  if (register) {
+    const { onBlur, onChange, ...props } = register(name as Path<T>, {
+      required,
+    });
+
+    return {
+      onFocus: focus,
+      onBlur(event: FocusEvent) {
+        blur();
+        onBlur(event);
+      },
+      onChange: change,
+      isFocus,
+      hasValue,
+      ...props,
+    };
+  }
+
+  return {
+    onFocus: focus,
+    onBlur: blur,
+    onChange: change,
+    isFocus,
+    hasValue,
+  };
+}
+
 function TextInput<T>({
   type,
   name,
@@ -34,26 +83,15 @@ function TextInput<T>({
   required,
   describedby,
   children,
+  value,
+  onChange,
 }: TextInputProps<T>) {
-  const [isFocus, setFocus] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
-  const { onBlur, onChange, ...props } = register(name, { required });
-
-  const change = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setHasValue(Boolean(event.target.value)),
-    [onChange]
-  );
-
-  const focus = useCallback(() => setFocus(true), [setFocus]);
-
-  const blur = useCallback(
-    (event: FocusEvent) => {
-      onBlur(event);
-      setFocus(false);
-    },
-    [onBlur, setFocus]
-  );
+  const { hasValue, isFocus, ...props } = useFormInput({
+    name,
+    register,
+    required,
+    onChange,
+  });
 
   return (
     <div className="flex flex-col justify-center relative">
@@ -76,12 +114,10 @@ function TextInput<T>({
             "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
         )}
         type={type}
-        onChange={change}
-        onFocus={focus}
-        onBlur={blur}
         aria-required={required ? "true" : "false"}
         aria-invalid={Boolean(error)}
         aria-describedby={describedby}
+        value={value}
         {...props}
       />
 
@@ -180,7 +216,6 @@ function FieldSet<T>({
 
 type RadioProps<T> = CommonProps<T> & {
   type: "radio";
-  value?: string;
   options: {
     id: string;
     value: string;
@@ -203,8 +238,8 @@ function Radio<T>({
             type="radio"
             id={id}
             value={value}
-            {...register(name)}
             defaultChecked={value === current}
+            {...register?.(name as Path<T>)}
           />
           <label htmlFor={id}>{label}</label>
         </div>
@@ -231,11 +266,26 @@ type SelectProps<T> = CommonProps<T> & {
     label: string;
   }[];
 };
-function Select<T>({ name, register, options }: SelectProps<T>) {
+function Select<T>({
+  name,
+  register,
+  options,
+  required,
+  value,
+  onChange,
+}: SelectProps<T>) {
+  const { hasValue, isFocus, ...props } = useFormInput<T, HTMLSelectElement>({
+    name,
+    register,
+    required,
+    onChange,
+  });
+
   return (
     <select
       className="form-select border border-black rounded-sm w-full"
-      {...register(name)}
+      value={value}
+      {...props}
     >
       {options.map(({ id, value, label }) => (
         <option key={id} value={value}>
@@ -264,7 +314,18 @@ function Alert({ id, show, children }: AlertProps) {
   );
 }
 
-function Input<T>(props: TextInputProps<T> | RadioProps<T> | SelectProps<T>) {
+function Input<T>(
+  props:
+    | TextInputProps<T>
+    | RadioProps<T>
+    | SelectProps<T>
+    | DateProps
+    | DateRangeProps
+) {
+  if (props.type === "date") return <_Date {...props} />;
+
+  if (props.type === "date-range") return <DateRange {...props} />;
+
   if (props.type === "select") return <Select {...props} />;
 
   if (props.type === "radio") return <Radio {...props} />;
