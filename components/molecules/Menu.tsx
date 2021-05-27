@@ -17,7 +17,7 @@ type ButtonProps = {
 function Button({ open }: ButtonProps) {
   return (
     <Disclosure.Button
-      className="lg:hidden bg-green-dark text-white p-5 rounded-bl-3xl"
+      className="lg:hidden bg-green-dark text-white px-5 rounded-bl-3xl"
       aria-label={open ? "Close Menu" : "Open Menu"}
     >
       <span className="block w-6">
@@ -99,7 +99,7 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
           isExpanded ? "lg:border-gold-light" : "lg:border-transparent",
           isExpanded && "lg:bg-green-darkest lg:text-gold-light"
         )}
-        role="button"
+        role="menuitem"
         aria-haspopup="true"
         aria-expanded={isExpanded ? "true" : "false"}
         onClick={() => setExpand(!isExpanded)}
@@ -110,6 +110,8 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
 
       <Transition.Fade show={isExpanded}>
         <ul
+          role="menu"
+          aria-label={label}
           className={clsx(
             "lg:absolute lg:bg-white lg:right-0 lg:top-full lg:shadow-md lg:divide-y lg:rounded-b-lg lg:w-full"
           )}
@@ -154,7 +156,10 @@ function Item(props: ItemProps) {
 
     return (
       <Link href={href}>
-        <a className={clsx(defaultClass, className || "pl-12 lg:pl-0")}>
+        <a
+          role="menuitem"
+          className={clsx(defaultClass, className || "pl-12 lg:pl-0")}
+        >
           {icon ? (
             <span className="w-8">{icon}</span>
           ) : (
@@ -174,19 +179,24 @@ function Item(props: ItemProps) {
 }
 
 // TODO. support  https://www.w3.org/TR/wai-aria-practices/examples/menubar/menubar-1/menubar-1.html#
-function Nav({ items }: { items: Link[] }) {
+type NavProps = {
+  items: Link[];
+  name?: string;
+};
+function Nav({ items, name = "Navigation Dropdown" }: NavProps) {
   return (
     <nav
       role="navigation"
-      aria-label="Navigation Dropdown"
+      aria-label={name}
       className={clsx(
         "flex flex-col py-8",
         "lg:flex-1 lg:max-w-screen-xl lg:ml-auto lg:p-0"
       )}
     >
-      <ul className="lg:flex h-full">
+      <ul role="menubar" aria-label={name} className="lg:flex h-full">
         {items.map((item) => (
           <li
+            role="none"
             key={item.label}
             className="lg:flex-1 lg:flex justify-center items-center relative"
           >
@@ -201,7 +211,7 @@ function Nav({ items }: { items: Link[] }) {
 function Mobile({ items }: { items: Link[] }) {
   return (
     <Transition.Fade>
-      <Disclosure.Panel className="lg:hidden fixed top-0 -z-10 w-full h-screen bg-green-dark pt-14 text-xl">
+      <Disclosure.Panel className="lg:hidden fixed top-0 -z-10 w-full h-screen bg-green-dark pt-16 text-xl">
         <Account />
 
         <Nav items={items} />

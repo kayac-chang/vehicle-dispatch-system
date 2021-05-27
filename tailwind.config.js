@@ -9,7 +9,7 @@ module.exports = {
         },
         green: {
           light: "#94AA9F",
-          DEFAULT: "#376422",
+          normal: "#376422",
           darkest: "#425B56",
           dark: "#57746E",
         },

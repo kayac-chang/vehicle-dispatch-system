@@ -16,7 +16,7 @@ export function Logo() {
         aria-hidden
       />
 
-      <span className="text-green font-medium tracking-widest">
+      <span className="text-green-normal font-medium tracking-widest">
         高雄市政府預約訂平台
       </span>
     </h1>
