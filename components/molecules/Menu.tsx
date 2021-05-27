@@ -173,6 +173,7 @@ function Item(props: ItemProps) {
   return <></>;
 }
 
+// TODO. support  https://www.w3.org/TR/wai-aria-practices/examples/menubar/menubar-1/menubar-1.html#
 function Nav({ items }: { items: Link[] }) {
   return (
     <nav

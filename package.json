@@ -14,17 +14,20 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.21.3",
     "next": "10.2.2",
+    "ramda": "^0.27.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.6.6"
+    "react-hook-form": "^7.6.6",
+    "react-use-pagination": "^1.1.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",
     "@tailwindcss/custom-forms": "^0.2.1",
+    "@types/ramda": "^0.27.40",
     "@types/react": "17.0.6",
     "autoprefixer": "^10.2.5",
     "postcss": "^8.3.0",
-    "tailwindcss": "^2.1.2",
+    "tailwindcss": "^1.9.0",
     "typescript": "4.2.4"
   }
 }
