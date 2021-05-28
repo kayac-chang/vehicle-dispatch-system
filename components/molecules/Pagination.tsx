@@ -17,7 +17,8 @@ function Button({
   children,
   current = false,
 }: ButtonProps) {
-  const base = "border flex rounded shadow font-sans bg-white";
+  const base =
+    "border border-black flex rounded overflow-hidden shadow font-sans bg-white";
 
   if (current) {
     return (

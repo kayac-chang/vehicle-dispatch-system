@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 export function Logo() {
   return (
-    <h1
+    <div
       className={clsx(
         "flex items-center space-x-2 p-4",
         "w-full lg:w-auto lg:pl-4 lg:pr-20",
@@ -19,6 +19,6 @@ export function Logo() {
       <span className="text-green-normal text-base font-medium tracking-wider">
         高雄市政府預約訂平台
       </span>
-    </h1>
+    </div>
   );
 }

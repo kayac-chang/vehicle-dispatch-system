@@ -79,18 +79,24 @@ function Tag({ children }: TagProps) {
 
 function CardView() {
   return (
-    <div className="bg-white divide-y shadow-lg lg:hidden">
-      {news.map(({ topic, title, date }, index) => (
-        <article className="px-6 py-2 space-y-2" key={index}>
-          <div className="flex justify-between items-center">
-            <Tag>{topic}</Tag>
+    <div className="bg-white lg:hidden">
+      <div className="divide-y">
+        {news.map(({ topic, title, date }, index) => (
+          <article className="px-6 py-2 space-y-2" key={index}>
+            <div className="flex justify-between items-center">
+              <Tag>{topic}</Tag>
 
-            <span className="text-xs">{date}</span>
-          </div>
+              <span className="text-xs">{date}</span>
+            </div>
 
-          <h3 className="text-sm">{title}</h3>
-        </article>
-      ))}
+            <h3 className="text-sm">{title}</h3>
+          </article>
+        ))}
+      </div>
+
+      <div className="flex justify-center shadow-inner pt-2 pb-6">
+        <Pagination current={6} total={10} />
+      </div>
     </div>
   );
 }
@@ -164,14 +170,10 @@ export default function News() {
           </div>
         </div>
 
-        <div className="-mx-6 sm:m-0 pb-8 space-y-4 bg-white lg:bg-transparent">
+        <div className="-mx-6 sm:m-0 space-y-4">
           <CardView />
 
           <TableView />
-
-          <div className="flex justify-center lg:justify-end">
-            <Pagination current={6} total={10} />
-          </div>
         </div>
       </div>
     </Layout.Normal>
