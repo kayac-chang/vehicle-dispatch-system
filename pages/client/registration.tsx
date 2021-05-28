@@ -85,12 +85,13 @@ export default function Registration() {
           control={control}
         />
 
-        {/* <Form.FieldSet label="通訊地址" required className="col-span-2">
-          <div className="space-y-2">
+        <Form.FieldSet label="通訊地址" className="col-span-2" required>
+          <div className="flex space-x-4">
             <Form.Input
               type="select"
+              label="選擇縣市"
               name="city"
-              register={register}
+              control={control}
               options={[
                 {
                   id: "8.01.1",
@@ -102,8 +103,9 @@ export default function Registration() {
 
             <Form.Input
               type="select"
+              label="選擇區域"
               name="district"
-              register={register}
+              control={control}
               options={[
                 {
                   id: "8.01.1",
@@ -112,10 +114,10 @@ export default function Registration() {
                 },
               ]}
             />
-
-            <Form.Input type="text" name="street" register={register} />
           </div>
-        </Form.FieldSet> */}
+
+          <Form.Input type="text" name="street" control={control} />
+        </Form.FieldSet>
 
         <div className="space-y-2 col-span-2">
           <Button.Flat type="submit">註冊</Button.Flat>
