@@ -9,7 +9,7 @@ interface Request {
 
 export default function ForgotPassword() {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Request>();
@@ -43,9 +43,8 @@ export default function ForgotPassword() {
                 icon={<Icon.Identification />}
                 label="請輸入您的身分證字號"
                 name="identity"
-                register={register}
-                error={errors.identity}
-                describedby="alert"
+                control={control}
+                aria-describedby="alert"
                 required
               />
             </div>
@@ -60,9 +59,8 @@ export default function ForgotPassword() {
             icon={<Icon.Message />}
             label="請輸入簡訊內的驗證碼"
             name="captcha"
-            register={register}
-            error={errors.captcha}
-            describedby="alert"
+            control={control}
+            aria-describedby="alert"
             required
           />
         </div>

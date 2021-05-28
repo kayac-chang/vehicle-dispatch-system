@@ -17,9 +17,9 @@ interface Request {
 
 export default function Registration() {
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<Request>();
 
   function onSubmit(data: Request) {
@@ -38,8 +38,7 @@ export default function Registration() {
           type="text"
           label="姓名"
           name="name"
-          register={register}
-          error={errors.name}
+          control={control}
           required
         />
 
@@ -47,21 +46,19 @@ export default function Registration() {
           type="text"
           label="電話"
           name="phone"
-          register={register}
-          error={errors.phone}
+          control={control}
           required
         />
 
         <Form.Input
-          type="text"
+          type="date"
           label="生日"
           name="birthday"
-          register={register}
-          error={errors.birthday}
+          control={control}
           required
         />
 
-        <Form.Input
+        {/* <Form.Input
           type="radio"
           label="性別"
           name="gender"
@@ -71,14 +68,13 @@ export default function Registration() {
           ]}
           register={register}
           required
-        />
+        /> */}
 
         <Form.Input
           type="text"
           label="身分證字號"
           name="identity"
-          register={register}
-          error={errors.identity}
+          control={control}
           required
         />
 
@@ -86,10 +82,10 @@ export default function Registration() {
           type="text"
           label="悠遊卡/一卡通卡號"
           name="easycard"
-          register={register}
+          control={control}
         />
 
-        <Form.FieldSet label="通訊地址" required className="col-span-2">
+        {/* <Form.FieldSet label="通訊地址" required className="col-span-2">
           <div className="space-y-2">
             <Form.Input
               type="select"
@@ -119,7 +115,7 @@ export default function Registration() {
 
             <Form.Input type="text" name="street" register={register} />
           </div>
-        </Form.FieldSet>
+        </Form.FieldSet> */}
 
         <div className="space-y-2 col-span-2">
           <Button.Flat type="submit">註冊</Button.Flat>

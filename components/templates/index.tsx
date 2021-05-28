@@ -4,7 +4,6 @@ import Head from "next/head";
 import { Header, Footer } from "components/organisms";
 import { Background, Button } from "components/atoms";
 import { Banner } from "components/molecules";
-import Link from "next/link";
 
 type BaseProps = {
   title: string;

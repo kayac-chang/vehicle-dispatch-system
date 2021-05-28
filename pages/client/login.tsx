@@ -10,10 +10,12 @@ interface Request {
 
 export default function Login() {
   const {
-    register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<Request>();
+
+  console.log(errors);
 
   function onSubmit(data: Request) {
     // @TODO submit logic
@@ -42,9 +44,8 @@ export default function Login() {
             icon={<Icon.User />}
             label="請輸入您的帳號"
             name="username"
-            register={register}
-            error={errors.username}
-            describedby="alert"
+            control={control}
+            aria-describedby="alert"
             required
           />
 
@@ -53,9 +54,8 @@ export default function Login() {
             icon={<Icon.Lock />}
             label="請輸入您的密碼"
             name="password"
-            register={register}
-            error={errors.password}
-            describedby="alert"
+            control={control}
+            aria-describedby="alert"
             required
           />
         </div>

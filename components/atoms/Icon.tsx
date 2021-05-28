@@ -24,6 +24,7 @@ import ChevronRight from "assets/icons/chevron-right.svg";
 import Calendar from "assets/icons/calendar.svg";
 import ArrowRight from "assets/icons/arrow-right.svg";
 import NoData from "assets/icons/no-data.svg";
+import Search from "assets/icons/search.svg";
 
 const Icon = {
   Menu,
@@ -52,6 +53,7 @@ const Icon = {
   Calendar,
   ArrowRight,
   NoData,
+  Search,
 };
 
 export default Icon;

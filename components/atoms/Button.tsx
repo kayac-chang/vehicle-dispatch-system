@@ -52,7 +52,7 @@ function Outline({ className, ...props }: ButtonProps | AnchorProps) {
   return (
     <Base
       className={clsx(
-        "border-2 border-gold-darker w-full py-2 rounded",
+        "border-2 border-gold-darker text-gold-darker w-full py-2 rounded",
         className
       )}
       {...props}

@@ -9,7 +9,7 @@ interface Request {
 
 export default function SetupPassword() {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Request>();
@@ -41,9 +41,8 @@ export default function SetupPassword() {
             icon={<Icon.Lock />}
             label="請輸入新的密碼"
             name="password"
-            register={register}
-            error={errors.password}
-            describedby="alert"
+            control={control}
+            aria-describedby="alert"
             required
           />
 
@@ -52,9 +51,8 @@ export default function SetupPassword() {
             icon={<Icon.Lock />}
             label="再一次輸入新密碼確認"
             name="repeat"
-            register={register}
-            error={errors.repeat}
-            describedby="alert"
+            control={control}
+            aria-describedby="alert"
             required
           />
         </div>

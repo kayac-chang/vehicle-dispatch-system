@@ -189,7 +189,7 @@ export default function News() {
         <div className="lg:flex lg:justify-end">
           <div className="xl:w-1/2 flex flex-col lg:flex-row gap-4">
             <div className="lg:w-1/3">
-              <Form.Input
+              {/* <Form.Input
                 name="topic"
                 type="select"
                 options={[
@@ -197,18 +197,18 @@ export default function News() {
                   { id: "no", label: "no", value: "no" },
                 ]}
                 onChange={(event) => console.log(event.target.value)}
-              />
+              /> */}
             </div>
 
             <div className="flex-1">
-              <Form.Input
+              {/* <Form.Input
                 type="date-range"
                 from={{
                   name: "start",
                   onChange: (event) => console.log(event),
                 }}
                 to={{ name: "end", onChange: (event) => console.log(event) }}
-              />
+              /> */}
             </div>
 
             <div className="lg:w-20">
