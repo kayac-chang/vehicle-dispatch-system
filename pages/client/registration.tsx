@@ -58,17 +58,17 @@ export default function Registration() {
           required
         />
 
-        {/* <Form.Input
+        <Form.Input
           type="radio"
           label="性別"
           name="gender"
+          control={control}
           options={[
             { id: "man", value: "man", label: "男" },
             { id: "woman", value: "woman", label: "女" },
           ]}
-          register={register}
           required
-        /> */}
+        />
 
         <Form.Input
           type="text"
