@@ -1,3 +1,5 @@
+const percent = (number) => number * 100;
+
 module.exports = {
   purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -169,6 +171,12 @@ module.exports = {
       },
       backgroundImage: {
         mask: "url('/images/mask.png')",
+      },
+      minHeight: {
+        "screen-1/2": `${percent(1 / 2)}vh`,
+        "screen-1/3": `${percent(1 / 3)}vh`,
+        "screen-1/4": `${percent(1 / 4)}vh`,
+        "screen-3/4": `${percent(3 / 4)}vh`,
       },
       maxHeight: {
         "1/4": "25%",

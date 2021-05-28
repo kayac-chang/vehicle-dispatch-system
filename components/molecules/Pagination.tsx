@@ -99,8 +99,8 @@ export function Pagination({ current, total }: PaginationProps) {
           <PageButton type="prev" />
         </li>
 
-        {list.map((item) => (
-          <li key={item}>
+        {list.map((item, index) => (
+          <li key={index}>
             {item === "..." && "..."}
 
             {Number.isInteger(item) && (

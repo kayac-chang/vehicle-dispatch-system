@@ -77,61 +77,108 @@ function Tag({ children }: TagProps) {
   );
 }
 
-function CardView() {
+interface Post {
+  topic: string;
+  title: string;
+  date: string;
+}
+
+type CardViewProps = {
+  items: Post[];
+};
+function CardView({ items }: CardViewProps) {
   return (
-    <div className="bg-white lg:hidden">
-      <div className="divide-y">
-        {news.map(({ topic, title, date }, index) => (
-          <article className="px-6 py-2 space-y-2" key={index}>
-            <div className="flex justify-between items-center">
-              <Tag>{topic}</Tag>
+    <div className="lg:hidden">
+      {items.length ? (
+        <div className="bg-white">
+          <div className="divide-y">
+            {news.map(({ topic, title, date }, index) => (
+              <article className="px-6 py-2 space-y-2" key={index}>
+                <div className="flex justify-between items-center">
+                  <Tag>{topic}</Tag>
 
-              <span className="text-xs">{date}</span>
-            </div>
+                  <span className="text-xs">{date}</span>
+                </div>
 
-            <h3 className="text-sm">{title}</h3>
-          </article>
-        ))}
-      </div>
+                <h3 className="text-sm">{title}</h3>
+              </article>
+            ))}
+          </div>
 
-      <div className="flex justify-center shadow-inner pt-2 pb-6">
-        <Pagination current={6} total={10} />
-      </div>
+          <div className="flex justify-center shadow-inner pt-2 pb-6">
+            <Pagination current={6} total={10} />
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center min-h-screen-1/3">
+          <div className="w-1/3 relative flex justify-center">
+            <span className="w-full" aria-hidden>
+              <Icon.NoData />
+            </span>
+
+            <span className="absolute bottom-0 mb-2 text-xs">暫無數據</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function TableView() {
+type TableViewProps = {
+  items: Post[];
+};
+function TableView({ items }: TableViewProps) {
   return (
-    <table className="hidden lg:table w-full shadow-xl rounded-lg overflow-hidden">
-      <thead>
-        <tr className="bg-gold-darker text-white text-left">
-          <th className="w-1/12 py-4 pl-4">類型</th>
-          <th className="w-1/12 py-4">日期</th>
-          <th className="w-9/12 py-4">公告</th>
-          <th className="w-1/12 py-4"></th>
-        </tr>
-      </thead>
-
-      <tbody className="divide-y">
-        {news.map(({ topic, title, date }, index) => (
-          <tr className="bg-white" key={index}>
-            <td className="w-1/12 py-2 pl-4">
-              <Tag>{topic}</Tag>
-            </td>
-            <td className="w-1/12 py-2">{date}</td>
-            <td className="w-9/12 py-2">{title}</td>
-            <td className="w-1/12 py-2">
-              <div className="w-full h-full flex justify-center">
-                <button className="w-10 p-2">
-                  <Icon.ArrowRight />
-                </button>
-              </div>
-            </td>
+    <div className="hidden lg:block pb-8">
+      <table
+        className={clsx(
+          "w-full bg-white overflow-hidden",
+          items.length ? "shadow-xl rounded-lg" : "rounded-t-lg"
+        )}
+      >
+        <thead>
+          <tr className="bg-gold-darker text-white text-left">
+            <th className="w-1/12 py-4 pl-4">類型</th>
+            <th className="w-1/12 py-4">日期</th>
+            <th className="w-9/12 py-4">公告</th>
+            <th className="w-1/12 py-4"></th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody className="divide-y">
+          {items.map(({ topic, title, date }, index) => (
+            <tr key={index}>
+              <td className="w-1/12 py-2 pl-4">
+                <Tag>{topic}</Tag>
+              </td>
+              <td className="w-1/12 py-2">{date}</td>
+              <td className="w-9/12 py-2">{title}</td>
+              <td className="w-1/12 py-2">
+                <div className="w-full h-full flex justify-center">
+                  <button className="w-10 p-2">
+                    <Icon.ArrowRight />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {items.length > 0 && (
+        <div className="flex justify-end pt-2">
+          <Pagination current={6} total={10} />
+        </div>
+      )}
+
+      {items.length <= 0 && (
+        <div className="bg-white w-full min-h-screen-1/2 flex justify-center items-center rounded-b-lg overflow-hidden shadow-xl">
+          <span className="w-40 flex">
+            <Icon.NoData />
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -171,9 +218,9 @@ export default function News() {
         </div>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView />
+          <CardView items={[]} />
 
-          <TableView />
+          <TableView items={news} />
         </div>
       </div>
     </Layout.Normal>
