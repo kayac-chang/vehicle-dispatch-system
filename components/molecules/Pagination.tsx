@@ -59,80 +59,37 @@ function PageButton({ type }: PageButtonProps) {
   );
 }
 
-function range(start: number, end: number) {
-  const length = end - start + 1;
-  return Array.from({ length }, (_, i) => start + i);
+function range(min: number, max: number) {
+  return Array.from({ length: max }, (_, i) => i + min);
 }
 
 type LogicProps = {
   current: number;
   total: number;
-  boundary: number;
-  sibling: number;
+  delta: number;
 };
-function logic({ current, total, boundary, sibling }: LogicProps) {
-  const startPages = range(1, Math.min(boundary, total));
-  const endPages = range(Math.max(total - boundary + 1, boundary + 1), total);
+function logic({ current, total, delta }: LogicProps) {
+  const pages = range(1, total);
+  const min = Math.min(...pages);
+  const max = Math.max(...pages);
 
-  const siblingsStart = Math.max(
-    Math.min(
-      // Natural start
-      current - sibling,
-      // Lower boundary when page is high
-      total - boundary - sibling * 2 - 1
-    ),
-    // Greater than startPages
-    boundary + 2
-  );
+  if (current - delta <= min) {
+    return [min, ...range(min + 1, delta), "...", max];
+  }
 
-  const siblingsEnd = Math.min(
-    Math.max(
-      // Natural end
-      current + sibling,
-      // Upper boundary when page is low
-      boundary + sibling * 2 + 2
-    ),
-    // Less than endPages
-    endPages.length > 0 ? endPages[0] - 2 : total - 1
-  );
+  if (current + delta >= max) {
+    return [min, "...", ...range(max - delta, delta), max];
+  }
 
-  return [
-    ...startPages,
-
-    // Start ellipsis
-    ...(siblingsStart > boundary + 2
-      ? ["start-ellipsis"]
-      : boundary + 1 < total - boundary
-      ? [boundary + 1]
-      : []),
-
-    // Sibling pages
-    ...range(siblingsStart, siblingsEnd),
-
-    // End ellipsis
-    ...(siblingsEnd < total - boundary - 1
-      ? ["end-ellipsis"]
-      : total - boundary > boundary
-      ? [total - boundary]
-      : []),
-
-    ...endPages,
-  ];
+  return [min, "...", ...range(current - 1, delta), "...", max];
 }
 
 type PaginationProps = {
   current: number;
   total: number;
-  boundary?: number;
-  sibling?: number;
 };
-export function Pagination({
-  current,
-  total,
-  boundary = 1,
-  sibling = 1,
-}: PaginationProps) {
-  const list = logic({ current, total, boundary, sibling });
+export function Pagination({ current, total }: PaginationProps) {
+  const list = logic({ current, total, delta: 3 });
 
   return (
     <nav role="navigation" aria-label="Pagination Navigation" className="py-2">
@@ -143,8 +100,8 @@ export function Pagination({
 
         {list.map((item) => (
           <li key={item}>
-            {item === "end-ellipsis" && "..."}
-            {item === "start-ellipsis" && "..."}
+            {item === "..." && "..."}
+
             {Number.isInteger(item) && (
               <Button
                 aria-label={`Goto Page ${item}`}
