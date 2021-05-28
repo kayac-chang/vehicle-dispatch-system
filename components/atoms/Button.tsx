@@ -1,13 +1,34 @@
 import clsx from "clsx";
 import { ReactNode } from "react";
+import Link from "next/link";
 
-type ButtonProps = {
-  type?: "button" | "submit" | "reset";
+type CommonProps = {
   children?: ReactNode;
   className?: string;
 };
 
-function Base({ type = "button", children, className }: ButtonProps) {
+type AnchorProps = CommonProps & {
+  type: "anchor";
+  href: string;
+};
+
+type ButtonProps = CommonProps & {
+  type: "button" | "submit" | "reset";
+};
+
+function Base(props: ButtonProps | AnchorProps) {
+  if (props.type === "anchor") {
+    const { className, children, href } = props;
+
+    return (
+      <Link href={href}>
+        <a className={clsx("block text-center", className)}>{children}</a>
+      </Link>
+    );
+  }
+
+  const { type, className, children } = props;
+
   return (
     <button type={type} className={className}>
       {children}
@@ -15,7 +36,7 @@ function Base({ type = "button", children, className }: ButtonProps) {
   );
 }
 
-function Flat({ className, ...props }: ButtonProps) {
+function Flat({ className, ...props }: ButtonProps | AnchorProps) {
   return (
     <Base
       className={clsx(
@@ -27,7 +48,7 @@ function Flat({ className, ...props }: ButtonProps) {
   );
 }
 
-function Outline({ className, ...props }: ButtonProps) {
+function Outline({ className, ...props }: ButtonProps | AnchorProps) {
   return (
     <Base
       className={clsx(

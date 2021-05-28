@@ -51,7 +51,7 @@ export default function ForgotPassword() {
             </div>
 
             <div className="md:w-2/12 flex">
-              <Button.Flat>傳送驗證碼</Button.Flat>
+              <Button.Flat type="button">傳送驗證碼</Button.Flat>
             </div>
           </div>
 
@@ -69,7 +69,7 @@ export default function ForgotPassword() {
 
         <div className="space-y-2">
           <div className="flex space-x-4">
-            <Button.Outline>取消</Button.Outline>
+            <Button.Outline type="button">取消</Button.Outline>
 
             <Button.Flat type="submit">下一步</Button.Flat>
           </div>

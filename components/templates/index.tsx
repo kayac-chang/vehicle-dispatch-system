@@ -2,8 +2,9 @@ import { ReactNode, FormEvent } from "react";
 import clsx from "clsx";
 import Head from "next/head";
 import { Header, Footer } from "components/organisms";
-import { Background } from "components/atoms";
+import { Background, Button } from "components/atoms";
 import { Banner } from "components/molecules";
+import Link from "next/link";
 
 type BaseProps = {
   title: string;
@@ -22,7 +23,7 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
 
       <Header />
 
-      <main className={className}>{children}</main>
+      <main className={clsx("flex-1", className)}>{children}</main>
 
       {footer && <Footer />}
     </>
@@ -60,8 +61,7 @@ export function Form({ title, children, onSubmit }: FormProps) {
   );
 }
 
-type NormalProps = BaseProps & {};
-function Normal({ title, children }: NormalProps) {
+function Normal({ title, children }: BaseProps) {
   return (
     <Base title={title} footer>
       <div className="container mx-auto px-6 md:px-0">
@@ -77,9 +77,30 @@ function Normal({ title, children }: NormalProps) {
   );
 }
 
+function Sub({ title, children, prev }: BaseProps & { prev: string }) {
+  return (
+    <Base title={title} footer>
+      <div className="container mx-auto py-4 px-6 md:px-0">
+        <div className="py-4 w-24">
+          <Button.Outline
+            className="bg-white text-gold-darker"
+            type="anchor"
+            href={prev}
+          >
+            回列表
+          </Button.Outline>
+        </div>
+
+        {children}
+      </div>
+    </Base>
+  );
+}
+
 const Layout = {
   Base,
   Form,
   Normal,
+  Sub,
 };
 export default Layout;

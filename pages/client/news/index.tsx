@@ -212,13 +212,13 @@ export default function News() {
             </div>
 
             <div className="lg:w-20">
-              <Button.Flat>查詢</Button.Flat>
+              <Button.Flat type="button">查詢</Button.Flat>
             </div>
           </div>
         </div>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={[]} />
+          <CardView items={news} />
 
           <TableView items={news} />
         </div>
