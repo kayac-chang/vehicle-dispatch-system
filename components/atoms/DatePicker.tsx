@@ -148,7 +148,7 @@ export type DateRangeProps = {
 };
 export function DateRange({ from, to }: DateRangeProps) {
   return (
-    <div className="flex items-center bg-white border border-black rounded-sm">
+    <div className="flex items-center bg-white border border-black rounded overflow-hidden">
       <div className="flex-1">
         <_Date type="date" {...from} />
       </div>

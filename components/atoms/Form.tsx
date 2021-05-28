@@ -108,7 +108,7 @@ function TextInput<T>({
       <input
         id={name}
         className={clsx(
-          "w-full border border-black rounded-sm",
+          "w-full border border-black rounded",
           icon ? "h-12 pt-2 pl-8 pr-4" : "py-2 px-4",
           error &&
             "ring ring-offset-2 ring-offset-red-light ring-red-light ring-opacity-10"
@@ -283,7 +283,7 @@ function Select<T>({
 
   return (
     <select
-      className="form-select border border-black rounded-sm w-full"
+      className="form-select border border-black rounded w-full"
       value={value}
       {...props}
     >

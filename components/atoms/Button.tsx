@@ -19,7 +19,7 @@ function Flat({ className, ...props }: ButtonProps) {
   return (
     <Base
       className={clsx(
-        "bg-gold-darker text-white w-full py-2 rounded-sm",
+        "bg-gold-darker text-white w-full py-2 rounded",
         className
       )}
       {...props}
@@ -31,7 +31,7 @@ function Outline({ className, ...props }: ButtonProps) {
   return (
     <Base
       className={clsx(
-        "border-2 border-gold-darker w-full py-2 rounded-sm",
+        "border-2 border-gold-darker w-full py-2 rounded",
         className
       )}
       {...props}
