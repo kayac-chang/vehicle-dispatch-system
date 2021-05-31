@@ -15,8 +15,6 @@ export default function Login() {
     formState: { errors },
   } = useForm<Request>();
 
-  console.log(errors);
-
   function onSubmit(data: Request) {
     // @TODO submit logic
     console.log(data);

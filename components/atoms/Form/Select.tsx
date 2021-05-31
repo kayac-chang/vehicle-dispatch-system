@@ -27,6 +27,7 @@ export function Select<T>({
 
           <_Select
             native
+            className="bg-white"
             inputProps={{
               name,
               id: name,

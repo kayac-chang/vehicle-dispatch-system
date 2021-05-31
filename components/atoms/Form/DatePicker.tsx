@@ -1,14 +1,38 @@
 import { TextField } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 import { CommonProps } from "./types";
+import {
+  LocalizationProvider,
+  DateRangePicker as _DateRangePicker,
+  DateRange,
+} from "@material-ui/lab";
+import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
+import { useState } from "react";
 
 export type DateRangeProps<T> = {
   type: "date-range";
-  from: CommonProps<T>;
-  to: CommonProps<T>;
 };
-export function DateRange<T>({ from, to }: DateRangeProps<T>) {
-  return <></>;
+export function DateRangePicker<T>(_: DateRangeProps<T>) {
+  const [value, setValue] = useState<DateRange<Date>>([null, null]);
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <_DateRangePicker
+        startText="Check-in"
+        endText="Check-out"
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+        renderInput={(startProps, endProps) => (
+          <>
+            <TextField {...startProps} />
+            <TextField {...endProps} />
+          </>
+        )}
+      />
+    </LocalizationProvider>
+  );
 }
 
 export type DatePickerProps<T> = CommonProps<T> & {

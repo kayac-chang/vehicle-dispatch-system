@@ -3,6 +3,7 @@ import { Pagination } from "components/molecules";
 import { Form, Button, Icon } from "components/atoms";
 import { ReactNode } from "react";
 import clsx from "clsx";
+import { useForm } from "react-hook-form";
 
 const news = [
   {
@@ -182,40 +183,46 @@ function TableView({ items }: TableViewProps) {
   );
 }
 
+interface Request {
+  topic: string;
+}
+
 export default function News() {
+  const { control, handleSubmit } = useForm<Request>();
+
+  function onSubmit(data: Request) {
+    console.log(data);
+  }
+
   return (
     <Layout.Normal title="最新消息">
       <div className="space-y-6">
-        <div className="lg:flex lg:justify-end">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="lg:flex lg:justify-end"
+        >
           <div className="xl:w-1/2 flex flex-col lg:flex-row gap-4">
             <div className="lg:w-1/3">
-              {/* <Form.Input
-                name="topic"
+              <Form.Input
                 type="select"
+                name="topic"
+                control={control}
                 options={[
                   { id: "all", label: "全部公告", value: "all" },
                   { id: "no", label: "no", value: "no" },
                 ]}
-                onChange={(event) => console.log(event.target.value)}
-              /> */}
+              />
             </div>
 
             <div className="flex-1">
-              {/* <Form.Input
-                type="date-range"
-                from={{
-                  name: "start",
-                  onChange: (event) => console.log(event),
-                }}
-                to={{ name: "end", onChange: (event) => console.log(event) }}
-              /> */}
+              <Form.Input type="date-range" />
             </div>
 
             <div className="lg:w-20">
               <Button.Flat type="button">查詢</Button.Flat>
             </div>
           </div>
-        </div>
+        </form>
 
         <div className="-mx-6 sm:m-0 space-y-4">
           <CardView items={news} />
