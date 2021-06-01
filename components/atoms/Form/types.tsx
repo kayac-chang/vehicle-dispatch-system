@@ -8,4 +8,5 @@ export type CommonProps<T> = {
   icon?: ReactNode;
   required?: boolean;
   "aria-describedby"?: string;
+  className?: string;
 };

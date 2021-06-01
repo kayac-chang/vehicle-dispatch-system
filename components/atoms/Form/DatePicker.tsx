@@ -21,9 +21,7 @@ export function DateRangePicker<T>(_: DateRangeProps<T>) {
         startText="Check-in"
         endText="Check-out"
         value={value}
-        onChange={(newValue) => {
-          setValue(newValue);
-        }}
+        onChange={(newValue) => setValue(newValue)}
         renderInput={(startProps, endProps) => (
           <>
             <TextField {...startProps} />
@@ -43,50 +41,57 @@ export function DatePicker<T>({
   label,
   required,
   control,
+  className,
 }: DatePickerProps<T>) {
   return (
-    <Controller
-      name={name}
-      control={control}
-      rules={{ required }}
-      render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
-        <TextField
-          type="date"
-          id={name}
-          name={name}
-          variant="outlined"
-          label={label}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          error={Boolean(error)}
-          inputRef={ref}
-          onChange={onChange}
-          required={required}
-        />
-      )}
-    />
+    <div className={className}>
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required }}
+        render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
+          <TextField
+            type="date"
+            id={name}
+            name={name}
+            variant="outlined"
+            label={label}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            error={Boolean(error)}
+            inputRef={ref}
+            onChange={onChange}
+            required={required}
+            className="w-full"
+          />
+        )}
+      />
+    </div>
   );
 }
 
 export type TimeProps<T> = CommonProps<T> & {
   type: "time";
 };
-export function Time<T>({ name, label }: TimeProps<T>) {
+export function Time<T>({ name, label, className }: TimeProps<T>) {
   return (
-    <TextField
-      type="time"
-      name={name}
-      label={<span className="text-base">{label}</span>}
-      InputLabelProps={{
-        shrink: true,
-        classes: {
-          root: "text-black",
-        },
-      }}
-      inputProps={{
-        step: 300,
-      }}
-    />
+    <div className={className}>
+      <TextField
+        type="time"
+        name={name}
+        label={<span className="text-base">{label}</span>}
+        InputLabelProps={{
+          shrink: true,
+          classes: {
+            root: "text-black",
+          },
+        }}
+        inputProps={{
+          step: 300,
+        }}
+        className="w-full"
+      />
+    </div>
   );
 }

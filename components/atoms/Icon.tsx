@@ -25,6 +25,7 @@ import Calendar from "assets/icons/calendar.svg";
 import ArrowRight from "assets/icons/arrow-right.svg";
 import NoData from "assets/icons/no-data.svg";
 import Search from "assets/icons/search.svg";
+import Minus from "assets/icons/minus.svg";
 
 const Icon = {
   Menu,
@@ -54,6 +55,7 @@ const Icon = {
   ArrowRight,
   NoData,
   Search,
+  Minus,
 };
 
 export default Icon;

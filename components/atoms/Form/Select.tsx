@@ -13,35 +13,37 @@ export function Select<T>({
   required,
   label,
   options,
+  className,
 }: SelectProps<T>) {
   return (
-    <Controller
-      name={name}
-      control={control}
-      rules={{ required }}
-      render={({ field, fieldState: { error } }) => (
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel htmlFor={name} shrink>
-            {label}
-          </InputLabel>
+    <div className={className}>
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required }}
+        render={({ field, fieldState: { error } }) => (
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel htmlFor={name} shrink>
+              {label}
+            </InputLabel>
 
-          <_Select
-            native
-            className="bg-white"
-            inputProps={{
-              name,
-              id: name,
-            }}
-            {...field}
-          >
-            {options.map(({ id, value, label }) => (
-              <option key={id} value={value}>
-                {label}
-              </option>
-            ))}
-          </_Select>
-        </FormControl>
-      )}
-    />
+            <_Select
+              native
+              inputProps={{
+                name,
+                id: name,
+              }}
+              {...field}
+            >
+              {options.map(({ id, value, label }) => (
+                <option key={id} value={value}>
+                  {label}
+                </option>
+              ))}
+            </_Select>
+          </FormControl>
+        )}
+      />
+    </div>
   );
 }
