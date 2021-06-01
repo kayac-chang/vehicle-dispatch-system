@@ -11,9 +11,9 @@ import { Password, PasswordProps } from "./Password";
 import { TextInput, TextInputProps } from "./TextInput";
 import { Radio, RadioProps } from "./Radio";
 import { Select, SelectProps } from "./Select";
+import { Check, CheckProps } from "./Checkbox";
 import { Alert } from "./Alert";
 import { FieldSet } from "./FieldSet";
-
 function Input<T>(
   props:
     | DateRangeProps<T>
@@ -21,6 +21,7 @@ function Input<T>(
     | TimeProps<T>
     | RadioProps<T>
     | SelectProps<T>
+    | CheckProps<T>
     | PasswordProps<T>
     | TextInputProps<T>
 ) {
@@ -28,6 +29,7 @@ function Input<T>(
   if (props.type === "date") return <DatePicker {...props} />;
   if (props.type === "time") return <Time {...props} />;
   if (props.type === "select") return <Select {...props} />;
+  if (props.type === "check") return <Check {...props} />;
   if (props.type === "radio") return <Radio {...props} />;
   if (props.type === "password") return <Password {...props} />;
   return <TextInput {...props} />;

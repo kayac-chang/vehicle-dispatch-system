@@ -26,6 +26,8 @@ import ArrowRight from "assets/icons/arrow-right.svg";
 import NoData from "assets/icons/no-data.svg";
 import Search from "assets/icons/search.svg";
 import Minus from "assets/icons/minus.svg";
+import EllipseFill from "assets/icons/ellipse-fill.svg";
+import EllipseHole from "assets/icons/ellipse-hole.svg";
 
 const Icon = {
   Menu,
@@ -56,6 +58,8 @@ const Icon = {
   NoData,
   Search,
   Minus,
+  EllipseFill,
+  EllipseHole,
 };
 
 export default Icon;

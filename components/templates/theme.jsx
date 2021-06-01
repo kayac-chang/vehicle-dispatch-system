@@ -4,8 +4,6 @@ import { createTheme, ThemeProvider } from "@material-ui/core";
 
 const config = resolveConfig(tailwindConfig);
 
-console.log(config.theme.padding);
-
 const theme = createTheme({
   palette: {
     primary: {

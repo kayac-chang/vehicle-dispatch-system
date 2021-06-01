@@ -58,6 +58,7 @@ module.exports = {
         700: "#b7791f",
         800: "#975a16",
         900: "#744210",
+        dark: "#FAAD14",
       },
       green: {
         100: "#f0fff4",
@@ -96,6 +97,7 @@ module.exports = {
         800: "#2c5282",
         900: "#2a4365",
         dark: "#00628F",
+        light: "#1890FF",
       },
       indigo: {
         100: "#ebf4ff",
@@ -185,6 +187,9 @@ module.exports = {
       },
       listStyleType: {
         square: "square",
+      },
+      inset: {
+        "1/2": `${100 / 2}%`,
       },
     },
   },
