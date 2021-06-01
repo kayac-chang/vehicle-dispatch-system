@@ -4,6 +4,7 @@ import Head from "next/head";
 import { Header, Footer } from "components/organisms";
 import { Background, Button } from "components/atoms";
 import { Banner } from "components/molecules";
+import Theme from "./theme";
 
 type BaseProps = {
   title: string;
@@ -13,7 +14,7 @@ type BaseProps = {
 };
 export function Base({ title, children, footer = true, className }: BaseProps) {
   return (
-    <>
+    <Theme>
       <Head>
         <title>高雄市政府預約訂平台 | {title}</title>
       </Head>
@@ -25,7 +26,7 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
       <main className={clsx("flex-1", className)}>{children}</main>
 
       {footer && <Footer />}
-    </>
+    </Theme>
   );
 }
 
@@ -64,7 +65,7 @@ function Normal({ title, children }: BaseProps) {
   return (
     <Base title={title} footer>
       <div className="container mx-auto px-6 md:px-0">
-        <div className="bg-white w-56 py-2 my-6">
+        <div className="bg-white w-56 py-1 my-6">
           <h2 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
             {title}
           </h2>

@@ -63,6 +63,7 @@ function Outline({ className, ...props }: ButtonProps | AnchorProps) {
 const Button = {
   Flat,
   Outline,
+  Base,
 };
 
 export default Button;

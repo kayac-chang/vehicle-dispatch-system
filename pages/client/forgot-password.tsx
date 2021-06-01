@@ -28,7 +28,7 @@ export default function ForgotPassword() {
       </div>
 
       <div className="space-y-4 md:space-y-6">
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Form.Alert
             id="alert"
             show={Boolean(errors.identity || errors.captcha)}

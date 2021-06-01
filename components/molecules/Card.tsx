@@ -27,9 +27,7 @@ type CardProps = {
 };
 export default function Card({ children, className }: CardProps) {
   return (
-    <section
-      className={clsx("rounded-lg overflow-hidden shadow-xl", className)}
-    >
+    <section className={clsx("overflow-hidden shadow-xl", className)}>
       {children}
     </section>
   );

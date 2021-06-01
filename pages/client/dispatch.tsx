@@ -1,4 +1,4 @@
-import { Form, Icon } from "components/atoms";
+import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
 import Layout from "components/templates";
 
@@ -17,20 +17,22 @@ export default function News() {
             </h2>
 
             <div className="flex-1 sm:flex-none text-black">
-              <Form.Input
-                type="text"
-                name="search"
-                className="py-1 pl-8"
-                placeholder="可用補助餘額查詢"
-                icon={<Icon.Search />}
-              />
+              <Button.Base
+                type="button"
+                className="bg-white w-full py-1 rounded-sm flex items-center px-4 space-x-1"
+              >
+                <span className="w-4">
+                  <Icon.Search />
+                </span>
+                <span>可用補助餘額查詢</span>
+              </Button.Base>
             </div>
           </Card.Header>
 
           <Card.Body>
             <form className="flex flex-col space-y-2">
-              <Form.Input type="date" name="date" label="乘車日期" />
-              <Form.Input type="time" name="time" label="乘車時間" />
+              {/* <Form.Input type="date" name="date" label="乘車日期" /> */}
+              {/* <Form.Input type="time" name="time" label="乘車時間" /> */}
             </form>
           </Card.Body>
         </Card>

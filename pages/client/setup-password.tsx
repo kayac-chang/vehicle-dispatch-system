@@ -28,7 +28,7 @@ export default function SetupPassword() {
       </div>
 
       <div className="space-y-4 md:space-y-6">
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Form.Alert
             id="alert"
             show={Boolean(errors.password || errors.repeat)}
@@ -57,7 +57,7 @@ export default function SetupPassword() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div>
           <Button.Flat type="submit">登入</Button.Flat>
         </div>
       </div>
