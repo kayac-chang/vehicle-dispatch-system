@@ -31,6 +31,9 @@ import EllipseHole from "assets/icons/ellipse-hole.svg";
 import Carpool from "assets/icons/carpool.svg";
 import Ring from "assets/icons/ring.svg";
 import Alert from "assets/icons/alert.svg";
+import Plus from "assets/icons/plus.svg";
+import Edit from "assets/icons/edit.svg";
+import Delete from "assets/icons/delete.svg";
 
 const Icon = {
   Menu,
@@ -66,6 +69,9 @@ const Icon = {
   Carpool,
   Ring,
   Alert,
+  Plus,
+  Edit,
+  Delete,
 };
 
 export default Icon;
