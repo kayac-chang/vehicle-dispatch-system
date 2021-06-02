@@ -28,6 +28,9 @@ import Search from "assets/icons/search.svg";
 import Minus from "assets/icons/minus.svg";
 import EllipseFill from "assets/icons/ellipse-fill.svg";
 import EllipseHole from "assets/icons/ellipse-hole.svg";
+import Carpool from "assets/icons/carpool.svg";
+import Ring from "assets/icons/ring.svg";
+import Alert from "assets/icons/alert.svg";
 
 const Icon = {
   Menu,
@@ -60,6 +63,9 @@ const Icon = {
   Minus,
   EllipseFill,
   EllipseHole,
+  Carpool,
+  Ring,
+  Alert,
 };
 
 export default Icon;
