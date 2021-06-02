@@ -26,6 +26,8 @@ import ArrowRight from "assets/icons/arrow-right.svg";
 import NoData from "assets/icons/no-data.svg";
 import Search from "assets/icons/search.svg";
 import Minus from "assets/icons/minus.svg";
+import EllipseFill from "assets/icons/ellipse-fill.svg";
+import EllipseHole from "assets/icons/ellipse-hole.svg";
 import Carpool from "assets/icons/carpool.svg";
 import Ring from "assets/icons/ring.svg";
 import Alert from "assets/icons/alert.svg";
@@ -59,6 +61,8 @@ const Icon = {
   NoData,
   Search,
   Minus,
+  EllipseFill,
+  EllipseHole,
   Carpool,
   Ring,
   Alert,
