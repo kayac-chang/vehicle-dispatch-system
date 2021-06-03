@@ -34,6 +34,8 @@ import Alert from "assets/icons/alert.svg";
 import Plus from "assets/icons/plus.svg";
 import Edit from "assets/icons/edit.svg";
 import Delete from "assets/icons/delete.svg";
+import Clear from "assets/icons/clear.svg";
+import CheckOK from "assets/icons/check-ok.svg";
 
 const Icon = {
   Menu,
@@ -72,6 +74,8 @@ const Icon = {
   Plus,
   Edit,
   Delete,
+  Clear,
+  CheckOK,
 };
 
 export default Icon;

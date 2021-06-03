@@ -5,7 +5,10 @@ import {
   DropTitle,
   InfoSet,
 } from "components/record";
+import { useState } from "react";
 import { RecordListTypes } from "types";
+import { DefaultModal } from "components/molecules";
+import { Icon } from "components/atoms";
 
 function DecorationTag() {
   return (
@@ -38,6 +41,21 @@ type RecordCardProps = {
   item: RecordListTypes;
 };
 export function RecordCardLg({ item }: RecordCardProps) {
+  const [isOpen, setOpen] = useState(false);
+
+  const [deleteType, setDeleteType] = useState<"cancel" | "noShow">("cancel");
+
+  function deleteModel(type: "cancel" | "noShow") {
+    setDeleteType(type);
+    setOpen(true);
+  }
+
+  function deleteOrder() {
+    // TODO:刪除該張訂單
+    console.log(`delete order: ${item.orderNo}`);
+    setOpen(false);
+  }
+
   return (
     <article
       className="w-full relative bg-white rounded-lg shadow-md mb-8"
@@ -91,7 +109,10 @@ export function RecordCardLg({ item }: RecordCardProps) {
             再次預約
           </button>
           {item.status === 2 && (
-            <button className="py-px px-4  rounded-sm bg-red-bright text-white">
+            <button
+              className="py-px px-4  rounded-sm bg-red-bright text-white"
+              onClick={() => deleteModel("cancel")}
+            >
               取消訂單
             </button>
           )}
@@ -102,11 +123,41 @@ export function RecordCardLg({ item }: RecordCardProps) {
           )}
         </div>
       </div>
+
+      <DefaultModal
+        isOpen={isOpen}
+        setOpen={setOpen}
+        action={deleteOrder}
+        size="sm"
+      >
+        <p className="px-4 -mt-4 opacity-75 flex items-center">
+          <span className="w-6 text-orange-dark mr-4">
+            <Icon.Alert />
+          </span>
+          {deleteType === "cancel" && <span>確定取消訂單?</span>}
+          {deleteType === "noShow" && <span>確定司機未到?</span>}
+        </p>
+      </DefaultModal>
     </article>
   );
 }
 
 export function RecordCardSm({ item }: RecordCardProps) {
+  const [isOpen, setOpen] = useState(false);
+
+  const [deleteType, setDeleteType] = useState<"cancel" | "noShow">("cancel");
+
+  function deleteModel(type: "cancel" | "noShow") {
+    setDeleteType(type);
+    setOpen(true);
+  }
+
+  function deleteOrder() {
+    // TODO:刪除該張訂單
+    console.log(`delete order: ${item.orderNo}`);
+    setOpen(false);
+  }
+
   return (
     <article className="relative bg-white rounded-lg shadow-md mx-2 mb-8 box-border">
       <DecorationTag />
@@ -161,7 +212,10 @@ export function RecordCardSm({ item }: RecordCardProps) {
             再次預約
           </button>
           {item.status === 2 && (
-            <button className="py-px px-4  rounded-sm bg-red-bright text-white">
+            <button
+              className="py-px px-4  rounded-sm bg-red-bright text-white"
+              onClick={() => deleteModel("cancel")}
+            >
               取消訂單
             </button>
           )}
@@ -172,6 +226,20 @@ export function RecordCardSm({ item }: RecordCardProps) {
           )}
         </div>
       </div>
+      <DefaultModal
+        isOpen={isOpen}
+        setOpen={setOpen}
+        action={deleteOrder}
+        size="lg"
+      >
+        <p className="px-4 -mt-4 opacity-75 flex items-center">
+          <span className="w-6 text-orange-dark mr-4">
+            <Icon.Alert />
+          </span>
+          {deleteType === "cancel" && <span>確定取消訂單?</span>}
+          {deleteType === "noShow" && <span>確定司機未到?</span>}
+        </p>
+      </DefaultModal>
     </article>
   );
 }

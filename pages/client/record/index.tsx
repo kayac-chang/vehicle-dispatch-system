@@ -114,26 +114,11 @@ type CardViewProps = {
   items: RecordListTypes[];
 };
 function CardView({ items }: CardViewProps) {
-  const [isOpen, setOpen] = useState(false);
-
   return (
     <div className="block lg:hidden">
       {items.length === 0 && <NoData />}
       {items.length > 0 &&
         items.map((item, index) => <RecordCardSm item={item} key={index} />)}
-      <DefaultModal
-        isOpen={isOpen}
-        setOpen={setOpen}
-        action={() => console.log("test")}
-        size="sm"
-      >
-        <p className="px-8 opacity-75 flex items-center">
-          <span className="w-6 text-orange-dark mr-4">
-            <Icon.Alert />
-          </span>
-          <span>確定司機未到?</span>
-        </p>
-      </DefaultModal>
     </div>
   );
 }

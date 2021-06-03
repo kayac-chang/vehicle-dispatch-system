@@ -2,19 +2,19 @@ import { Icon } from "components/atoms";
 import { Location, IconButton } from "components/fastCall";
 import { DefaultModal } from "components/molecules";
 import { useState } from "react";
-type CardProps = {
+type TableProps = {
   pathNo: number;
   pathName: string;
   pickupLocation: string;
   dropLocation: string;
 };
 
-export function Card({
+export function Table({
   pathNo,
   pathName,
   pickupLocation,
   dropLocation,
-}: CardProps) {
+}: TableProps) {
   const [isOpen, setOpen] = useState(false);
 
   function deleteAction() {
@@ -23,12 +23,9 @@ export function Card({
     setOpen(false);
   }
   return (
-    <article className="font-normal text-sm leading-6 text-gray-dark">
-      <div className="flex items-center px-4 py-2">
-        <span className="text-xs text-gray-light mr-2">路線名稱</span>
-        <h2 className="flex-1 truncate">{pathName}</h2>
-      </div>
-      <div className="w-full py-2 px-4 bg-gray-extralight">
+    <article className="font-normal text-gray-dark text-sm flex items-center">
+      <h2 className="w-4/12 px-4">{pathName}</h2>
+      <section className="w-5/12 py-3 flex-col space-y-1">
         <Location location={pickupLocation}>
           <Icon.EllipseHole />
         </Location>
@@ -36,19 +33,19 @@ export function Card({
         <Location location={dropLocation}>
           <Icon.EllipseFill />
         </Location>
-      </div>
-      <div className="w-full py-2 flex justify-center items-center space-x-1">
+      </section>
+      <section className="w-3/12 flex items-center space-x-1">
         <IconButton className="text-orange-dark" title="預約訂車">
           <Icon.Car />
         </IconButton>
 
-        <hr className="border-r border-gray h-3 transform rotate-0" />
+        <hr className="border-r h-3 transform rotate-0" />
 
         <IconButton className="text-blue-light" title="編輯">
           <Icon.Edit />
         </IconButton>
 
-        <hr className="border-r border-gray h-3 transform rotate-0" />
+        <hr className="border-r h-3 transform rotate-0" />
 
         {/* TODO:要把按鈕事件改掉 */}
         <div onClick={() => setOpen(true)}>
@@ -56,15 +53,14 @@ export function Card({
             <Icon.Delete />
           </IconButton>
         </div>
-      </div>
-
+      </section>
       <DefaultModal
         isOpen={isOpen}
         setOpen={setOpen}
-        action={() => deleteAction()}
-        size="lg"
+        action={deleteAction}
+        size="sm"
       >
-        <p className="px-2 -mt-4 opacity-75 flex items-center">
+        <p className="px-4 -mt-4 opacity-75 flex items-center">
           <span className="w-6 text-orange-dark mr-4">
             <Icon.Alert />
           </span>
