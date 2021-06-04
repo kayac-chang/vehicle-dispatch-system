@@ -20,6 +20,7 @@ module.exports = {
         700: "#4a5568",
         800: "#2d3748",
         900: "#1a202c",
+        extralight: "#F5F5F5",
         lighter: "#848484",
         light: "#747474",
         default: "#676767",
@@ -36,6 +37,7 @@ module.exports = {
         800: "#9b2c2c",
         900: "#742a2a",
         light: "#FF0000",
+        bright: "#F5222D",
       },
       orange: {
         100: "#fffaf0",
@@ -71,6 +73,7 @@ module.exports = {
         800: "#276749",
         900: "#22543d",
         light: "#94AA9F",
+        bright: "#389E0D",
         normal: "#376422",
         darkest: "#425B56",
         dark: "#57746E",
@@ -98,6 +101,7 @@ module.exports = {
         900: "#2a4365",
         dark: "#00628F",
         light: "#1890FF",
+        bright: "#1890FF",
       },
       indigo: {
         100: "#ebf4ff",

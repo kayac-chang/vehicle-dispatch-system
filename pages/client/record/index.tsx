@@ -1,11 +1,11 @@
+import { useState } from "react";
 import Layout from "components/templates";
 import { Pagination } from "components/molecules";
-import { Form, Icon } from "components/atoms";
+import { Form, Icon, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { RecordListTypes } from "types";
 import { RecordCardLg, RecordCardSm } from "components/record";
 import { DefaultModal } from "components/molecules";
-import { useState } from "react";
 
 const recordList: RecordListTypes[] = [
   {
@@ -110,43 +110,15 @@ const recordList: RecordListTypes[] = [
   },
 ];
 
-function NoData() {
-  return (
-    <div className="flex justify-center items-center min-h-screen-1/4">
-      <div className="w-1/3 relative flex justify-center">
-        <span className="w-40" aria-hidden>
-          <Icon.NoData />
-        </span>
-        <span className="absolute bottom-0 mb-2 text-xs">暫無數據</span>
-      </div>
-    </div>
-  );
-}
-
 type CardViewProps = {
   items: RecordListTypes[];
 };
 function CardView({ items }: CardViewProps) {
-  const [isOpen, setOpen] = useState(false);
-
   return (
     <div className="block lg:hidden">
       {items.length === 0 && <NoData />}
       {items.length > 0 &&
         items.map((item, index) => <RecordCardSm item={item} key={index} />)}
-      <DefaultModal
-        isOpen={isOpen}
-        setOpen={setOpen}
-        action={() => console.log("test")}
-        size="sm"
-      >
-        <p className="px-8 opacity-75 flex items-center">
-          <span className="w-6 text-orange-dark mr-4">
-            <Icon.Alert />
-          </span>
-          確定司機未到?
-        </p>
-      </DefaultModal>
     </div>
   );
 }
@@ -179,7 +151,7 @@ function TableView({ items }: TableViewProps) {
           <span className="w-6 text-orange-dark mr-4">
             <Icon.Alert />
           </span>
-          確定司機未到?
+          <span>確定司機未到?</span>
         </p>
       </DefaultModal>
     </div>

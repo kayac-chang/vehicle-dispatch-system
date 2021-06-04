@@ -5,6 +5,7 @@ import Link from "next/link";
 type CommonProps = {
   children?: ReactNode;
   className?: string;
+  color?: string;
 };
 
 type AnchorProps = CommonProps & {
@@ -27,7 +28,7 @@ function Base(props: ButtonProps | AnchorProps) {
     );
   }
 
-  const { type, className, children } = props;
+  const { type, className = "", children } = props;
 
   return (
     <button type={type} className={className}>
@@ -36,22 +37,27 @@ function Base(props: ButtonProps | AnchorProps) {
   );
 }
 
-function Flat({ className, ...props }: ButtonProps | AnchorProps) {
+function Flat({
+  className,
+  color = "bg-gold-darker border-gold-darker",
+  ...props
+}: ButtonProps | AnchorProps) {
   return (
     <Base
-      className={clsx("bg-gold-darker text-white w-full rounded", className)}
+      className={clsx("text-white w-full rounded-sm border", color, className)}
       {...props}
     />
   );
 }
 
-function Outline({ className, ...props }: ButtonProps | AnchorProps) {
+function Outline({
+  className,
+  color = "border-gold-darker text-gold-darker",
+  ...props
+}: ButtonProps | AnchorProps) {
   return (
     <Base
-      className={clsx(
-        "border-2 border-gold-darker text-gold-darker w-full rounded",
-        className
-      )}
+      className={clsx("border w-full rounded-sm", color, className)}
       {...props}
     />
   );
