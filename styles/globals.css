@@ -17,3 +17,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* material override */
+.MuiAccordionDetails-root {
+  padding: 0;
+}
