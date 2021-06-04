@@ -66,9 +66,9 @@ function Normal({ title, children }: BaseProps) {
     <Base title={title} footer>
       <div className="container mx-auto px-6 md:px-0">
         <div className="bg-white w-56 py-1 my-6">
-          <h2 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
+          <h1 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
             {title}
-          </h2>
+          </h1>
         </div>
 
         {children}
