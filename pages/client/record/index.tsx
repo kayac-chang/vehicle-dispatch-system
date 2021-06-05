@@ -160,6 +160,8 @@ function TableView({ items }: TableViewProps) {
 
 interface Request {
   topic: string;
+  from: Date;
+  end: Date;
 }
 
 export default function Record() {
@@ -190,7 +192,23 @@ export default function Record() {
             </div>
 
             <div className="flex-1">
-              <Form.Input type="date-range" />
+              <Form.Input
+                type="date-range"
+                from={{
+                  type: "date",
+                  name: "from",
+                  control,
+                  label: "開始時間",
+                  className: "bg-white",
+                }}
+                end={{
+                  type: "date",
+                  name: "end",
+                  control,
+                  label: "結束時間",
+                  className: "bg-white",
+                }}
+              />
             </div>
           </div>
         </form>
