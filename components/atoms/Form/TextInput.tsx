@@ -2,11 +2,13 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import { TextField } from "@material-ui/core";
 import { CommonProps } from "./types";
+import clsx from "clsx";
 
 export type TextInputProps<T> = CommonProps<T> & {
   type: "text";
 };
 export function TextInput<T>({
+  className,
   type,
   name,
   label,
@@ -24,7 +26,7 @@ export function TextInput<T>({
         <TextField
           id={name}
           label={label}
-          className="w-full"
+          className={clsx("w-full", className)}
           variant="outlined"
           InputLabelProps={{ shrink: true }}
           InputProps={{

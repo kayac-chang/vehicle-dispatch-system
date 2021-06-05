@@ -11,11 +11,13 @@ import {
 } from "@material-ui/core";
 import { not } from "ramda";
 import { CommonProps } from "./types";
+import clsx from "clsx";
 
 export type PasswordProps<T> = CommonProps<T> & {
   type: "password";
 };
 export function Password<T>({
+  className,
   type,
   name,
   label,
@@ -32,10 +34,9 @@ export function Password<T>({
       <IconButton
         aria-label="toggle password visibility"
         onClick={handle}
-        onMouseDown={handle}
         edge="end"
       >
-        <span className="w-4 mr-2">
+        <span className="w-4">
           {visible ? <Icon.Invisible /> : <Icon.Visible />}
         </span>
       </IconButton>
@@ -53,7 +54,7 @@ export function Password<T>({
       }) => (
         <FormControl
           variant="outlined"
-          className="w-full"
+          className={clsx("w-full", className)}
           error={Boolean(error)}
           required={required}
           {...{ onChange, onBlur, value }}

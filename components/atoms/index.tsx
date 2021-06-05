@@ -7,3 +7,4 @@ export { Icon, Transition, Form, Button };
 export * from "./Logo";
 export * from "./Background";
 export * from "./NoData";
+export * from "./Link";

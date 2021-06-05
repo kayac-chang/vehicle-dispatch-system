@@ -2,6 +2,22 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 
+const content = {
+  title: "忘記密碼",
+  description: "請準備好您的手機",
+
+  form: {
+    alert: "身分證格式錯誤",
+    identity: "請輸入您的身分證字號",
+    sendSMS: "傳送驗證碼",
+    captcha: "請輸入簡訊內的驗證碼",
+    cancel: "取消",
+    submit: "下一步",
+  },
+
+  note: "點選下一步，請依照步驟完成驗證。",
+};
+
 interface Request {
   identity: string;
   captcha: string;
@@ -20,20 +36,18 @@ export default function ForgotPassword() {
   }
 
   return (
-    <Layout.Form title="忘記密碼" onSubmit={handleSubmit(onSubmit)}>
-      <div className="text-gold-darker space-y-2 md:space-y-4">
-        <h2 className="text-2xl md:text-4xl md:font-semibold">忘記密碼</h2>
-
-        <p>請準備好您的手機</p>
-      </div>
-
+    <Layout.Form
+      title={content.title}
+      description={content.description}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="space-y-4 md:space-y-6">
         <div className="space-y-6">
           <Form.Alert
             id="alert"
             show={Boolean(errors.identity || errors.captcha)}
           >
-            身分證格式錯誤
+            {content.form.alert}
           </Form.Alert>
 
           <div className="flex flex-col md:flex-row gap-4">
@@ -41,7 +55,7 @@ export default function ForgotPassword() {
               <Form.Input
                 type="text"
                 icon={<Icon.Identification />}
-                label="請輸入您的身分證字號"
+                label={content.form.identity}
                 name="identity"
                 control={control}
                 aria-describedby="alert"
@@ -50,14 +64,16 @@ export default function ForgotPassword() {
             </div>
 
             <div className="md:w-2/12 flex">
-              <Button.Flat type="button">傳送驗證碼</Button.Flat>
+              <Button.Flat type="button" className="py-2">
+                {content.form.sendSMS}
+              </Button.Flat>
             </div>
           </div>
 
           <Form.Input
             type="text"
             icon={<Icon.Message />}
-            label="請輸入簡訊內的驗證碼"
+            label={content.form.captcha}
             name="captcha"
             control={control}
             aria-describedby="alert"
@@ -67,12 +83,16 @@ export default function ForgotPassword() {
 
         <div className="space-y-2">
           <div className="flex space-x-4">
-            <Button.Outline type="button">取消</Button.Outline>
+            <Button.Outline type="button" className="py-2">
+              {content.form.cancel}
+            </Button.Outline>
 
-            <Button.Flat type="submit">下一步</Button.Flat>
+            <Button.Flat type="submit" className="py-2">
+              {content.form.submit}
+            </Button.Flat>
           </div>
 
-          <p>點選下一步，請依照步驟完成驗證。</p>
+          <p>{content.note}</p>
         </div>
       </div>
     </Layout.Form>
