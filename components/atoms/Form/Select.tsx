@@ -13,7 +13,7 @@ export function Select<T>({
   required,
   label,
   options,
-  className,
+  className = "",
 }: SelectProps<T>) {
   return (
     <div className={className}>
