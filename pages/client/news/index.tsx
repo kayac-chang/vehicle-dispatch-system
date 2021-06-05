@@ -2,13 +2,13 @@ import Layout from "components/templates";
 import { Form, Button } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { TableView, CardView } from "components/news";
-import { getNews } from "api/news";
+import { getNewsList } from "api/news";
 import { InferGetServerSidePropsType as Infer } from "next";
 
 export async function getServerSideProps() {
   return {
     props: {
-      news: await getNews(),
+      news: await getNewsList(),
     },
   };
 }
