@@ -71,7 +71,7 @@ export default function News() {
                 name === expanded && "border-gold-light"
               )}
             >
-              <Accordion
+              <Accordion.Normal
                 name={name}
                 expanded={name === expanded}
                 onChange={() => setExpanded(name)}
@@ -102,7 +102,7 @@ export default function News() {
                 >
                   {description}
                 </p>
-              </Accordion>
+              </Accordion.Normal>
             </li>
           ))}
         </ul>

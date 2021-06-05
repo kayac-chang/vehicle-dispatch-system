@@ -2,6 +2,7 @@ import React from "react";
 import { FormControl, InputLabel, Select as _Select } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 import { CommonProps } from "./types";
+import clsx from "clsx";
 
 export type SelectProps<T> = CommonProps<T> & {
   type: "select";
@@ -16,7 +17,7 @@ export function Select<T>({
   className = "",
 }: SelectProps<T>) {
   return (
-    <div className={className}>
+    <div className={clsx("w-full", className)}>
       <Controller
         name={name}
         control={control}

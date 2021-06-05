@@ -2,6 +2,18 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 
+const content = {
+  title: "設定密碼",
+  description: "8碼以上且大寫英文、小寫英文、數字、特殊符號，4選3。",
+
+  form: {
+    alert: "輸入格式錯誤",
+    password: "請輸入新的密碼",
+    repeat: "再一次輸入新密碼確認",
+    submit: "登入",
+  },
+};
+
 interface Request {
   password: string;
   repeat: string;
@@ -20,26 +32,24 @@ export default function SetupPassword() {
   }
 
   return (
-    <Layout.Form title="設定密碼" onSubmit={handleSubmit(onSubmit)}>
-      <div className="text-gold-darker space-y-2 md:space-y-4">
-        <h2 className="text-2xl md:text-4xl md:font-semibold">設定密碼</h2>
-
-        <p>8碼以上且大寫英文、小寫英文、數字、特殊符號，4選3。</p>
-      </div>
-
+    <Layout.Form
+      title={content.title}
+      description={content.description}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="space-y-4 md:space-y-6">
         <div className="space-y-6">
           <Form.Alert
             id="alert"
             show={Boolean(errors.password || errors.repeat)}
           >
-            輸入格式錯誤
+            {content.form.alert}
           </Form.Alert>
 
           <Form.Input
             type="password"
             icon={<Icon.Lock />}
-            label="請輸入新的密碼"
+            label={content.form.password}
             name="password"
             control={control}
             aria-describedby="alert"
@@ -49,7 +59,7 @@ export default function SetupPassword() {
           <Form.Input
             type="password"
             icon={<Icon.Lock />}
-            label="再一次輸入新密碼確認"
+            label={content.form.repeat}
             name="repeat"
             control={control}
             aria-describedby="alert"
@@ -58,7 +68,9 @@ export default function SetupPassword() {
         </div>
 
         <div>
-          <Button.Flat type="submit">登入</Button.Flat>
+          <Button.Flat type="submit" className="py-2">
+            {content.form.submit}
+          </Button.Flat>
         </div>
       </div>
     </Layout.Form>

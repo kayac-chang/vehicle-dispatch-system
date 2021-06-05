@@ -32,8 +32,9 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
 
 type FormProps = BaseProps & {
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
+  description?: string;
 };
-export function Form({ title, children, onSubmit }: FormProps) {
+export function Form({ title, description, children, onSubmit }: FormProps) {
   return (
     <Base title={title} className="flex-1 md:py-36" footer={false}>
       <div
@@ -49,22 +50,40 @@ export function Form({ title, children, onSubmit }: FormProps) {
         <section
           className={clsx(
             "w-full h-full bg-white rounded-t-5xl shadow-2xl px-8 py-6",
-            "md:h-auto md:rounded-lg md:px-12 md:py-12"
+            "md:h-auto md:rounded-lg md:px-12 md:py-12",
+            "text-sm md:text-base",
+            "space-y-4"
           )}
         >
-          <form className="text-sm md:text-base space-y-4" onSubmit={onSubmit}>
-            {children}
-          </form>
+          <div className="text-gold-darker">
+            <h2 className="text-2xl md:text-4xl font-semibold">{title}</h2>
+
+            <p>{description}</p>
+          </div>
+
+          <form onSubmit={onSubmit}>{children}</form>
         </section>
       </div>
     </Base>
   );
 }
 
-function Normal({ title, children }: BaseProps) {
+function Normal({ title, children, prev }: BaseProps & { prev?: string }) {
   return (
     <Base title={title} footer>
       <div className="container mx-auto px-6 md:px-0">
+        {prev && (
+          <div className="py-4 w-24">
+            <Button.Outline
+              className="bg-white text-gold-darker"
+              type="anchor"
+              href={prev}
+            >
+              回列表
+            </Button.Outline>
+          </div>
+        )}
+
         <div className="bg-white w-56 py-1 my-6">
           <h1 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
             {title}
