@@ -81,7 +81,7 @@ export default function RecordDetail() {
           乘車明細
         </h1>
       </div>
-      <article className="-mx-6 mb-4 lg:m-0 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
+      <div className="-mx-6 mb-4 lg:m-0 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
         <BasicTitle item={value} />
 
         <BasicInfo item={value} />
@@ -91,7 +91,7 @@ export default function RecordDetail() {
         <PaymentInfo item={value} />
 
         <History item={value} />
-      </article>
+      </div>
     </Layout.Sub>
   );
 }

@@ -7,7 +7,7 @@ type Props = {
 };
 export function BasicTitle({ item }: Props) {
   return (
-    <header
+    <div
       className={clsx(
         "w-full bg-gray-extralight py-3 rounded-none",
         "lg:rounded-lg lg:rounded-b-none"
@@ -51,7 +51,7 @@ export function BasicTitle({ item }: Props) {
           contentClass="text-sm text-blue-700 font-semibold"
         />
       </div>
-    </header>
+    </div>
   );
 }
 
