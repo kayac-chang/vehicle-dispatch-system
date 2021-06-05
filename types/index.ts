@@ -1,3 +1,9 @@
+export interface Post {
+  category: string;
+  date: string;
+  title: string;
+}
+
 // TODO:改成正確的資料型態
 export interface RecordListTypes {
   status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;

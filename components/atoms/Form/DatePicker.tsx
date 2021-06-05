@@ -1,35 +1,20 @@
 import { TextField } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 import { CommonProps } from "./types";
-import {
-  LocalizationProvider,
-  DateRangePicker as _DateRangePicker,
-  DateRange,
-} from "@material-ui/lab";
-import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
-import { useState } from "react";
+import { DateRangePicker as _DateRangePicker } from "@material-ui/lab";
+import clsx from "clsx";
 
 export type DateRangeProps<T> = {
   type: "date-range";
+  from: DatePickerProps<T>;
+  end: DatePickerProps<T>;
 };
-export function DateRangePicker<T>(_: DateRangeProps<T>) {
-  const [value, setValue] = useState<DateRange<Date>>([null, null]);
-
+export function DateRangePicker<T>({ from, end }: DateRangeProps<T>) {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <_DateRangePicker
-        startText="Check-in"
-        endText="Check-out"
-        value={value}
-        onChange={(newValue) => setValue(newValue)}
-        renderInput={(startProps, endProps) => (
-          <>
-            <TextField {...startProps} />
-            <TextField {...endProps} />
-          </>
-        )}
-      />
-    </LocalizationProvider>
+    <div className="flex space-x-2">
+      <DatePicker {...from} />
+      <DatePicker {...end} />
+    </div>
   );
 }
 
@@ -44,30 +29,28 @@ export function DatePicker<T>({
   className,
 }: DatePickerProps<T>) {
   return (
-    <div className={className}>
-      <Controller
-        name={name}
-        control={control}
-        rules={{ required }}
-        render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
-          <TextField
-            type="date"
-            id={name}
-            name={name}
-            variant="outlined"
-            label={label}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            error={Boolean(error)}
-            inputRef={ref}
-            onChange={onChange}
-            required={required}
-            className="w-full"
-          />
-        )}
-      />
-    </div>
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required }}
+      render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
+        <TextField
+          type="date"
+          id={name}
+          name={name}
+          variant="outlined"
+          label={label}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          error={Boolean(error)}
+          inputRef={ref}
+          onChange={onChange}
+          required={required}
+          className={clsx("w-full", className)}
+        />
+      )}
+    />
   );
 }
 
