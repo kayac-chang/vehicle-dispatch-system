@@ -2,7 +2,8 @@ import { Pagination } from "components/molecules";
 import { Icon, NoData } from "components/atoms";
 import { Tag } from "./Tag";
 import clsx from "clsx";
-import { Post } from "types";
+import { News } from "types";
+import Link from "next/link";
 
 const content = {
   table: {
@@ -13,7 +14,7 @@ const content = {
 };
 
 type TableViewProps = {
-  items: Post[];
+  items: News[];
 };
 export function TableView({ items }: TableViewProps) {
   return (
@@ -35,7 +36,7 @@ export function TableView({ items }: TableViewProps) {
         </thead>
 
         <tbody className="divide-y">
-          {items.map(({ category, title, date }, index) => (
+          {items.map(({ id, category, title, date }, index) => (
             <tr key={index}>
               <td className="w-1/12 py-2 pl-4">
                 <Tag>{category}</Tag>
@@ -44,9 +45,11 @@ export function TableView({ items }: TableViewProps) {
               <td className="w-9/12 py-2">{title}</td>
               <td className="w-1/12 py-2">
                 <div className="w-full h-full flex justify-center">
-                  <button className="w-10 p-2">
-                    <Icon.ArrowRight />
-                  </button>
+                  <Link href={`/client/news/${id}`}>
+                    <a className="w-10 p-2">
+                      <Icon.ArrowRight />
+                    </a>
+                  </Link>
                 </div>
               </td>
             </tr>
@@ -56,7 +59,7 @@ export function TableView({ items }: TableViewProps) {
 
       {items.length > 0 && (
         <div className="flex justify-end pt-2">
-          <Pagination current={6} total={10} />
+          <Pagination total={items.length} />
         </div>
       )}
 
