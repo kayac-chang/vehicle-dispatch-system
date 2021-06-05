@@ -138,7 +138,7 @@ function TableView({ items }: TableViewProps) {
 
       {items.length > 0 && (
         <div className="flex justify-end pt-2">
-          <Pagination current={6} total={10} />
+          <Pagination total={10} />
         </div>
       )}
       <DefaultModal
