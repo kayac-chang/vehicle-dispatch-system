@@ -1,7 +1,9 @@
-export interface Post {
+export interface News {
+  id: string;
   category: string;
   date: string;
   title: string;
+  content: string;
 }
 
 // TODO:改成正確的資料型態

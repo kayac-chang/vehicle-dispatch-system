@@ -2,63 +2,16 @@ import Layout from "components/templates";
 import { Form, Button } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { TableView, CardView } from "components/news";
+import { getNewsList } from "api/news";
+import { InferGetServerSidePropsType as Infer } from "next";
 
-const news = [
-  {
-    category: "長照",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-  {
-    category: "系統公告",
-    title:
-      "武漢肺炎》明年Q1疫苗可望施打！莊人祥透露優先施打順序順序順序順序順序順序順序順序順序順序順序順",
-    date: "2020-12-31",
-  },
-];
+export async function getServerSideProps() {
+  return {
+    props: {
+      news: await getNewsList(),
+    },
+  };
+}
 
 const content = {
   title: "最新消息",
@@ -83,7 +36,9 @@ interface Request {
   from: Date;
   end: Date;
 }
-export default function News() {
+
+type Props = Infer<typeof getServerSideProps>;
+export default function News({ news }: Props) {
   const { control, handleSubmit } = useForm<Request>();
 
   function onSubmit(data: Request) {
@@ -138,9 +93,9 @@ export default function News() {
         </form>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={[]} />
+          <CardView items={news} />
 
-          <TableView items={[]} />
+          <TableView items={news} />
         </div>
       </div>
     </Layout.Normal>

@@ -1,10 +1,8 @@
 import Layout from "components/templates";
 import { Pagination } from "components/molecules";
 import { Button, Icon, NoData } from "components/atoms";
-import { useState } from "react";
 import clsx from "clsx";
-import { DefaultModal } from "components/molecules";
-import { Location, IconButton, Card, Table } from "components/fastCall";
+import { Card, Table } from "components/fastCall";
 
 interface FastCallProps {
   pathNo: number;
@@ -105,7 +103,7 @@ function CardView({ items }: CardViewProps) {
           </div>
 
           <div className="flex justify-center pt-8 pb-10">
-            <Pagination current={6} total={10} />
+            <Pagination total={10} />
           </div>
         </div>
       ) : (
@@ -150,7 +148,7 @@ function TableView({ items }: TableViewProps) {
 
       {items.length > 0 && (
         <div className="flex justify-end pt-2">
-          <Pagination current={6} total={10} />
+          <Pagination total={10} />
         </div>
       )}
 
