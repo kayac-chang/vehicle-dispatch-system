@@ -37,6 +37,7 @@ module.exports = {
         800: "#9b2c2c",
         900: "#742a2a",
         light: "#FF0000",
+        alert: "#FF4D4F",
         bright: "#F5222D",
       },
       yellow: {
@@ -89,6 +90,7 @@ module.exports = {
       },
       orange: {
         light: "#FFF3E0",
+        rich: "#FF7A45",
         dark: "#EF6C00",
       },
     },
@@ -105,6 +107,14 @@ module.exports = {
       "6xl": "4rem",
     },
     extend: {
+      width: {
+        28: "7rem",
+        40: "10rem",
+        44: "11rem",
+      },
+      height: {
+        14: "3.5rem",
+      },
       borderRadius: {
         none: "0",
         sm: "0.125rem",

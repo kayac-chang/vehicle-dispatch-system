@@ -8,7 +8,7 @@ type ServiceTimeProps = {
 };
 function ServiceTime({ title, list }: ServiceTimeProps) {
   return (
-    <div
+    <section
       className={clsx(
         "flex flex-col space-x-0 py-1",
         "lg:flex-row lg:items-center lg:space-x-6"
@@ -22,7 +22,7 @@ function ServiceTime({ title, list }: ServiceTimeProps) {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 

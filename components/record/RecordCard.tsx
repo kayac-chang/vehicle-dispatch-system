@@ -4,38 +4,12 @@ import {
   PickupTitle,
   DropTitle,
   InfoSet,
+  DecorationTag,
 } from "components/record";
 import { useState } from "react";
 import { RecordListTypes } from "types";
 import { DefaultModal } from "components/molecules";
 import { Icon } from "components/atoms";
-
-function DecorationTag() {
-  return (
-    <div
-      className="absolute w-48 lg:w-64 h-8 flex justify-center items-center bg-orange-dark"
-      style={{ top: "2rem" }}
-    >
-      <div
-        className="absolute right-0 w-5 h-8"
-        style={{ background: "#FF9800" }}
-      />
-
-      <div
-        className="absolute w-2 h-12 bg-white transform rotate-12"
-        style={{ right: "1rem" }}
-      />
-
-      <div
-        className="absolute w-2 h-10 bg-white transform rotate-12"
-        style={{ right: "-0.2rem" }}
-      />
-      <hr className="w-full border border-white border-t-0 opacity-50" />
-      <div className="absolute w-12 h-6 bg-orange-dark -ml-5"></div>
-      <span className="absolute text-white -ml-5">。長照。</span>
-    </div>
-  );
-}
 
 type RecordCardProps = {
   item: RecordListTypes;
@@ -58,20 +32,20 @@ export function RecordCardLg({ item }: RecordCardProps) {
 
   return (
     <article
-      className="w-full relative bg-white rounded-lg shadow-md mb-8"
+      className="w-full relative bg-white rounded-lg shadow-md mb-8 pt-6"
       style={{ height: "206px" }}
     >
       <DecorationTag />
-      <div className="w-full p-8 flex justify-between">
+      <div className="w-full px-8 flex justify-between">
         <article className="w-48 h-20 mt-12 flex flex-col place-content-between">
           <h2 className="font-semibold text-2xl leading-6">{item.passenger}</h2>
           <div className="flex">
             <Tag status={item.status} />
-            {item.isCarpool && <Carpool className="space-x-1" />}
+            {item.isCarpool && <Carpool className="ml-4 space-x-1" />}
           </div>
         </article>
 
-        <div className="flex flex-col space-y-3 text-sm">
+        <div className="flex flex-col space-y-4 text-sm">
           <InfoSet title="訂單編號" content={item.orderNo} />
           <InfoSet title="預約搭乘時間" content={item.pickUpDate} />
           <div className="flex space-x-2">
@@ -159,10 +133,10 @@ export function RecordCardSm({ item }: RecordCardProps) {
   }
 
   return (
-    <article className="relative bg-white rounded-lg shadow-md mx-2 mb-8 box-border">
+    <article className="relative bg-white rounded-lg shadow-md mx-2 mb-8 pt-4 box-border">
       <DecorationTag />
       <div className="w-full pt-8 pb-3">
-        <div className="w-full flex mt-12 mb-6 px-4">
+        <div className="w-full flex mt-4 mb-6 px-4">
           <article className="w-1/2">
             <h2 className="font-semibold text-2xl leading-6 mb-5">
               {item.passenger}
@@ -193,14 +167,16 @@ export function RecordCardSm({ item }: RecordCardProps) {
         <div className="flex flex-col space-y-2 text-sm px-4 mt-6">
           <article className="flex flex-col items-start">
             <PickupTitle />
-            <p className="text-black font-semibold w-64">
+            <p className="text-black font-semibold text-justify">
               {item.pickupLocation}
             </p>
           </article>
 
           <article className="flex flex-col items-start">
             <DropTitle />
-            <p className="text-black font-semibold w-64">{item.dropLocation}</p>
+            <p className="text-black font-semibold text-justify">
+              {item.dropLocation}
+            </p>
           </article>
         </div>
 

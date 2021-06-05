@@ -20,9 +20,45 @@ export interface RecordListTypes {
 }
 
 // TODO:改成正確的資料型態
-export type CorpInfoTypes = {
+export interface CorpInfoTypes {
   name: string;
   tel: string;
   operatingHours: string[];
   customerServiceHours: string[];
-};
+}
+
+// TODO:改成正確的資料型態
+export interface RecordDetailTypes {
+  orderNo: string;
+  pickDate: string;
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  isCarpool: true;
+  passenger: string;
+  caseNo: string;
+  phone: string;
+  phoneSms: string;
+  caseDistance: number;
+  caseCostTime: number;
+  basicInfo: { title: string; content: string }[];
+  caseInfo: { title: string; content: string }[];
+  carpoolNo: string;
+  pickupInfo: {
+    lat: number;
+    lon: number;
+    description: string;
+    address: string;
+    note: string;
+  };
+  dropInfo: {
+    lat: number;
+    lon: number;
+    description: string;
+    address: string;
+    note: string;
+  };
+  mapInfo: {};
+  paymentInfo: { title: string; content: string }[];
+  paymentNote: string;
+  signature: string;
+  history: { status: string; editDate: string; editor: string }[];
+}

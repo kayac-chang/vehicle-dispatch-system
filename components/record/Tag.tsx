@@ -9,7 +9,7 @@ export function Tag({ status }: TagProps) {
   return (
     <span
       className={clsx(
-        "border rounded-sm px-2 text-xs leading-5 mr-4",
+        "border rounded-sm px-2 text-xs leading-5 whitespace-no-wrap",
         status === 1 && "border-orange-dark bg-orange-light text-orange-dark",
         status === 2 && " border-green-300 bg-green-100  text-green-500",
         status === 3 && " border-blue-300 bg-blue-100  text-blue-500",
@@ -33,7 +33,7 @@ export function Carpool({ className }: CarpoolProps) {
   return (
     <p
       className={clsx(
-        "flex items-center text-orange-dark font-semibold text-sm",
+        "flex items-center text-orange-dark font-semibold text-sm whitespace-no-wrap",
         className
       )}
     >
