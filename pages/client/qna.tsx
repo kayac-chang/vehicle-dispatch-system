@@ -5,12 +5,12 @@ import { Icon } from "components/atoms";
 import { Accordion } from "components/molecules";
 import { loadJSON } from "functions/load";
 import { InferGetStaticPropsType as Infer } from "next";
-import { QNA } from "types";
+import { QNA as Type } from "types";
 
 export async function getStaticProps() {
   return {
     props: {
-      posts: await loadJSON<QNA[]>("static/qna.json"),
+      posts: await loadJSON<Type[]>("static/qna.json"),
     },
   };
 }
