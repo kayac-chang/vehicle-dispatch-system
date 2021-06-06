@@ -3,23 +3,14 @@ import clsx from "clsx";
 import Layout from "components/templates";
 import { Icon } from "components/atoms";
 import { Accordion } from "components/molecules";
-import path from "path";
-import { promises as fs } from "fs";
+import { loadJSON } from "functions/load";
 import { InferGetStaticPropsType as Infer } from "next";
-
-interface Post {
-  name: string;
-  title: string;
-  description: string;
-}
+import { QNA } from "types";
 
 export async function getStaticProps() {
-  const filePath = path.join(process.cwd(), "static", "qna.json");
-  const file = await fs.readFile(filePath, "utf-8");
-
   return {
     props: {
-      posts: JSON.parse(file) as Post[],
+      posts: await loadJSON<QNA[]>("static/qna.json"),
     },
   };
 }

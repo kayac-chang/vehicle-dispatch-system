@@ -1,41 +1,18 @@
 import Layout from "components/templates";
 import { Icon, Form, Button } from "components/atoms";
-import { Corporation } from "types";
 import { Card } from "components/contact";
 import { useForm } from "react-hook-form";
+import { loadJSON } from "functions/load";
+import { InferGetStaticPropsType as Infer } from "next";
+import { Corporation } from "types";
 
-// TODO:改成正確的資料型態及接上API
-const list: Corporation[] = [
-  {
-    name: "凡亨國際租賃有限公司凡亨國際租賃有限公司",
-    tel: "(02)2912-1966",
-    description: "國定假日提前預約，皆可服務，依車行調度情況。",
-    operatingHours: ["(平日)08:00-18:00", "(六)08:00-18:00", "(日)08:00-18:00"],
-    customerServiceHours: [
-      "(一)08:00-18:00",
-      "(二)08:00-18:00",
-      "(三)08:00-18:00",
-      "(四)08:00-18:00",
-      "(五)08:00-18:00",
-      "(六)08:00-18:00",
-    ],
-  },
-  {
-    name: "凡亨國際租賃有限公司凡亨國際租賃有限公司",
-    tel: "(02)2912-1966",
-    description: "國定假日提前預約，皆可服務，依車行調度情況。",
-    operatingHours: ["(平日)08:00-18:00", "(六)08:00-18:00", "(日)08:00-18:00"],
-    customerServiceHours: [
-      "(一)08:00-18:00",
-      "(二)08:00-18:00",
-      "(三)08:00-18:00",
-      "(四)08:00-18:00",
-      "(五)08:00-18:00",
-      "(六)08:00-18:00",
-      "(日)08:00-18:00",
-    ],
-  },
-];
+export async function getStaticProps() {
+  return {
+    props: {
+      posts: await loadJSON<Corporation[]>("static/contact.json"),
+    },
+  };
+}
 
 const content = {
   title: "聯繫客服",
@@ -49,7 +26,8 @@ const content = {
 interface Request {
   search: string;
 }
-export default function Contact() {
+type Props = Infer<typeof getStaticProps>;
+export default function Contact({ posts }: Props) {
   const { control, handleSubmit } = useForm<Request>();
 
   function search(data: Request) {
@@ -79,7 +57,7 @@ export default function Contact() {
           </div>
         </form>
 
-        {list.map((item, index) => (
+        {posts.map((item, index) => (
           <Card info={item} key={index} />
         ))}
       </div>

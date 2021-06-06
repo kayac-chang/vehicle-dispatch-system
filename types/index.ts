@@ -6,6 +6,12 @@ export interface News {
   content: string;
 }
 
+export interface QNA {
+  name: string;
+  title: string;
+  description: string;
+}
+
 // TODO:改成正確的資料型態
 export interface RecordListTypes {
   status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
