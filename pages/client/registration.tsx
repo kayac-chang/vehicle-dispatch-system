@@ -41,6 +41,10 @@ const content = {
           },
         ],
       },
+
+      street: {
+        label: "請輸入地址",
+      },
     },
 
     submit: "註冊",
@@ -155,7 +159,12 @@ export default function Registration() {
             />
           </div>
 
-          <Form.Input type="text" name="street" control={control} />
+          <Form.Input
+            type="text"
+            name="street"
+            control={control}
+            label={content.form.address.street.label}
+          />
         </Form.FieldSet>
 
         <div className="space-y-2 col-span-2">
