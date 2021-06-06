@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 import Link from "next/link";
 
 type CommonProps = {
@@ -15,6 +15,7 @@ type AnchorProps = CommonProps & {
 
 type ButtonProps = CommonProps & {
   type: "button" | "submit" | "reset";
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 function Base(props: ButtonProps | AnchorProps) {
@@ -28,10 +29,10 @@ function Base(props: ButtonProps | AnchorProps) {
     );
   }
 
-  const { type, className = "", children } = props;
+  const { type, className = "", children, onClick } = props;
 
   return (
-    <button type={type} className={className}>
+    <button type={type} className={className} onClick={onClick}>
       {children}
     </button>
   );
