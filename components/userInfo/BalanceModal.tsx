@@ -20,6 +20,7 @@ const content = {
   total: "總額度",
   used: "使用額度",
   available: "剩餘額度",
+  submit: "確定",
 };
 
 type Props = { onClose: () => void };
@@ -31,7 +32,7 @@ export function BalanceModal({ onClose }: Props) {
       actions={
         <div className="text-sm flex space-x-2 px-4">
           <Button.Flat className="px-4 py-2" type="button" onClick={onClose}>
-            確定
+            {content.submit}
           </Button.Flat>
         </div>
       }

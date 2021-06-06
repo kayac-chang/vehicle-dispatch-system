@@ -1,13 +1,12 @@
-import { useState } from "react";
 import Layout from "components/templates";
 import { Pagination } from "components/molecules";
-import { Form, Icon, NoData } from "components/atoms";
+import { Form, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
-import { RecordListTypes } from "types";
-import { RecordCardLg, RecordCardSm } from "components/record";
-import { DefaultModal } from "components/molecules";
+import { Record as IRecord } from "types";
+import { RecordCard, Modal } from "components/record";
+import { useState } from "react";
 
-const recordList: RecordListTypes[] = [
+const items: IRecord[] = [
   {
     status: 1,
     passenger: "王小明",
@@ -25,7 +24,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: false,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16063797554252",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -36,7 +35,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: true,
     ridership: 3,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16063797534258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -47,7 +46,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: false,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16063797544258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -58,7 +57,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: true,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16023797554258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -69,7 +68,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: false,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16063737554258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號同吉大樓9樓8-12室",
@@ -80,7 +79,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: false,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16063197554258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -91,7 +90,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: true,
     ridership: 1,
-    orderNo: "TP16063797554258",
+    orderNo: "TP16068797554258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -102,7 +101,7 @@ const recordList: RecordListTypes[] = [
     passenger: "王小明",
     isCarpool: false,
     ridership: 0,
-    orderNo: "TP16063797554258",
+    orderNo: "TP06063797554258",
     pickUpDate: "2021-06-01 16:00",
     carType: 1,
     pickupLocation: "台灣新北市板橋區中山路一段123號",
@@ -110,61 +109,33 @@ const recordList: RecordListTypes[] = [
   },
 ];
 
-type CardViewProps = {
-  items: RecordListTypes[];
+const content = {
+  title: "訂單檢視",
+
+  form: {
+    topic: {
+      label: "請選擇類別",
+      options: [
+        { id: "future", label: "未來訂單", value: "future" },
+        { id: "past", label: "過去訂單", value: "past" },
+      ],
+    },
+
+    range: {
+      from: "開始時間",
+      end: "結束時間",
+    },
+  },
 };
-function CardView({ items }: CardViewProps) {
-  return (
-    <div className="block lg:hidden">
-      {items.length === 0 && <NoData />}
-      {items.length > 0 &&
-        items.map((item, index) => <RecordCardSm item={item} key={index} />)}
-    </div>
-  );
-}
-
-type TableViewProps = {
-  items: RecordListTypes[];
-};
-
-function TableView({ items }: TableViewProps) {
-  const [isOpen, setOpen] = useState(false);
-
-  return (
-    <div className="hidden lg:block pb-8">
-      {items.length <= 0 && <NoData />}
-      {items.length > 0 &&
-        items.map((item, index) => <RecordCardLg item={item} key={index} />)}
-
-      {items.length > 0 && (
-        <div className="flex justify-end pt-2">
-          <Pagination total={10} />
-        </div>
-      )}
-      <DefaultModal
-        isOpen={isOpen}
-        setOpen={setOpen}
-        action={() => console.log("test")}
-        size="sm"
-      >
-        <p className="px-8 opacity-75 flex items-center">
-          <span className="w-6 text-orange-dark mr-4">
-            <Icon.Alert />
-          </span>
-          <span>確定司機未到?</span>
-        </p>
-      </DefaultModal>
-    </div>
-  );
-}
 
 interface Request {
   topic: string;
   from: Date;
   end: Date;
 }
-
 export default function Record() {
+  const [modal, setModal] = useState<"absence" | "cancel" | undefined>();
+
   const { control, handleSubmit } = useForm<Request>();
 
   function onSubmit(data: Request) {
@@ -172,7 +143,7 @@ export default function Record() {
   }
 
   return (
-    <Layout.Normal title="訂單檢視">
+    <Layout.Normal title={content.title}>
       <div className="space-y-6">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -184,10 +155,9 @@ export default function Record() {
                 type="select"
                 name="topic"
                 control={control}
-                options={[
-                  { id: "future", label: "未來訂單", value: "future" },
-                  { id: "past", label: "過去訂單", value: "past" },
-                ]}
+                label={content.form.topic.label}
+                options={content.form.topic.options}
+                className="bg-white"
               />
             </div>
 
@@ -198,14 +168,14 @@ export default function Record() {
                   type: "date",
                   name: "from",
                   control,
-                  label: "開始時間",
+                  label: content.form.range.from,
                   className: "bg-white",
                 }}
                 end={{
                   type: "date",
                   name: "end",
                   control,
-                  label: "結束時間",
+                  label: content.form.range.end,
                   className: "bg-white",
                 }}
               />
@@ -213,11 +183,40 @@ export default function Record() {
           </div>
         </form>
 
-        <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={recordList} />
+        <div className="space-y-4 pb-8">
+          {items.length ? (
+            items.map((item) => (
+              <RecordCard
+                item={item}
+                key={item.orderNo}
+                onAbsenceClick={() => setModal("absence")}
+                onCancelClick={() => setModal("cancel")}
+              />
+            ))
+          ) : (
+            <NoData />
+          )}
 
-          <TableView items={recordList} />
+          {items.length && (
+            <div className="flex justify-end pt-2">
+              <Pagination total={10} />
+            </div>
+          )}
         </div>
+
+        {modal === "cancel" && (
+          <Modal.Cancel
+            onClose={() => setModal(undefined)}
+            onSubmit={() => setModal(undefined)}
+          />
+        )}
+
+        {modal === "absence" && (
+          <Modal.Absence
+            onClose={() => setModal(undefined)}
+            onSubmit={() => setModal(undefined)}
+          />
+        )}
       </div>
     </Layout.Normal>
   );

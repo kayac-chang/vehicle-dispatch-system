@@ -13,7 +13,7 @@ export interface QNA {
 }
 
 // TODO:改成正確的資料型態
-export interface RecordListTypes {
+export interface Record {
   status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   passenger: string;
   isCarpool: boolean;
