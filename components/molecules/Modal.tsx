@@ -1,7 +1,65 @@
-import React, { ReactNode } from "react";
-import Modal from "@material-ui/core/Modal";
+import { ReactNode } from "react";
+import _Modal from "@material-ui/core/Modal";
+import {
+  Dialog as _Dialog,
+  DialogContentText,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@material-ui/core";
 import clsx from "clsx";
 import { Button, Icon } from "components/atoms";
+
+type DialogProps = {
+  name: string;
+  open?: boolean;
+  onClose: () => void;
+  title: string;
+  actions?: ReactNode;
+  children?: ReactNode;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  className?: string;
+};
+function Dialog({
+  name,
+  title,
+  open = true,
+  onClose,
+  actions,
+  children,
+  size = "sm",
+  className,
+}: DialogProps) {
+  return (
+    <_Dialog
+      maxWidth={size}
+      open={open}
+      onClose={onClose}
+      aria-labelledby={`${name}-dialog`}
+    >
+      <DialogTitle
+        disableTypography
+        id={`${name}-dialog`}
+        className="w-full flex justify-between border-b"
+      >
+        <strong>{title}</strong>
+
+        <button className="w-4 text-gray-dark" onClick={onClose}>
+          <Icon.Clear />
+        </button>
+      </DialogTitle>
+
+      <DialogContent>
+        <div className={className}>{children}</div>
+      </DialogContent>
+
+      {actions && <DialogActions className="border-t">{actions}</DialogActions>}
+    </_Dialog>
+  );
+}
+
+const Modal = { Dialog };
+export default Modal;
 
 type Props = {
   title?: string;
@@ -101,13 +159,13 @@ export function DefaultModal({
 
   return (
     <div>
-      <Modal
+      <_Modal
         open={isOpen}
         onClose={handleClose}
         aria-describedby="default modal"
       >
         {body}
-      </Modal>
+      </_Modal>
     </div>
   );
 }

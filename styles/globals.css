@@ -22,3 +22,7 @@ body {
 .MuiAccordionDetails-root {
   padding: 0;
 }
+
+.MuiDialogContent-root {
+  padding: 0;
+}

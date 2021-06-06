@@ -2,15 +2,16 @@ import { useState } from "react";
 import clsx from "clsx";
 import Layout from "components/templates";
 import { Button } from "components/atoms";
-import { DefaultModal } from "components/molecules";
 import {
   PasswordModal,
   BalanceModal,
-  ChangePhoneModal,
+  PhoneModal,
+  InfoField,
 } from "components/userInfo";
+import { format } from "date-fns";
 
 // /api/Users/Get
-const mockUser = {
+const user = {
   name: "吳幼緞",
   sex: 2,
   phone: "0987654321",
@@ -19,7 +20,7 @@ const mockUser = {
 };
 
 // /api/CaseUsers/Get
-const mockCaseUsers = {
+const caseUsers = {
   caseUserNo: "AAAAA",
   county: "台北市",
   district: "大安區",
@@ -29,204 +30,201 @@ const mockCaseUsers = {
   urgentPhone: "09123456789",
   urgentTel: "0423456789",
 };
-function sexConverter(sex: number): string {
-  switch (sex) {
-    case 0:
-      return "不提供";
-    case 1:
-      return "男";
-    case 2:
-      return "女";
-    default:
-      return "無資料";
-  }
-}
 
-function birthdayConverter(date: string): string {
-  const tempDate = new Date(date);
-  let month = "" + (tempDate.getMonth() + 1),
-    day = "" + tempDate.getDate(),
-    year = tempDate.getFullYear();
+const content = {
+  title: "用戶資料",
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
+  edit: {
+    password: "修改密碼",
+    phone: "修改手機",
+    balance: "額度狀況",
+  },
 
-  return [year, month, day].join("-");
-}
+  personal: {
+    title: "基本資料",
 
-type InfoFieldProps = {
-  className?: string;
-  title: string;
-  content: string;
-  section?: "basic" | "case";
+    name: "姓名",
+    birthday: "生日",
+    gender: {
+      title: "性別",
+      private: "不提供",
+      man: "男",
+      woman: "女",
+      none: "無資料",
+    },
+    identity: "身分證字號",
+    phone: "手機",
+  },
+
+  ltc: {
+    title: "長照",
+    caseNo: "案號",
+    address: "居住地址",
+    urgent: {
+      name: "緊急聯絡人姓名",
+      relationship: "緊急聯絡人關係",
+      phone: "緊急聯絡人手機",
+      tel: "緊急聯絡人市話",
+      none: "未填寫",
+    },
+  },
 };
-function InfoField({
-  className = "w-full",
-  title,
-  content,
-  section = "basic",
-}: InfoFieldProps) {
+
+type PersonalInformationProps = {
+  onPasswordClick: () => void;
+  onChangePhoneClick: () => void;
+};
+function PersonalInformation({
+  onPasswordClick,
+  onChangePhoneClick,
+}: PersonalInformationProps) {
   return (
-    <div className={clsx("text-sm font-normal", className)}>
-      <h3 className="text-black">{title}</h3>
-      <p
+    <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-gold-darker text-xl font-semibold leading-7">
+          {content.personal.title}
+        </h2>
+
+        <div className="flex space-x-2">
+          <Button.Outline
+            className="px-4 py-1 font-semibold text-sm bg-white"
+            type="button"
+            onClick={onPasswordClick}
+          >
+            {content.edit.password}
+          </Button.Outline>
+
+          <Button.Outline
+            className="px-4 py-1 font-semibold text-sm bg-white"
+            type="button"
+            onClick={onChangePhoneClick}
+          >
+            {content.edit.phone}
+          </Button.Outline>
+        </div>
+      </div>
+      <hr className="my-3 border-gold-darker" />
+
+      <div
         className={clsx(
-          "w-full pt-3 pb-2 text-gray-dark border-b border-dashed",
-          section === "basic" && "border-gold-darker",
-          section === "case" && "border-orange-dark"
+          "flex flex-col lg:flex-row space-y-4",
+          "lg:space-x-4 items-end pt-3 pb-2 lg:pb-0"
         )}
       >
-        {content}
-      </p>
-    </div>
+        <InfoField title={content.personal.name} content={user.name} />
+
+        <InfoField
+          title={content.personal.birthday}
+          content={format(new Date(user.birthday), "yyyy-MM-dd")}
+        />
+
+        <InfoField
+          title={content.personal.gender.title}
+          content={
+            {
+              0: content.personal.gender.private,
+              1: content.personal.gender.man,
+              2: content.personal.gender.woman,
+            }[user.sex] || content.personal.gender.none
+          }
+        />
+
+        <InfoField title={content.personal.identity} content={user.uid} />
+
+        <InfoField title={content.personal.phone} content={user.phone} />
+      </div>
+    </article>
   );
 }
 
-function TitleConverter(type: "password" | "balance" | "changePhone"): string {
-  switch (type) {
-    case "password":
-      return "修改密碼";
-    case "balance":
-      return "額度狀況";
-    case "changePhone":
-      return "";
-    //客制Modal，title回空字串
-  }
+type LongTermCareProps = {
+  onBalanceClick: () => void;
+};
+function LongTermCare({ onBalanceClick }: LongTermCareProps) {
+  return (
+    <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
+      <div className="flex justify-between items-center">
+        <h2 className="text-orange-dark text-xl font-semibold leading-7">
+          {content.ltc.title}
+        </h2>
+
+        <div className="flex space-x-2">
+          <Button.Outline
+            className="px-4 py-1 font-semibold text-sm bg-white"
+            color="border-orange-dark text-orange-dark"
+            type="button"
+            onClick={onBalanceClick}
+          >
+            {content.edit.balance}
+          </Button.Outline>
+        </div>
+      </div>
+
+      <hr className="my-3 border-orange-dark" />
+
+      <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3">
+        <InfoField
+          className="w-full lg:w-1/5"
+          title={content.ltc.caseNo}
+          content={caseUsers.caseUserNo}
+          section="case"
+        />
+
+        <InfoField
+          className="w-full lg:w-1/2"
+          title={content.ltc.address}
+          content={`${caseUsers.county}${caseUsers.district}${caseUsers.addr}`}
+          section="case"
+        />
+      </div>
+
+      <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
+        <InfoField
+          title={content.ltc.urgent.name}
+          content={caseUsers.urgentName}
+          section="case"
+        />
+        <InfoField
+          title={content.ltc.urgent.relationship}
+          content={caseUsers.urgentRelationship || content.ltc.urgent.none}
+          section="case"
+        />
+        <InfoField
+          title={content.ltc.urgent.phone}
+          content={caseUsers.urgentPhone}
+          section="case"
+        />
+        <InfoField
+          title={content.ltc.urgent.tel}
+          content={caseUsers.urgentTel}
+          section="case"
+        />
+      </div>
+    </article>
+  );
 }
 
 export default function UserInfo() {
-  const [isOpen, setOpen] = useState(false);
+  const [modal, setModal] = useState<
+    "password" | "balance" | "phone" | undefined
+  >();
 
-  const [modalType, setModalType] =
-    useState<"password" | "balance" | "changePhone">("changePhone");
+  const close = () => setModal(undefined);
 
-  const [user, setUser] = useState({
-    user: mockUser,
-    caseUser: mockCaseUsers,
-  });
-
-  function CallModal(type: "password" | "balance" | "changePhone") {
-    setModalType(type);
-    setOpen(true);
-  }
   return (
-    <Layout.Normal title="用戶資料">
-      <div className="-mx-6 lg:auto">
-        <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-gold-darker text-xl font-semibold leading-7">
-              基本資料
-            </h2>
-            <div className="flex space-x-2">
-              <Button.Outline
-                className="px-4 py-1 font-semibold text-sm bg-white"
-                type="button"
-              >
-                {/* TODO:要把按鈕事件改掉 */}
-                <span onClick={() => CallModal("password")}>修改密碼</span>
-              </Button.Outline>
+    <Layout.Normal title={content.title}>
+      <div className="-mx-6 lg:mx-auto">
+        <PersonalInformation
+          onPasswordClick={() => setModal("password")}
+          onChangePhoneClick={() => setModal("phone")}
+        />
 
-              <Button.Outline
-                className="px-4 py-1 font-semibold text-sm bg-white"
-                type="button"
-              >
-                {/* TODO:要把按鈕事件改掉 */}
-                <span onClick={() => CallModal("changePhone")}>修改手機</span>
-              </Button.Outline>
-            </div>
-          </div>
-          <hr className="my-3 border-gold-darker" />
-
-          <section
-            className="flex flex-col lg:flex-row space-y-4
-         lg:space-x-4 items-end pt-3 pb-2 lg:pb-0"
-          >
-            <InfoField title="姓名" content={user.user.name} />
-            <InfoField
-              title="生日"
-              content={birthdayConverter(user.user.birthday)}
-            />
-            <InfoField title="性別" content={sexConverter(user.user.sex)} />
-            <InfoField title="身分證字號" content={user.user.uid} />
-            <InfoField title="手機" content={user.user.phone} />
-          </section>
-        </article>
-
-        <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
-          <div className="flex justify-between items-center">
-            <h2 className="text-orange-dark text-xl font-semibold leading-7">
-              長照
-            </h2>
-            <div className="flex space-x-2">
-              <Button.Outline
-                className="px-4 py-1 font-semibold text-sm bg-white"
-                color="border-orange-dark text-orange-dark"
-                type="button"
-              >
-                {/* TODO:要把按鈕事件改掉 */}
-                <span onClick={() => CallModal("balance")}>額度狀況</span>
-              </Button.Outline>
-            </div>
-          </div>
-          <hr className="my-3 border-orange-dark" />
-
-          <section className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3">
-            <InfoField
-              className="w-full lg:w-1/5"
-              title="案號"
-              content={user.caseUser.caseUserNo}
-              section="case"
-            />
-            <InfoField
-              className="w-full lg:w-1/2"
-              title="居住地址"
-              content={`${user.caseUser.county}${user.caseUser.district}${user.caseUser.addr}`}
-              section="case"
-            />
-          </section>
-
-          <section className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
-            <InfoField
-              title="緊急聯絡人姓名"
-              content={user.caseUser.urgentName}
-              section="case"
-            />
-            <InfoField
-              title="緊急聯絡人關係"
-              content={
-                user.caseUser.urgentRelationship === ""
-                  ? "未填寫"
-                  : user.caseUser.urgentRelationship
-              }
-              section="case"
-            />
-            <InfoField
-              title="緊急聯絡人手機"
-              content={user.caseUser.urgentPhone}
-              section="case"
-            />
-            <InfoField
-              title="緊急聯絡人市話"
-              content={user.caseUser.urgentTel}
-              section="case"
-            />
-          </section>
-        </article>
+        <LongTermCare onBalanceClick={() => setModal("balance")} />
       </div>
-      <DefaultModal
-        isOpen={isOpen}
-        setOpen={setOpen}
-        title={TitleConverter(modalType)}
-        size="sm"
-        closeButton={modalType !== "changePhone"}
-        lockedScreen
-      >
-        {modalType === "password" && <PasswordModal setModal={setOpen} />}
 
-        {modalType === "balance" && <BalanceModal setModal={setOpen} />}
-
-        {modalType === "changePhone" && <ChangePhoneModal setModal={setOpen} />}
-      </DefaultModal>
+      {modal === "password" && <PasswordModal onClose={close} />}
+      {modal === "balance" && <BalanceModal onClose={close} />}
+      {modal === "phone" && <PhoneModal onClose={close} />}
     </Layout.Normal>
   );
 }
