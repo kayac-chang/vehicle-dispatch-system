@@ -30,6 +30,7 @@ export function Select<T>({
 
             <_Select
               native
+              label={label}
               inputProps={{
                 name,
                 id: name,

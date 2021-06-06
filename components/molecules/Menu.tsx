@@ -82,16 +82,9 @@ type ExpandedProps = {
 };
 function Expanded({ label, icon, items, className }: ExpandedProps) {
   const [isExpanded, setExpand] = useState(false);
-  const { ref, isFocus } = useCurrentFocus<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isExpanded) return;
-
-    setExpand(isFocus);
-  }, [isFocus, isExpanded, setExpand]);
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative">
       <button
         className={clsx(
           className,

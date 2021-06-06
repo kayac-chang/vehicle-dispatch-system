@@ -40,7 +40,7 @@ export function Form({ title, description, children, onSubmit }: FormProps) {
       <div
         className={clsx(
           "mx-auto flex flex-col items-center h-full",
-          "md:px-8",
+          "md:p-8",
           "lg:flex-row lg:space-x-4",
           "xl:container"
         )}
