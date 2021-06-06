@@ -24,21 +24,25 @@ function Panel({ children, title, className }: PanelProps) {
 
 type PaperProps = {
   className?: string;
-  title: string;
+  title?: string;
   children?: ReactNode;
-  icon: "fill" | "hole";
+  icon?: "fill" | "hole";
 };
 function PaperCard({ className, title, children, icon }: PaperProps) {
   return (
     <div className={clsx("flex flex-col", className)}>
-      <div className="flex space-x-1 py-2">
-        <span className="w-5 text-gold-darker">
-          {icon === "fill" && <Icon.EllipseFill />}
-          {icon === "hole" && <Icon.EllipseHole />}
-        </span>
+      {title && (
+        <div className="flex space-x-1 py-2">
+          {icon && (
+            <span className="w-5 text-gold-darker">
+              {icon === "fill" && <Icon.EllipseFill />}
+              {icon === "hole" && <Icon.EllipseHole />}
+            </span>
+          )}
 
-        <span className="text-sm">{title}</span>
-      </div>
+          <span className="text-sm">{title}</span>
+        </div>
+      )}
 
       <Paper elevation={3} className="flex flex-col p-4 space-y-4">
         {children}

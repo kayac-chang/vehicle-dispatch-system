@@ -38,6 +38,7 @@ import Clear from "assets/icons/clear.svg";
 import CheckOK from "assets/icons/check-ok.svg";
 import Magnifier from "assets/icons/magnifier.svg";
 import PhoneOutline from "assets/icons/phone-outline.svg";
+import Swap from "assets/icons/swap.svg";
 
 const Icon = {
   Menu,
@@ -80,6 +81,7 @@ const Icon = {
   CheckOK,
   Magnifier,
   PhoneOutline,
+  Swap,
 };
 
 export default Icon;

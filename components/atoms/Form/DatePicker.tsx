@@ -62,13 +62,11 @@ export function Time<T>({ name, label, className }: TimeProps<T>) {
     <div className={className}>
       <TextField
         type="time"
+        id={name}
         name={name}
-        label={<span className="text-base">{label}</span>}
+        label={label}
         InputLabelProps={{
           shrink: true,
-          classes: {
-            root: "text-black",
-          },
         }}
         inputProps={{
           step: 300,
