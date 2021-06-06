@@ -14,7 +14,8 @@ export function BasicTitle({ item }: Props) {
       )}
     >
       <div className="flex items-center justify-between lg:space-x-4 pr-4 lg:pr-6">
-        <DecorationTag className="relative" bgColor="bg-gray-extralight" />
+        <DecorationTag className="relative" label="長照" />
+
         <div className="flex-1 items-center space-x-4 hidden lg:flex">
           <InfoSet
             title="訂單編號"
@@ -31,7 +32,9 @@ export function BasicTitle({ item }: Props) {
           />
         </div>
         <div className="flex">
-          {item.isCarpool && <Carpool className="space-x-1 mr-3 lg:mr-6" />}
+          {item.isCarpool && (
+            <Carpool className="space-x-1 mr-3 lg:mr-6" label="已共乘" />
+          )}
 
           <Tag status={item.status} />
         </div>
