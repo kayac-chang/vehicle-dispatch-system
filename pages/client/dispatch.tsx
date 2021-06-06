@@ -2,318 +2,9 @@ import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
 import { Card, Accordion } from "components/molecules";
 import Layout from "components/templates";
-import { Control, useForm } from "react-hook-form";
-import GoogleMapReact from "google-map-react";
-
-type CarItemProps = {
-  label: string;
-  order?: number;
-};
-function CarItem({ label, order }: CarItemProps) {
-  return (
-    <Button.Base
-      type="button"
-      className={clsx(
-        order ? "bg-black bg-opacity-75 text-white" : "border border-black",
-        "text-sm text-left",
-        "py-2 px-8 w-full",
-        "rounded relative"
-      )}
-    >
-      <span>{label}</span>
-
-      {order && (
-        <span
-          className={clsx(
-            "absolute left-0 top-1/2",
-            "transform -translate-y-1/2 -translate-x-1",
-            "w-6 h-6",
-            "flex justify-center items-center",
-            "bg-yellow-dark text-black text-sm"
-          )}
-        >
-          {order}
-        </span>
-      )}
-    </Button.Base>
-  );
-}
-
-function RouteMap() {
-  const center = {
-    lat: 59.95,
-    lng: 30.33,
-  };
-
-  const API_KEY = "AIzaSyBd6sR-KCtS5ZYKrn6VZInAIwB1uIV0GPg";
-
-  return (
-    <div className="-mx-4">
-      <div className="bg-black bg-opacity-75 flex justify-end text-xs py-3 space-x-4 px-4">
-        <div className="w-1/3">
-          <Button.Outline type="button" className="bg-white h-full">
-            新增下個地點
-          </Button.Outline>
-        </div>
-        <div className="w-1/3">
-          <Button.Flat type="button" className="h-full py-2">
-            立即預約
-          </Button.Flat>
-        </div>
-      </div>
-
-      <div className="h-48 w-full">
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: API_KEY }}
-          defaultCenter={center}
-          defaultZoom={11}
-        ></GoogleMapReact>
-      </div>
-    </div>
-  );
-}
-
-function JourneyTable() {
-  const heads = [
-    {
-      label: "行程",
-      key: "type",
-      className: "text-blue-light",
-    },
-    {
-      label: "總額",
-      key: "total",
-    },
-    {
-      label: "補助",
-      key: "subsidy",
-    },
-    {
-      label: "自負",
-      key: "self",
-    },
-    {
-      label: "陪同",
-      key: "accompany",
-    },
-    {
-      label: "個案負擔",
-      key: "speical",
-      className: "text-red-light",
-    },
-  ];
-
-  const rows: Record<string, string>[] = [
-    {
-      type: "去程",
-      total: "$1000",
-      subsidy: "$1000",
-      self: "$1000",
-      accompany: "$1000",
-      speical: "$1000",
-    },
-    {
-      type: "回程",
-      total: "$1000",
-      subsidy: "$1000",
-      self: "$1000",
-      accompany: "$1000",
-      speical: "$1000",
-    },
-  ];
-
-  return (
-    <div className="-mx-4">
-      <table className="w-full bg-white table-fixed text-center text-sm">
-        <thead>
-          <tr className="bg-gold-darker text-white">
-            {heads.map((head) => (
-              <th key={head.key} className="py-2">
-                {head.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody className="divide-y">
-          {rows.map((row, index) => (
-            <tr key={index}>
-              {heads.map(({ key, className }) => (
-                <td
-                  key={`${index}, ${key}`}
-                  className={clsx("py-2", className)}
-                >
-                  {row[key] || ""}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-type JourneyProps = {
-  control: Control<Request>;
-};
-function Journey({ control }: JourneyProps) {
-  return (
-    <Accordion.Fieldset id="car-selection" title="行程">
-      <div className="space-y-4">
-        <Card.Paper title="起點" icon="hole">
-          <Form.Input
-            type="text"
-            name="origin"
-            label="地址"
-            control={control}
-          />
-
-          <Form.Input
-            type="select"
-            name="origin-note-type"
-            label="起點備註"
-            control={control}
-            options={[{ id: "other", label: "其他", value: "other" }]}
-          />
-
-          <Form.Input
-            type="text"
-            name="origin-note"
-            label="請輸入其他備註"
-            control={control}
-          />
-        </Card.Paper>
-
-        <Card.Paper title="迄點" icon="fill">
-          <Form.Input
-            type="text"
-            name="destination"
-            label="地址"
-            control={control}
-          />
-
-          <Form.Input
-            type="select"
-            name="destination-note-type"
-            label="起點備註"
-            control={control}
-            options={[{ id: "other", label: "其他", value: "other" }]}
-          />
-
-          <Form.Input
-            type="text"
-            name="destination-note"
-            label="請輸入其他備註"
-            control={control}
-          />
-        </Card.Paper>
-
-        <div className="space-y-4">
-          <div className="flex flex-col">
-            <Form.Input
-              type="check"
-              name="share"
-              control={control}
-              label="願意共乘"
-            />
-            <Form.Input
-              type="check"
-              name="is-round-trip"
-              control={control}
-              label="預約回程(回居住地址)"
-            />
-          </div>
-
-          <Form.Input
-            type="date"
-            name="round-trip-time"
-            control={control}
-            label="回程乘車時間"
-          />
-
-          <Form.Input
-            type="select"
-            name="car-type"
-            control={control}
-            label="車種"
-            options={[{ id: "car", label: "福祉車", value: "car" }]}
-          />
-
-          <Form.Input
-            type="select"
-            name="wheelchair-type"
-            control={control}
-            label="輪椅種類"
-            options={[
-              { id: "normal", label: "普通輪椅(可收折)", value: "normal" },
-            ]}
-          />
-
-          <Form.Input
-            type="select"
-            name="accompanying-number"
-            control={control}
-            label="陪同人數"
-            options={[{ id: "0", label: "0人", value: "0" }]}
-          />
-
-          <div className="space-y-4">
-            <span>接收簡訊號碼</span>
-
-            <Form.Input
-              type="text"
-              name="sms-code"
-              control={control}
-              label="請輸入手機號碼"
-            />
-          </div>
-
-          <div className="text-xs">
-            <p>註：陪同人數</p>
-            <p className="text-red-light">
-              第一人免費、第二人自費加價50元、第三人(含)及以上每位自費加價200元。
-            </p>
-          </div>
-        </div>
-      </div>
-    </Accordion.Fieldset>
-  );
-}
-
-function CarSelection() {
-  return (
-    <Accordion.Fieldset id="car-selection" title="車行選擇">
-      <div className="flex justify-between py-2">
-        <p className="text-sm space-x-1">
-          <span>優先搭乘車行排序</span>
-          <span className="text-red-light">(請依序點擊完成排序)</span>
-        </p>
-
-        <Button.Base
-          type="button"
-          className="bg-gold-darker text-white text-sm px-1"
-        >
-          重新排序
-        </Button.Base>
-      </div>
-
-      <div className="flex flex-col space-y-2">
-        <CarItem
-          label="新北市私立匯安老人長期照顧中心(養護型)照顧中心(養護型)"
-          order={2}
-        />
-
-        <CarItem label="交通單位" />
-
-        <CarItem
-          label="新北市私立匯安老人長期照顧中心(養護型)照顧中心(養護型)"
-          order={1}
-        />
-      </div>
-    </Accordion.Fieldset>
-  );
-}
+import { useForm, Control } from "react-hook-form";
+import { CarSelection, RouteMap, JourneyTable } from "components/dispatch";
+import { useState } from "react";
 
 const user = {
   name: "王小明",
@@ -338,8 +29,217 @@ interface Request {
   "sms-code": string;
 }
 
+type JourneyProps = {
+  id: string;
+  control: Control<Request>;
+  expanded: boolean;
+  setExpanded: () => void;
+};
+function Journey({ id, control, expanded, setExpanded }: JourneyProps) {
+  return (
+    <Accordion.Fieldset
+      id={id}
+      title="行程"
+      open={expanded}
+      onClick={setExpanded}
+    >
+      <Card.Paper className="space-y-4 -mx-4 lg:mx-0 lg:my-2">
+        <div className="hidden lg:flex justify-end space-x-4">
+          <Button.Base
+            type="button"
+            className={clsx(
+              "bg-gold-darker text-white text-sm",
+              "py-1 flex justify-center items-center rounded space-x-1",
+              "w-28"
+            )}
+          >
+            路線預覽
+          </Button.Base>
+
+          <Button.Base
+            type="button"
+            className={clsx(
+              "bg-gold-darker text-white text-sm",
+              "py-1 flex justify-center items-center rounded space-x-1",
+              "w-28"
+            )}
+          >
+            <span className="w-4 transform rotate-90 lg:rotate-0">
+              <Icon.Swap />
+            </span>
+
+            <span>起迄點互換</span>
+          </Button.Base>
+        </div>
+
+        <div className="space-y-4 lg:space-y-0 lg:flex lg:space-x-6">
+          <Card.Paper className="flex-1" title="起點" icon="hole">
+            <Form.Input
+              type="text"
+              name="origin"
+              label="地址"
+              control={control}
+            />
+
+            <Form.Input
+              type="select"
+              name="origin-note-type"
+              label="起點備註"
+              control={control}
+              options={[{ id: "other", label: "其他", value: "other" }]}
+            />
+
+            <Form.Input
+              type="text"
+              name="origin-note"
+              label="請輸入其他備註"
+              control={control}
+            />
+          </Card.Paper>
+
+          <div className="flex justify-end lg:hidden">
+            <Button.Base
+              type="button"
+              className={clsx(
+                "bg-gold-darker text-white text-sm",
+                "py-1 flex justify-center items-center rounded space-x-1",
+                "w-28"
+              )}
+            >
+              <span className="w-4 transform rotate-90 lg:rotate-0">
+                <Icon.Swap />
+              </span>
+
+              <span>起迄點互換</span>
+            </Button.Base>
+          </div>
+
+          <Card.Paper className="flex-1" title="迄點" icon="fill">
+            <Form.Input
+              type="text"
+              name="destination"
+              label="地址"
+              control={control}
+            />
+
+            <Form.Input
+              type="select"
+              name="destination-note-type"
+              label="起點備註"
+              control={control}
+              options={[{ id: "other", label: "其他", value: "other" }]}
+            />
+
+            <Form.Input
+              type="text"
+              name="destination-note"
+              label="請輸入其他備註"
+              control={control}
+            />
+          </Card.Paper>
+
+          <div className="flex justify-end lg:hidden">
+            <Button.Base
+              type="button"
+              className={clsx(
+                "bg-gold-darker text-white text-sm",
+                "px-2 py-1 flex justify-center items-center rounded space-x-1",
+                "w-28"
+              )}
+            >
+              路線預覽
+            </Button.Base>
+          </div>
+        </div>
+
+        <div className="space-y-6 lg:space-y-0 lg:flex lg:space-x-6">
+          <div className="flex-1 space-y-4">
+            <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-4 lg:space-y-0">
+              <div className="lg:w-2/3 flex flex-col lg:flex-row">
+                <Form.Input
+                  type="check"
+                  name="share"
+                  control={control}
+                  label="願意共乘"
+                />
+                <Form.Input
+                  type="check"
+                  name="is-round-trip"
+                  control={control}
+                  label="預約回程(回居住地址)"
+                />
+              </div>
+
+              <div className="lg:w-1/3">
+                <Form.Input
+                  type="date"
+                  name="round-trip-time"
+                  control={control}
+                  label="回程乘車時間"
+                />
+              </div>
+            </div>
+
+            <div className="lg:flex lg:space-x-4 space-y-4 lg:space-y-0">
+              <Form.Input
+                type="select"
+                name="car-type"
+                control={control}
+                label="車種"
+                options={[{ id: "car", label: "福祉車", value: "car" }]}
+              />
+
+              <Form.Input
+                type="select"
+                name="wheelchair-type"
+                control={control}
+                label="輪椅種類"
+                options={[
+                  { id: "normal", label: "普通輪椅(可收折)", value: "normal" },
+                ]}
+              />
+
+              <Form.Input
+                type="select"
+                name="accompanying-number"
+                control={control}
+                label="陪同人數"
+                options={[{ id: "0", label: "0人", value: "0" }]}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <span>接收簡訊號碼</span>
+
+              <Form.Input
+                type="text"
+                name="sms-code"
+                control={control}
+                label="請輸入手機號碼"
+              />
+            </div>
+
+            <div className="text-xs">
+              <p>註：陪同人數</p>
+              <p className="text-red-light">
+                第一人免費、第二人自費加價50元、第三人(含)及以上每位自費加價200元。
+              </p>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <JourneyTable />
+          </div>
+        </div>
+      </Card.Paper>
+    </Accordion.Fieldset>
+  );
+}
+
 export default function News() {
   const { control } = useForm<Request>();
+
+  const [expanded, setExpanded] = useState("car-selection");
 
   return (
     <Layout.Normal title="預約訂車">
@@ -354,7 +254,7 @@ export default function News() {
               <div className="flex-1 sm:flex-none text-black">
                 <Button.Base
                   type="button"
-                  className="bg-white w-full py-1 rounded-sm shadow border-black flex items-center justify-center"
+                  className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center"
                 >
                   <span className="w-4">
                     <Icon.Search />
@@ -401,11 +301,18 @@ export default function News() {
               />
             </div>
 
-            <CarSelection />
+            <CarSelection
+              id="car-selection"
+              expanded={expanded === "car-selection"}
+              setExpanded={() => setExpanded("car-selection")}
+            />
 
-            <Journey control={control} />
-
-            <JourneyTable />
+            <Journey
+              control={control}
+              id="journey"
+              expanded={expanded === "journey"}
+              setExpanded={() => setExpanded("journey")}
+            />
 
             <RouteMap />
           </form>
