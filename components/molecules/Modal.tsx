@@ -44,7 +44,11 @@ function Dialog({
       >
         <strong>{title}</strong>
 
-        <button className="w-4 text-gray-dark" onClick={onClose}>
+        <button
+          className="w-4 text-gray-dark"
+          onClick={onClose}
+          aria-label="關閉"
+        >
           <Icon.Clear />
         </button>
       </DialogTitle>
