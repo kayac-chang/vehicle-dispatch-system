@@ -1,15 +1,15 @@
-import clsx from "clsx";
 import Layout from "components/templates";
-import { Icon } from "components/atoms";
-import { CorpInfoTypes } from "types";
+import { Icon, Form, Button } from "components/atoms";
+import { Corporation } from "types";
 import { Card } from "components/contact";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 // TODO:改成正確的資料型態及接上API
-const mockCorpInfo: CorpInfoTypes[] = [
+const list: Corporation[] = [
   {
     name: "凡亨國際租賃有限公司凡亨國際租賃有限公司",
     tel: "(02)2912-1966",
+    description: "國定假日提前預約，皆可服務，依車行調度情況。",
     operatingHours: ["(平日)08:00-18:00", "(六)08:00-18:00", "(日)08:00-18:00"],
     customerServiceHours: [
       "(一)08:00-18:00",
@@ -23,6 +23,7 @@ const mockCorpInfo: CorpInfoTypes[] = [
   {
     name: "凡亨國際租賃有限公司凡亨國際租賃有限公司",
     tel: "(02)2912-1966",
+    description: "國定假日提前預約，皆可服務，依車行調度情況。",
     operatingHours: ["(平日)08:00-18:00", "(六)08:00-18:00", "(日)08:00-18:00"],
     customerServiceHours: [
       "(一)08:00-18:00",
@@ -36,38 +37,49 @@ const mockCorpInfo: CorpInfoTypes[] = [
   },
 ];
 
+const content = {
+  title: "聯繫客服",
+
+  form: {
+    search: "請輸入車行名稱",
+    submit: "查詢",
+  },
+};
+
+interface Request {
+  search: string;
+}
 export default function Contact() {
-  const [keyword, setKeyword] = useState("");
+  const { control, handleSubmit } = useForm<Request>();
 
-  const [corpList, setCorpList] = useState<CorpInfoTypes[]>(mockCorpInfo);
-
-  function search() {
-    console.log("搜尋");
+  function search(data: Request) {
+    console.log(data);
   }
+
   return (
-    <Layout.Normal title="聯繫客服">
-      <div className="-mx-2 px-0 lg:mx-0 lg:px-6 pb-0 lg:pb-6">
-        <div className="flex justify-end mb-6">
-          <div className="w-3/5 lg:w-1/4 relative flex items-center justify-end">
-            <input
-              className={clsx(
-                "w-full px-2 py-1 text-sm font-normal text-gray-900 bg-white",
-                "border border-gray-900 placeholder-gray-900 rounded-lg"
-              )}
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="請輸入車行名稱"
-            />
-            <button
-              className="absolute mr-1 p-1 w-6 h-6 text-gray-900"
-              onClick={search}
-            >
-              <Icon.Magnifier />
-            </button>
+    <Layout.Normal title={content.title}>
+      <div className="-mx-2 lg:mx-0 space-y-4">
+        <form
+          className="lg:w-1/4 ml-auto flex flex-col lg:flex-row justify-end space-y-4 lg:space-y-0 lg:space-x-4"
+          onSubmit={handleSubmit(search)}
+        >
+          <Form.Input
+            type="text"
+            name="search"
+            control={control}
+            icon={<Icon.Magnifier />}
+            label={content.form.search}
+            className="bg-white"
+          />
+
+          <div className="lg:w-1/3">
+            <Button.Flat type="submit" className="py-1">
+              {content.form.submit}
+            </Button.Flat>
           </div>
-        </div>
-        {corpList.map((item, index) => (
+        </form>
+
+        {list.map((item, index) => (
           <Card info={item} key={index} />
         ))}
       </div>

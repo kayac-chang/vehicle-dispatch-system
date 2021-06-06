@@ -20,9 +20,10 @@ export interface RecordListTypes {
 }
 
 // TODO:改成正確的資料型態
-export interface CorpInfoTypes {
+export interface Corporation {
   name: string;
   tel: string;
+  description?: string;
   operatingHours: string[];
   customerServiceHours: string[];
 }
