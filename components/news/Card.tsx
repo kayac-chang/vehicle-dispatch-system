@@ -4,10 +4,13 @@ import { Tag } from "./Tag";
 import { News } from "types";
 import Link from "next/link";
 
+const LIMIT = 9;
+
 type CardViewProps = {
+  total: number;
   items: News[];
 };
-export function CardView({ items }: CardViewProps) {
+export function CardView({ items, total }: CardViewProps) {
   return (
     <div className="lg:hidden">
       {items.length ? (
@@ -31,7 +34,7 @@ export function CardView({ items }: CardViewProps) {
           </div>
 
           <div className="flex justify-center shadow-inner pt-2 pb-6">
-            <Pagination total={items.length} />
+            <Pagination total={Math.ceil(total / LIMIT)} />
           </div>
         </div>
       ) : (
