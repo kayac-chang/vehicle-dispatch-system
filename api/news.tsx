@@ -48,9 +48,12 @@ interface GetNewsListResponse extends BaseResponse {
  *
  * get news list from service
  */
-export function getNewsList(): Promise<News[]> {
+export function getNewsList(): Promise<{ total: number; news: News[] }> {
   return get<GetNewsListResponse>(KHH_API("/api/Newss/Load")).then(
-    pipe(prop("data"), map(toNews))
+    ({ data, count }) => ({
+      total: Number(count),
+      news: map(toNews, data),
+    })
   );
 }
 

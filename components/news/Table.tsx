@@ -5,6 +5,8 @@ import clsx from "clsx";
 import { News } from "types";
 import Link from "next/link";
 
+const LIMIT = 9;
+
 const content = {
   table: {
     category: "類型",
@@ -14,9 +16,10 @@ const content = {
 };
 
 type TableViewProps = {
+  total: number;
   items: News[];
 };
-export function TableView({ items }: TableViewProps) {
+export function TableView({ items, total }: TableViewProps) {
   return (
     <div className="hidden lg:block pb-8">
       <table
@@ -59,7 +62,7 @@ export function TableView({ items }: TableViewProps) {
 
       {items.length > 0 && (
         <div className="flex justify-end pt-2">
-          <Pagination total={items.length} />
+          <Pagination total={Math.ceil(total / LIMIT)} />
         </div>
       )}
 

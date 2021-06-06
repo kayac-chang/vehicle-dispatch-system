@@ -6,9 +6,13 @@ import { getNewsList } from "api/news";
 import { InferGetServerSidePropsType as Infer } from "next";
 
 export async function getServerSideProps() {
+  const LIMIT = 9;
+  const { total, news } = await getNewsList();
+
   return {
     props: {
-      news: await getNewsList(),
+      total,
+      news,
     },
   };
 }
@@ -20,8 +24,9 @@ const content = {
     category: {
       label: "選擇類別",
       options: [
-        { id: "all", label: "全部公告", value: "all" },
-        { id: "no", label: "no", value: "no" },
+        { id: "all", label: "全部公告", value: "" },
+        { id: "system", label: "系統訊息", value: "6741433311767863297" },
+        { id: "ltc", label: "長照", value: "6741433439035629569" },
       ],
     },
 
@@ -38,7 +43,7 @@ interface Request {
 }
 
 type Props = Infer<typeof getServerSideProps>;
-export default function News({ news }: Props) {
+export default function News({ total, news }: Props) {
   const { control, handleSubmit } = useForm<Request>();
 
   function onSubmit(data: Request) {
@@ -93,9 +98,9 @@ export default function News({ news }: Props) {
         </form>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={news} />
+          <CardView items={news} total={total} />
 
-          <TableView items={news} />
+          <TableView items={news} total={total} />
         </div>
       </div>
     </Layout.Normal>
