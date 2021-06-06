@@ -1,5 +1,7 @@
+import Modal from "./Modal";
+
+export { Modal };
 export * from "./Tag";
 export * from "./RecordCard";
-export * from "./Titles";
 export * from "./InfoSet";
 export * from "./DecorationTag";

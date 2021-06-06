@@ -28,19 +28,21 @@ export function Tag({ status }: TagProps) {
 
 type CarpoolProps = {
   className?: string;
+  label: string;
 };
-export function Carpool({ className }: CarpoolProps) {
+export function Carpool({ className, label }: CarpoolProps) {
   return (
-    <p
+    <div
       className={clsx(
         "flex items-center text-orange-dark font-semibold text-sm whitespace-no-wrap",
         className
       )}
     >
-      <span className="w-4 mt-px">
+      <span className="w-4 mt-px" aria-hidden>
         <Icon.Carpool />
       </span>
-      <span>已共乘</span>
-    </p>
+
+      <span>{label}</span>
+    </div>
   );
 }

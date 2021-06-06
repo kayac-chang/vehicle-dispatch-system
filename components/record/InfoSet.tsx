@@ -19,7 +19,7 @@ export function InfoSet({
   className = "",
 }: InfoSetProps) {
   return (
-    <p
+    <div
       className={clsx(
         "flex text-sm",
         align === "lg-h" && "flex-col lg:flex-row",
@@ -28,7 +28,7 @@ export function InfoSet({
         className
       )}
     >
-      <span
+      <strong
         className={clsx(
           "mr-2 font-medium",
           titleSize === "lg-sm" && "text-xs lg:text-sm",
@@ -38,8 +38,9 @@ export function InfoSet({
         )}
       >
         {title}
-      </span>
-      <span className={clsx(contentClass)}>{content}</span>
-    </p>
+      </strong>
+
+      <p className={clsx(contentClass)}>{content}</p>
+    </div>
   );
 }
