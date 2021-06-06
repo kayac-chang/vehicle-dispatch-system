@@ -15,9 +15,6 @@ const theme = createTheme({
       styleOverrides: {
         input: {
           padding: config.theme.padding[2],
-          background: "white",
-          border: "1px solid #292929",
-          borderRadius: 2,
         },
       },
     },
