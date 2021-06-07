@@ -125,10 +125,7 @@ export function CaseInfo({ item }: Props) {
 
       <div>
         <div className="flex items-center">
-          <div
-            className="flex items-center text-orange-rich font-semibold"
-            style={{ minWidth: "5rem" }}
-          >
+          <div className="flex items-center text-orange-rich font-semibold min-h-20">
             <strong className="text-sm">{content.journey.address.from}</strong>
 
             <span className="text-xs ml-1">{`(${item.pickupInfo.description})`}</span>
@@ -160,10 +157,7 @@ export function CaseInfo({ item }: Props) {
 
       <div>
         <div className="flex items-center">
-          <div
-            className="flex items-center text-orange-rich font-semibold"
-            style={{ minWidth: "5rem" }}
-          >
+          <div className="flex items-center text-orange-rich font-semibold min-h-20">
             <strong className="text-sm">{content.journey.address.to}</strong>
 
             <span className="text-xs ml-1">{`(${item.dropInfo.description})`}</span>
