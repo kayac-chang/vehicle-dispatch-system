@@ -1,5 +1,3 @@
-import clsx from "clsx";
-import { DecorationTag, InfoSet, Tag, Carpool } from "components/record";
 import Layout from "components/templates";
 import {
   BasicTitle,
@@ -8,10 +6,10 @@ import {
   PaymentInfo,
   History,
 } from "components/record/detail";
-import { RecordDetailTypes } from "types";
+import { RecordDetail as IRecordDetail } from "types";
 import { useState } from "react";
 
-const mockData: RecordDetailTypes = {
+const detail: IRecordDetail = {
   orderNo: "TS16063797554258",
   pickDate: "2020-11-29 21:30",
   status: 1,
@@ -72,26 +70,25 @@ const mockData: RecordDetailTypes = {
     { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
   ],
 };
+
+const content = {
+  title: "乘車明細",
+};
+
 export default function RecordDetail() {
-  const [value, setValue] = useState<RecordDetailTypes>(mockData);
   return (
-    <Layout.Sub title={""} prev="/client/record">
-      <div className="bg-white w-56 py-1 my-4">
-        <h1 className="text-2xl font-semibold text-gold-darker tracking-wider flex justify-center border-l-8 border-green-light">
-          乘車明細
-        </h1>
+    <Layout.Normal title={content.title} prev="/client/record">
+      <div className="-mx-6 mb-4 sm:m-0 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
+        <BasicTitle item={detail} />
+
+        <BasicInfo item={detail} />
+
+        <CaseInfo item={detail} />
+
+        <PaymentInfo item={detail} />
+
+        <History item={detail} />
       </div>
-      <div className="-mx-6 mb-4 lg:m-0 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
-        <BasicTitle item={value} />
-
-        <BasicInfo item={value} />
-
-        <CaseInfo item={value} />
-
-        <PaymentInfo item={value} />
-
-        <History item={value} />
-      </div>
-    </Layout.Sub>
+    </Layout.Normal>
   );
 }

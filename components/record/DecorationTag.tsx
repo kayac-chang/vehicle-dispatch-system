@@ -1,4 +1,5 @@
 import clsx from "clsx";
+
 type DecorationTagProps = {
   className?: string;
   label: string;

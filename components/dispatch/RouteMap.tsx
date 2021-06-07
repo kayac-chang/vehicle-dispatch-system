@@ -1,14 +1,6 @@
-import { Button } from "components/atoms";
-import GoogleMapReact from "google-map-react";
+import { Button, RouteMap as Map } from "components/atoms";
 
 export function RouteMap() {
-  const center = {
-    lat: 59.95,
-    lng: 30.33,
-  };
-
-  const API_KEY = "AIzaSyBd6sR-KCtS5ZYKrn6VZInAIwB1uIV0GPg";
-
   return (
     <div className="-mx-4">
       <div className="bg-black bg-opacity-75 flex justify-end text-xs lg:text-sm py-3 space-x-4 px-4">
@@ -25,11 +17,7 @@ export function RouteMap() {
       </div>
 
       <div className="h-48 w-full">
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: API_KEY }}
-          defaultCenter={center}
-          defaultZoom={11}
-        ></GoogleMapReact>
+        <Map />
       </div>
     </div>
   );

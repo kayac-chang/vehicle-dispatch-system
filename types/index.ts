@@ -13,6 +13,15 @@ export interface QNA {
 }
 
 // TODO:改成正確的資料型態
+export interface Corporation {
+  name: string;
+  tel: string;
+  description?: string;
+  operatingHours: string[];
+  customerServiceHours: string[];
+}
+
+// TODO:改成正確的資料型態
 export interface Record {
   status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   passenger: string;
@@ -26,21 +35,12 @@ export interface Record {
 }
 
 // TODO:改成正確的資料型態
-export interface Corporation {
-  name: string;
-  tel: string;
-  description?: string;
-  operatingHours: string[];
-  customerServiceHours: string[];
-}
-
-// TODO:改成正確的資料型態
-export interface RecordDetailTypes {
+export interface RecordDetail {
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  passenger: string;
+  isCarpool: true;
   orderNo: string;
   pickDate: string;
-  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-  isCarpool: true;
-  passenger: string;
   caseNo: string;
   phone: string;
   phoneSms: string;

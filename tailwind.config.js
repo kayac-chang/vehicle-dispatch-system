@@ -69,18 +69,10 @@ module.exports = {
         dark: "#57746E",
       },
       blue: {
-        100: "#ebf8ff",
-        200: "#bee3f8",
-        300: "#90cdf4",
-        400: "#63b3ed",
-        500: "#4299e1",
-        600: "#3182ce",
-        700: "#2b6cb0",
-        800: "#2c5282",
-        900: "#2a4365",
-        dark: "#00628F",
         light: "#1890FF",
         bright: "#1890FF",
+        dark: "#00628F",
+        darker: "#0050B3",
       },
       gold: {
         lightest: "#F3F2EB",
@@ -92,6 +84,7 @@ module.exports = {
         light: "#FFF3E0",
         rich: "#FF7A45",
         dark: "#EF6C00",
+        darker: "#FA541C",
       },
     },
     fontSize: {
