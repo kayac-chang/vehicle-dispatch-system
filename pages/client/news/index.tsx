@@ -3,19 +3,9 @@ import { Form, Button } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { TableView, CardView } from "components/news";
 import { getNewsList } from "api/news";
-import { InferGetServerSidePropsType as Infer } from "next";
-
-export async function getServerSideProps() {
-  const LIMIT = 9;
-  const { total, news } = await getNewsList();
-
-  return {
-    props: {
-      total,
-      news,
-    },
-  };
-}
+import { useQuery } from "react-query";
+import { useState } from "react";
+import { Query } from "functions/query";
 
 const content = {
   title: "最新消息",
@@ -36,19 +26,46 @@ const content = {
   },
 };
 
+const INIT_PAGE = 1;
+const LIMIT = 9;
+
+function NewsQuery(page: number) {
+  return {
+    queryKey: ["news", page],
+    queryFn: () => getNewsList({ limit: LIMIT, page }),
+  };
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      ...(await Query(NewsQuery(INIT_PAGE))),
+    },
+  };
+}
+
 interface Request {
   category: string;
   from: Date;
   end: Date;
 }
+export default function News() {
+  // TODO Redux
+  const [page, setPage] = useState(() => INIT_PAGE);
 
-type Props = Infer<typeof getServerSideProps>;
-export default function News({ total, news }: Props) {
+  const { data, isFetching } = useQuery({
+    ...NewsQuery(page),
+    keepPreviousData: true,
+  });
+
   const { control, handleSubmit } = useForm<Request>();
 
   function onSubmit(data: Request) {
     console.log(data);
   }
+
+  const news = data?.news || [];
+  const max = data?.total ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
     <Layout.Normal title={content.title}>
@@ -98,9 +115,15 @@ export default function News({ total, news }: Props) {
         </form>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={news} total={total} />
+          <CardView
+            loading={isFetching}
+            items={news}
+            total={max}
+            page={page}
+            onChange={setPage}
+          />
 
-          <TableView items={news} total={total} />
+          <TableView items={news} total={max} page={page} onChange={setPage} />
         </div>
       </div>
     </Layout.Normal>

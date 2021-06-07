@@ -9,3 +9,4 @@ export * from "./Background";
 export * from "./NoData";
 export * from "./Link";
 export * from "./RouteMap";
+export * from "./Loading";
