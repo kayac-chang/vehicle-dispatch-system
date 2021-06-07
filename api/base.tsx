@@ -1,13 +1,13 @@
 import { join } from "path";
 
-type Query = Record<string, string | number | boolean>;
+type Query = Record<string, string | number | boolean | undefined>;
 export function KHH_API(path: string, query?: Query) {
-  const url = new URL(join(path), process.env.KHH_API);
+  const url = new URL("./" + join(path), process.env.NEXT_PUBLIC_KHH_API);
 
   query &&
-    Object.entries(query).forEach(([key, value]) =>
-      url.searchParams.append(key, String(value))
-    );
+    Object.entries(query)
+      .filter(([, value]) => value !== undefined)
+      .forEach(([key, value]) => url.searchParams.append(key, String(value)));
 
   return new Request(url.toString());
 }

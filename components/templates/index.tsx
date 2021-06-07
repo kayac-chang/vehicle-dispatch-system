@@ -2,7 +2,7 @@ import { ReactNode, FormEvent } from "react";
 import clsx from "clsx";
 import Head from "next/head";
 import { Header, Footer } from "components/organisms";
-import { Background, Button } from "components/atoms";
+import { Background, Button, Loading } from "components/atoms";
 import { Banner } from "components/molecules";
 import Theme from "./theme";
 
@@ -11,8 +11,15 @@ type BaseProps = {
   children?: ReactNode;
   footer?: boolean;
   className?: string;
+  loading?: boolean;
 };
-export function Base({ title, children, footer = true, className }: BaseProps) {
+export function Base({
+  title,
+  children,
+  footer = true,
+  className,
+  loading,
+}: BaseProps) {
   return (
     <Theme>
       <Head>
@@ -26,6 +33,8 @@ export function Base({ title, children, footer = true, className }: BaseProps) {
       <main className={clsx("flex-1", className)}>{children}</main>
 
       {footer && <Footer />}
+
+      {loading && <Loading />}
     </Theme>
   );
 }

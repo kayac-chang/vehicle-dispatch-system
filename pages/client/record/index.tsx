@@ -214,7 +214,7 @@ export default function Record() {
 
           {items.length && (
             <div className="flex justify-end pt-2">
-              <Pagination total={10} />
+              <Pagination total={10} page={0} />
             </div>
           )}
         </div>

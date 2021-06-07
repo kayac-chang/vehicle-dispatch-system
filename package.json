@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "lcp --proxyUrl https://khhdev.mass.org.tw/api/ &",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -24,6 +25,7 @@
     "react-dom": "17.0.2",
     "react-hook-form": "^7.6.6",
     "react-markdown": "^6.0.2",
+    "react-query": "^3.16.1",
     "rehype-raw": "^5.1.0"
   },
   "devDependencies": {
@@ -41,6 +43,7 @@
     "autoprefixer": "^10.2.5",
     "babel-jest": "^27.0.1",
     "jest": "^27.0.1",
+    "local-cors-proxy": "^1.1.0",
     "node-fetch": "^2.6.1",
     "postcss": "^8.3.0",
     "tailwindcss": "^1.9.0",

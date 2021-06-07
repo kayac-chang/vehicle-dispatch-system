@@ -43,18 +43,29 @@ interface GetNewsListResponse extends BaseResponse {
   data: NewsResponse[];
 }
 
+interface GetNewsListQuery {
+  limit?: number;
+  page?: number;
+}
+
 /**
  * [GET /api/Newss/Load]
  *
  * get news list from service
  */
-export function getNewsList(): Promise<{ total: number; news: News[] }> {
-  return get<GetNewsListResponse>(KHH_API("/api/Newss/Load")).then(
-    ({ data, count }) => ({
-      total: Number(count),
-      news: map(toNews, data),
+export function getNewsList(
+  props: GetNewsListQuery | undefined
+): Promise<{ total: number; news: News[] }> {
+  return get<GetNewsListResponse>(
+    KHH_API("Newss/Load", {
+      isClient: true,
+      limit: props?.limit,
+      page: props?.page,
     })
-  );
+  ).then(({ data, count }) => ({
+    total: Number(count),
+    news: map(toNews, data),
+  }));
 }
 
 interface GetNewsResponse extends BaseResponse {
@@ -67,7 +78,7 @@ interface GetNewsResponse extends BaseResponse {
  * get news by id from service
  */
 export function getNewsByID(id: string): Promise<News | undefined> {
-  return get<GetNewsResponse>(KHH_API("/api/Newss/Get", { id })).then(
+  return get<GetNewsResponse>(KHH_API("Newss/Get", { id })).then(
     pipe(prop("result"), toNews)
   );
 }
