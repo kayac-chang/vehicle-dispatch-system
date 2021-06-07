@@ -1,17 +1,18 @@
 import Layout from "components/templates";
-import { Pagination } from "components/molecules";
+import { Pagination, Modal } from "components/molecules";
 import { Button, Icon, NoData } from "components/atoms";
 import clsx from "clsx";
 import { Card, Table } from "components/fastCall";
+import { useState } from "react";
 
-interface FastCallProps {
+interface Item {
   pathNo: number;
   pathName: string;
   pickupLocation: string;
   dropLocation: string;
 }
 
-const fastCallList: FastCallProps[] = [
+const items: Item[] = [
   {
     pathNo: 1,
     pathName: "家-亞東醫院測試用個案-名字有點長的一個個案第1組類別a",
@@ -80,26 +81,48 @@ const fastCallList: FastCallProps[] = [
   },
 ];
 
-type CardViewProps = {
-  items: FastCallProps[];
+const content = {
+  title: "快速叫車",
+  add: "新增常用路線",
+
+  table: {
+    name: "路線名稱",
+    address: "起迄點",
+    operation: "操作",
+  },
+
+  delete: {
+    title: "刪除",
+    content: "確定刪除此路線？",
+    submit: "確認",
+    cancel: "取消",
+  },
 };
-function CardView({ items }: CardViewProps) {
+
+type Props = {
+  items: Item[];
+  onOrderClick?: () => void;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
+};
+function CardView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
   return (
     <div className="lg:hidden">
       {items.length ? (
         <div className="bg-white">
           <div className="divide-y border-b">
-            {items.map(
-              ({ pathNo, pathName, pickupLocation, dropLocation }, index) => (
-                <Card
-                  key={index}
-                  pathNo={pathNo}
-                  pathName={pathName}
-                  pickupLocation={pickupLocation}
-                  dropLocation={dropLocation}
-                />
-              )
-            )}
+            {items.map(({ pathNo, pathName, pickupLocation, dropLocation }) => (
+              <Card
+                key={pathNo}
+                pathNo={pathNo}
+                pathName={pathName}
+                pickupLocation={pickupLocation}
+                dropLocation={dropLocation}
+                onOrderClick={onOrderClick}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+              />
+            ))}
           </div>
 
           <div className="flex justify-center pt-8 pb-10">
@@ -113,10 +136,7 @@ function CardView({ items }: CardViewProps) {
   );
 }
 
-type TableViewProps = {
-  items: FastCallProps[];
-};
-function TableView({ items }: TableViewProps) {
+function TableView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
   return (
     <div className="hidden lg:block pb-8">
       <div
@@ -126,46 +146,43 @@ function TableView({ items }: TableViewProps) {
         )}
       >
         <div className="bg-gold-darker text-white text-sm font-medium py-4 flex">
-          <p className="w-4/12 pl-4">路線名稱</p>
-          <p className="w-5/12">起迄點</p>
-          <p className="w-3/12">操作</p>
+          <p className="w-4/12 pl-4">{content.table.name}</p>
+          <p className="w-5/12">{content.table.address}</p>
+          <p className="w-3/12">{content.table.operation}</p>
         </div>
 
         <div className="divide-y">
-          {items.map(
-            ({ pathNo, pathName, pickupLocation, dropLocation }, index) => (
-              <Table
-                key={index}
-                pathNo={pathNo}
-                pathName={pathName}
-                pickupLocation={pickupLocation}
-                dropLocation={dropLocation}
-              />
-            )
-          )}
+          {items.map(({ pathNo, pathName, pickupLocation, dropLocation }) => (
+            <Table
+              key={pathNo}
+              pathNo={pathNo}
+              pathName={pathName}
+              pickupLocation={pickupLocation}
+              dropLocation={dropLocation}
+              onOrderClick={onOrderClick}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
+            />
+          ))}
         </div>
       </div>
 
-      {items.length > 0 && (
+      {items.length ? (
         <div className="flex justify-end pt-2">
           <Pagination total={10} />
         </div>
-      )}
-
-      {items.length <= 0 && (
-        <div className="bg-white w-full min-h-screen-1/2 flex justify-center items-center rounded-b-lg overflow-hidden shadow-xl">
-          <span className="w-40 flex">
-            <Icon.NoData />
-          </span>
-        </div>
+      ) : (
+        <NoData />
       )}
     </div>
   );
 }
 
 export default function FastCall() {
+  const [modal, setModal] = useState<"delete" | undefined>();
+
   return (
-    <Layout.Normal title="快速叫車">
+    <Layout.Normal title={content.title}>
       <div className="space-y-6">
         <div className="flex justify-end">
           <div>
@@ -173,20 +190,36 @@ export default function FastCall() {
               className="bg-white flex items-center px-4 py-1"
               type="button"
             >
-              <span className="w-4 mr-2">
+              <span className="w-4 mr-2" aria-hidden>
                 <Icon.Plus />
               </span>
-              <span className="font-semibold text-sm">新增常用路線</span>
+
+              <span className="font-semibold text-sm">{content.add}</span>
             </Button.Outline>
           </div>
         </div>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={fastCallList} />
+          <CardView items={items} onDeleteClick={() => setModal("delete")} />
 
-          <TableView items={fastCallList} />
+          <TableView items={items} onDeleteClick={() => setModal("delete")} />
         </div>
       </div>
+
+      {modal === "delete" && (
+        <Modal.Alert
+          title={content.delete.title}
+          name="delete"
+          label={{
+            cancel: content.delete.cancel,
+            submit: content.delete.submit,
+          }}
+          onClose={() => setModal(undefined)}
+          onSubmit={() => setModal(undefined)}
+        >
+          <p>{content.delete.content}</p>
+        </Modal.Alert>
+      )}
     </Layout.Normal>
   );
 }

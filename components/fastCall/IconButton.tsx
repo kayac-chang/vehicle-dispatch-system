@@ -4,17 +4,27 @@ import { Button } from "components/atoms";
 
 type IconButtonProps = {
   className: string;
-  title: string;
+  icon: ReactNode;
   children: ReactNode;
+  onClick?: () => void;
 };
-export function IconButton({ className, title, children }: IconButtonProps) {
+export function IconButton({
+  className,
+  icon,
+  children,
+  onClick,
+}: IconButtonProps) {
   return (
     <Button.Base
       type="button"
       className={clsx("flex items-center space-x-1 px-1", className)}
+      onClick={onClick}
     >
-      <span className="w-4 h-4">{children}</span>
-      <span>{title}</span>
+      <span className="w-4" aria-hidden>
+        {icon}
+      </span>
+
+      <span>{children}</span>
     </Button.Base>
   );
 }

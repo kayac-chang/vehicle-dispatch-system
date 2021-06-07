@@ -2,13 +2,16 @@ import { ReactNode } from "react";
 
 type LocationProps = {
   location: string;
-  children: ReactNode;
+  icon: ReactNode;
 };
-export function Location({ location, children }: LocationProps) {
+export function Location({ location, icon }: LocationProps) {
   return (
-    <p className="flex items-center space-x-1">
-      <span className="w-2 lg:w-3 text-orange-dark">{children}</span>
+    <div className="flex items-center space-x-1">
+      <span className="w-3 text-orange-dark" aria-hidden>
+        {icon}
+      </span>
+
       <span>{location}</span>
-    </p>
+    </div>
   );
 }

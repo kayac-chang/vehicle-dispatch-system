@@ -1,9 +1,9 @@
 import Layout from "components/templates";
-import { Pagination } from "components/molecules";
+import { Pagination, Modal } from "components/molecules";
 import { Form, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { Record as IRecord } from "types";
-import { RecordCard, Modal } from "components/record";
+import { RecordCard } from "components/record";
 import { useState } from "react";
 
 const items: IRecord[] = [
@@ -126,6 +126,21 @@ const content = {
       end: "結束時間",
     },
   },
+
+  cancel: {
+    title: "取消訂單",
+    content: "確定取消訂單?",
+  },
+
+  absence: {
+    title: "司機未到",
+    content: "確定司機未到?",
+  },
+
+  button: {
+    submit: "確定",
+    cancel: "取消",
+  },
 };
 
 interface Request {
@@ -205,17 +220,33 @@ export default function Record() {
         </div>
 
         {modal === "cancel" && (
-          <Modal.Cancel
+          <Modal.Alert
+            name="cancel"
+            title={content.cancel.title}
+            label={{
+              cancel: content.button.cancel,
+              submit: content.button.submit,
+            }}
             onClose={() => setModal(undefined)}
             onSubmit={() => setModal(undefined)}
-          />
+          >
+            <p>{content.cancel.content}</p>
+          </Modal.Alert>
         )}
 
         {modal === "absence" && (
-          <Modal.Absence
+          <Modal.Alert
+            name="absence"
+            title={content.absence.title}
+            label={{
+              cancel: content.button.cancel,
+              submit: content.button.submit,
+            }}
             onClose={() => setModal(undefined)}
             onSubmit={() => setModal(undefined)}
-          />
+          >
+            <p>{content.absence.content}</p>
+          </Modal.Alert>
         )}
       </div>
     </Layout.Normal>
