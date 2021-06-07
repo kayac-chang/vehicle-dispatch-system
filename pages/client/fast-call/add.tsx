@@ -1,5 +1,5 @@
 import Layout from "components/templates";
-import { Card, Accordion } from "components/molecules";
+import { Card } from "components/molecules";
 import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
 
@@ -22,7 +22,7 @@ export default function FastCallAdd() {
             </h2>
           }
         >
-          <form className="flex flex-col space-y-2">
+          <form className="flex flex-col space-y-4 py-4">
             <Form.Input
               type="text"
               label="路線名稱"
@@ -30,7 +30,10 @@ export default function FastCallAdd() {
               control={control}
             />
 
-            <Accordion.Fieldset id="journey" title="行程">
+            <Form.FieldSet
+              label="行程"
+              labelClass="w-full border-b-2 border-black border-opacity-50"
+            >
               <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 py-4">
                 <Card.Paper title="起點" icon="hole" className="flex-1">
                   <Form.Input
@@ -50,7 +53,7 @@ export default function FastCallAdd() {
                   />
                 </Card.Paper>
               </div>
-            </Accordion.Fieldset>
+            </Form.FieldSet>
           </form>
         </Card.Panel>
 
