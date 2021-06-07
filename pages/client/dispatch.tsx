@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
-import { Card, Accordion } from "components/molecules";
+import { Card } from "components/molecules";
 import Layout from "components/templates";
 import { useForm, Control } from "react-hook-form";
 import { CarSelection, RouteMap, JourneyTable } from "components/dispatch";
@@ -30,18 +30,13 @@ interface Request {
 }
 
 type JourneyProps = {
-  id: string;
   control: Control<Request>;
-  expanded: boolean;
-  setExpanded: () => void;
 };
-function Journey({ id, control, expanded, setExpanded }: JourneyProps) {
+function Journey({ control }: JourneyProps) {
   return (
-    <Accordion.Fieldset
-      id={id}
-      title="行程"
-      open={expanded}
-      onClick={setExpanded}
+    <Form.FieldSet
+      label="行程"
+      labelClass="w-full border-b-2 border-black border-opacity-50"
     >
       <Card.Paper className="space-y-4 -mx-4 lg:mx-0 lg:my-2">
         <div className="hidden lg:flex justify-end space-x-4">
@@ -232,7 +227,7 @@ function Journey({ id, control, expanded, setExpanded }: JourneyProps) {
           </div>
         </div>
       </Card.Paper>
-    </Accordion.Fieldset>
+    </Form.FieldSet>
   );
 }
 
@@ -259,13 +254,14 @@ export default function News() {
                   <span className="w-4">
                     <Icon.Search />
                   </span>
+
                   <span>可用補助餘額查詢</span>
                 </Button.Base>
               </div>
             </>
           }
         >
-          <form className="flex flex-col space-y-2">
+          <form className="flex flex-col space-y-4">
             <div
               className={clsx(
                 "flex flex-col space-y-6",
@@ -301,18 +297,9 @@ export default function News() {
               />
             </div>
 
-            <CarSelection
-              id="car-selection"
-              expanded={expanded === "car-selection"}
-              setExpanded={() => setExpanded("car-selection")}
-            />
+            <CarSelection />
 
-            <Journey
-              control={control}
-              id="journey"
-              expanded={expanded === "journey"}
-              setExpanded={() => setExpanded("journey")}
-            />
+            <Journey control={control} />
 
             <RouteMap />
           </form>

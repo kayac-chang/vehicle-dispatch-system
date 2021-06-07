@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { Button } from "components/atoms";
-import { Accordion } from "components/molecules";
+import { Button, Form } from "components/atoms";
 
 type CarItemProps = {
   label: string;
@@ -37,18 +36,11 @@ function CarItem({ label, order }: CarItemProps) {
   );
 }
 
-type CarSelectionProps = {
-  id: string;
-  expanded: boolean;
-  setExpanded: () => void;
-};
-export function CarSelection({ id, expanded, setExpanded }: CarSelectionProps) {
+export function CarSelection() {
   return (
-    <Accordion.Fieldset
-      id={id}
-      title="車行選擇"
-      open={expanded}
-      onClick={setExpanded}
+    <Form.FieldSet
+      label="車行選擇"
+      labelClass="w-full border-b-2 border-black border-opacity-50"
     >
       <div className="flex justify-between items-center lg:justify-start space-x-4 py-2">
         <p className="text-sm space-x-1">
@@ -77,6 +69,6 @@ export function CarSelection({ id, expanded, setExpanded }: CarSelectionProps) {
           order={1}
         />
       </div>
-    </Accordion.Fieldset>
+    </Form.FieldSet>
   );
 }

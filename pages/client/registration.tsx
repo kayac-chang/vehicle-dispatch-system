@@ -140,7 +140,11 @@ export default function Registration() {
           />
         </div>
 
-        <Form.FieldSet label={content.form.address.title} required>
+        <Form.FieldSet
+          className="space-y-4"
+          label={content.form.address.title}
+          required
+        >
           <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-4">
             <Form.Input
               type="select"

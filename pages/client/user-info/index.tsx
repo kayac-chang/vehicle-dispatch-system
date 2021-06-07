@@ -213,7 +213,7 @@ export default function UserInfo() {
 
   return (
     <Layout.Normal title={content.title}>
-      <div className="-mx-6 lg:mx-auto">
+      <div className="-mx-6 sm:mx-auto">
         <PersonalInformation
           onPasswordClick={() => setModal("password")}
           onChangePhoneClick={() => setModal("phone")}
