@@ -126,7 +126,7 @@ function CardView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
           </div>
 
           <div className="flex justify-center pt-8 pb-10">
-            <Pagination total={10} />
+            <Pagination total={10} page={0} />
           </div>
         </div>
       ) : (
@@ -169,7 +169,7 @@ function TableView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
 
       {items.length ? (
         <div className="flex justify-end pt-2">
-          <Pagination total={10} />
+          <Pagination total={10} page={1} />
         </div>
       ) : (
         <NoData />
