@@ -44,9 +44,10 @@ interface GetNewsListResponse extends BaseResponse {
 }
 
 interface GetNewsListQuery {
-  limit?: number;
-  page?: number;
-  category?: NewsCategory.System | NewsCategory.LTC;
+  limit: number;
+  page: number;
+  category: NewsCategory.System | NewsCategory.LTC;
+  date: string;
 }
 
 /**
@@ -55,7 +56,7 @@ interface GetNewsListQuery {
  * get news list from service
  */
 export function getNewsList(
-  props: GetNewsListQuery | undefined
+  props: Partial<GetNewsListQuery> | undefined
 ): Promise<{ total: number; news: News[] }> {
   return get<GetNewsListResponse>(
     KHH_API("Newss/Load", {
@@ -63,6 +64,8 @@ export function getNewsList(
       limit: props?.limit,
       page: props?.page,
       NewsCategoryId: props?.category,
+      ReleaseDate: props?.date,
+      orderby: "ReleaseDate",
     })
   ).then(({ data, count }) => ({
     total: Number(count),

@@ -1,8 +1,47 @@
 import { TextField } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 import { CommonProps } from "./types";
-import { DateRangePicker as _DateRangePicker } from "@material-ui/lab";
+import { DatePicker as _DatePicker } from "@material-ui/lab";
 import clsx from "clsx";
+
+type DateType = "year" | "month" | "date";
+type Props<T> = CommonProps<T> & { type: DateType };
+function Base<T>({
+  type,
+  name,
+  label,
+  required,
+  control,
+  className,
+}: Props<T>) {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required }}
+      render={({
+        field: { value, onChange, name, ref },
+        fieldState: { error },
+      }) => (
+        <TextField
+          type={type}
+          id={name}
+          name={name}
+          variant="outlined"
+          label={label}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          error={Boolean(error)}
+          inputRef={ref}
+          onChange={onChange}
+          required={required}
+          className={clsx("w-full", className)}
+        />
+      )}
+    />
+  );
+}
 
 export type DateRangeProps<T> = {
   type: "date-range";
@@ -29,27 +68,35 @@ export function DatePicker<T>({
   className,
 }: DatePickerProps<T>) {
   return (
-    <Controller
+    <Base
+      type="date"
       name={name}
+      label={label}
+      required={required}
       control={control}
-      rules={{ required }}
-      render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
-        <TextField
-          type="date"
-          id={name}
-          name={name}
-          variant="outlined"
-          label={label}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          error={Boolean(error)}
-          inputRef={ref}
-          onChange={onChange}
-          required={required}
-          className={clsx("w-full", className)}
-        />
-      )}
+      className={className}
+    />
+  );
+}
+
+export type MonthPickerProps<T> = CommonProps<T> & {
+  type: "month";
+};
+export function MonthPicker<T>({
+  name,
+  label,
+  required,
+  control,
+  className,
+}: MonthPickerProps<T>) {
+  return (
+    <Base
+      type="month"
+      name={name}
+      label={label}
+      required={required}
+      control={control}
+      className={className}
     />
   );
 }
