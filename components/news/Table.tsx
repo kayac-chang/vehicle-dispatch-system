@@ -1,6 +1,5 @@
 import { Pagination } from "components/molecules";
-import { Icon, NoData } from "components/atoms";
-import { Tag } from "./Tag";
+import { Icon, NoData, Tag } from "components/atoms";
 import clsx from "clsx";
 import { News } from "types";
 import Link from "next/link";
@@ -39,10 +38,17 @@ export function TableView({ items, total, page, onChange }: TableViewProps) {
         </thead>
 
         <tbody className="divide-y">
-          {items.map(({ id, category, title, date }, index) => (
-            <tr key={index}>
+          {items.map(({ id, category, title, date }) => (
+            <tr key={id}>
               <td className="w-1/12 py-2 pl-4">
-                <Tag>{category}</Tag>
+                <Tag
+                  className={clsx(
+                    category === "長照" &&
+                      "border-orange-dark bg-orange-light text-orange-dark"
+                  )}
+                >
+                  {category}
+                </Tag>
               </td>
               <td className="w-1/12 py-2">{date}</td>
               <td className="w-9/12 py-2">{title}</td>

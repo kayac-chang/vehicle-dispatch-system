@@ -1,8 +1,8 @@
 import { Pagination } from "components/molecules";
-import { NoData } from "components/atoms";
-import { Tag } from "./Tag";
+import { NoData, Tag } from "components/atoms";
 import { News } from "types";
 import Link from "next/link";
+import clsx from "clsx";
 
 type CardViewProps = {
   loading: boolean;
@@ -33,7 +33,15 @@ export function CardView({
                   <a>
                     <article className="px-6 py-2 space-y-2">
                       <div className="flex justify-between items-center">
-                        <Tag>{category}</Tag>
+                        <Tag
+                          className={clsx(
+                            category === "長照"
+                              ? "border-orange-dark bg-orange-light text-orange-dark"
+                              : "bg-gray-extralight"
+                          )}
+                        >
+                          {category}
+                        </Tag>
 
                         <span className="text-xs">{date}</span>
                       </div>

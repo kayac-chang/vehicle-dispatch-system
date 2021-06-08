@@ -1,10 +1,4 @@
-export interface News {
-  id: string;
-  category: string;
-  date: string;
-  title: string;
-  content: string;
-}
+export * from "./news";
 
 export interface QNA {
   name: string;

@@ -6,6 +6,7 @@ import { getNewsList } from "api/news";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { Query } from "functions/query";
+import { NewsCategory } from "types";
 
 const content = {
   title: "最新消息",
@@ -14,9 +15,9 @@ const content = {
     category: {
       label: "選擇類別",
       options: [
-        { id: "all", label: "全部公告", value: "" },
-        { id: "system", label: "系統訊息", value: "6741433311767863297" },
-        { id: "ltc", label: "長照", value: "6741433439035629569" },
+        { id: "all", label: "全部公告", value: NewsCategory.All },
+        { id: "system", label: "系統訊息", value: NewsCategory.System },
+        { id: "ltc", label: "長照", value: NewsCategory.LTC },
       ],
     },
 
@@ -29,10 +30,17 @@ const content = {
 const INIT_PAGE = 1;
 const LIMIT = 9;
 
-function NewsQuery(page: number) {
+function NewsQuery(page: number, category?: NewsCategory) {
+  if (!category) {
+    return {
+      queryKey: ["news", page],
+      queryFn: () => getNewsList({ limit: LIMIT, page }),
+    };
+  }
+
   return {
-    queryKey: ["news", page],
-    queryFn: () => getNewsList({ limit: LIMIT, page }),
+    queryKey: ["news", page, category],
+    queryFn: () => getNewsList({ limit: LIMIT, page, category }),
   };
 }
 
@@ -45,23 +53,22 @@ export async function getServerSideProps() {
 }
 
 interface Request {
-  category: string;
+  category: NewsCategory;
   from: Date;
   end: Date;
 }
 export default function News() {
-  // TODO Redux
   const [page, setPage] = useState(() => INIT_PAGE);
+  const { control, handleSubmit } = useForm<Request>();
+  const [category, setCategory] = useState<NewsCategory>();
 
   const { data, isFetching } = useQuery({
-    ...NewsQuery(page),
+    ...NewsQuery(page, category),
     keepPreviousData: true,
   });
 
-  const { control, handleSubmit } = useForm<Request>();
-
   function onSubmit(data: Request) {
-    console.log(data);
+    setCategory(data.category);
   }
 
   const news = data?.news || [];

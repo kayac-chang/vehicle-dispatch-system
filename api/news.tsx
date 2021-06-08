@@ -1,4 +1,4 @@
-import { News } from "types";
+import { News, NewsCategory } from "types";
 import { get, KHH_API } from "./base";
 import { parse, format } from "date-fns";
 import { pipe, map, prop } from "ramda";
@@ -46,6 +46,7 @@ interface GetNewsListResponse extends BaseResponse {
 interface GetNewsListQuery {
   limit?: number;
   page?: number;
+  category?: NewsCategory.System | NewsCategory.LTC;
 }
 
 /**
@@ -61,6 +62,7 @@ export function getNewsList(
       isClient: true,
       limit: props?.limit,
       page: props?.page,
+      NewsCategoryId: props?.category,
     })
   ).then(({ data, count }) => ({
     total: Number(count),

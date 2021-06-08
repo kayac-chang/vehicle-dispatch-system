@@ -10,3 +10,4 @@ export * from "./NoData";
 export * from "./Link";
 export * from "./RouteMap";
 export * from "./Loading";
+export * from "./Tag";
