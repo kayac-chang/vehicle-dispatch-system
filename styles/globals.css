@@ -26,3 +26,6 @@ body {
 .MuiDialogContent-root {
   padding: 0;
 }
+.MuiOutlinedInput-notchedOutline legend {
+  max-width: none;
+}
