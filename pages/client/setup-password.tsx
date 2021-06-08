@@ -10,7 +10,7 @@ const content = {
     alert: "輸入格式錯誤",
     password: "請輸入新的密碼",
     repeat: "再一次輸入新密碼確認",
-    submit: "登入",
+    submit: "完成",
   },
 };
 
