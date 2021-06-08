@@ -25,7 +25,7 @@ export default function QNA({ posts }: Props) {
 
   return (
     <Layout.Normal title={content.title}>
-      <div className="-mx-6 lg:mx-0 pb-8">
+      <div className="-mx-6 sm:mx-0 pb-8">
         <ul>
           {posts.map(({ name, title, description }) => (
             <li
