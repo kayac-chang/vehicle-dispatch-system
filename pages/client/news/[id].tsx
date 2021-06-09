@@ -1,4 +1,4 @@
-import { getNewsByID } from "api/news";
+import { getNewsByID } from "api";
 import Layout from "components/templates";
 import ReactMarkdown from "react-markdown";
 import { GetStaticPropsContext, InferGetServerSidePropsType } from "next";

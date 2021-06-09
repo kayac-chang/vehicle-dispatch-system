@@ -33,3 +33,16 @@ function error(err: Error) {
 export function get<T>(url: RequestInfo): Promise<T> {
   return fetch(url).then(status).then(json).catch(error);
 }
+
+export function post<T>(req: RequestInfo, body: object): Promise<T> {
+  const headers = new Headers();
+  headers.append("accept", "text/plain");
+  headers.append("Content-Type", "application/json-patch+json");
+
+  return fetch(
+    new Request(req, { method: "POST", body: JSON.stringify(body), headers })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}

@@ -35,13 +35,15 @@ function Account() {
 
         <span className="text-xxs">|</span>
 
-        <span className="flex items-center space-x-1">
-          <span className="w-4">
-            <Icon.Login />
-          </span>
+        <Link href="/client/login">
+          <a className="flex items-center space-x-1">
+            <span className="w-4" aria-hidden>
+              <Icon.Login />
+            </span>
 
-          <span>登入</span>
-        </span>
+            <span>登入</span>
+          </a>
+        </Link>
       </div>
 
       <div className="lg:hidden bg-white rounded-b-3xl py-10 px-12 shadow">

@@ -2,7 +2,7 @@ import Layout from "components/templates";
 import { Form, Button } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { TableView, CardView } from "components/news";
-import { getNewsList } from "api/news";
+import { getNewsList } from "api";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { Query } from "functions/query";
