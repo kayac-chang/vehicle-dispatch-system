@@ -164,7 +164,7 @@ export default function Record() {
           onSubmit={handleSubmit(onSubmit)}
           className="lg:flex lg:justify-end"
         >
-          <div className="xl:w-1/2 flex flex-col lg:flex-row gap-4">
+          <div className="xl:w-1/2 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="lg:w-1/3">
               <Form.Input
                 type="select"

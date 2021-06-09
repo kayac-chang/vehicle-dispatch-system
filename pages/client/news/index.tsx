@@ -21,8 +21,7 @@ const content = {
       ],
     },
 
-    from: "開始日期",
-    end: "結束日期",
+    date: "請選擇時間",
     submit: "查詢",
   },
 };
@@ -30,17 +29,31 @@ const content = {
 const INIT_PAGE = 1;
 const LIMIT = 9;
 
-function NewsQuery(page: number, category?: NewsCategory) {
-  if (!category) {
+function NewsQuery(page: number, category?: NewsCategory, date?: string) {
+  if (category && date) {
     return {
-      queryKey: ["news", page],
-      queryFn: () => getNewsList({ limit: LIMIT, page }),
+      queryKey: ["news", page, category, date],
+      queryFn: () => getNewsList({ limit: LIMIT, page, category, date }),
+    };
+  }
+
+  if (date) {
+    return {
+      queryKey: ["news", page, date],
+      queryFn: () => getNewsList({ limit: LIMIT, page, date }),
+    };
+  }
+
+  if (category) {
+    return {
+      queryKey: ["news", page, category],
+      queryFn: () => getNewsList({ limit: LIMIT, page, category }),
     };
   }
 
   return {
-    queryKey: ["news", page, category],
-    queryFn: () => getNewsList({ limit: LIMIT, page, category }),
+    queryKey: ["news", page],
+    queryFn: () => getNewsList({ limit: LIMIT, page, date }),
   };
 }
 
@@ -54,21 +67,23 @@ export async function getServerSideProps() {
 
 interface Request {
   category: NewsCategory;
-  from: Date;
-  end: Date;
+  date: string;
 }
 export default function News() {
   const [page, setPage] = useState(() => INIT_PAGE);
   const { control, handleSubmit } = useForm<Request>();
   const [category, setCategory] = useState<NewsCategory>();
+  const [date, setDate] = useState<string>();
 
   const { data, isFetching } = useQuery({
-    ...NewsQuery(page, category),
+    ...NewsQuery(page, category, date),
     keepPreviousData: true,
   });
 
-  function onSubmit(data: Request) {
-    setCategory(data.category);
+  function onSubmit({ category, date }: Request) {
+    setCategory(category);
+
+    date && setDate(date);
   }
 
   const news = data?.news || [];
@@ -95,21 +110,11 @@ export default function News() {
 
             <div className="flex-1">
               <Form.Input
-                type="date-range"
-                from={{
-                  type: "date",
-                  name: "from",
-                  control,
-                  label: content.form.from,
-                  className: "bg-white",
-                }}
-                end={{
-                  type: "date",
-                  name: "end",
-                  control,
-                  label: content.form.end,
-                  className: "bg-white",
-                }}
+                type="month"
+                name="date"
+                className="bg-white"
+                control={control}
+                label={content.form.date}
               />
             </div>
 
