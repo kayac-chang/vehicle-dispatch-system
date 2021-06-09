@@ -33,3 +33,21 @@ function error(err: Error) {
 export function get<T>(url: RequestInfo): Promise<T> {
   return fetch(url).then(status).then(json).catch(error);
 }
+
+export function post<T>(
+  url: string,
+  payload: any,
+  authorization?: string
+): Promise<T> {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...(authorization ? { authorization: `Bearer ${authorization}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  })
+    .then(status)
+    .then(json)
+    .catch(error);
+}
