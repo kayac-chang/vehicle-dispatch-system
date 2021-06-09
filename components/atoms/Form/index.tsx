@@ -4,6 +4,8 @@ import {
   DatePickerProps,
   DateRangePicker,
   DateRangeProps,
+  MonthPicker,
+  MonthPickerProps,
   Time,
   TimeProps,
 } from "./DatePicker";
@@ -19,6 +21,7 @@ function Input<T>(
   props:
     | DateRangeProps<T>
     | DatePickerProps<T>
+    | MonthPickerProps<T>
     | TimeProps<T>
     | RadioProps<T>
     | SelectProps<T>
@@ -28,6 +31,7 @@ function Input<T>(
 ) {
   if (props.type === "date-range") return <DateRangePicker {...props} />;
   if (props.type === "date") return <DatePicker {...props} />;
+  if (props.type === "month") return <MonthPicker {...props} />;
   if (props.type === "time") return <Time {...props} />;
   if (props.type === "select") return <Select {...props} />;
   if (props.type === "check") return <Check {...props} />;
