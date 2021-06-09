@@ -3,7 +3,7 @@ import { Disclosure } from "@headlessui/react";
 import { Menu } from "components/molecules";
 
 const links = [
-  { label: "最新消息", icon: <Icon.News />, href: "/" },
+  { label: "最新消息", icon: <Icon.News />, href: "/client/news" },
   {
     label: "預約訂車",
     icon: <Icon.Order />,
