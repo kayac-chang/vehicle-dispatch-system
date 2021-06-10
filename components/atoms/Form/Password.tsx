@@ -24,6 +24,7 @@ export function Password<T>({
   icon,
   control,
   required,
+  pattern,
   ...props
 }: PasswordProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -47,7 +48,7 @@ export function Password<T>({
     <Controller
       name={name}
       control={control}
-      rules={{ required }}
+      rules={{ required, pattern }}
       render={({
         field: { onChange, onBlur, value, name, ref },
         fieldState: { error },
