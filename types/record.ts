@@ -1,40 +1,61 @@
+export interface ClientRecord{
+  caseUserNo: string;
+  orderNo: string;
+  id: string;
+  userId: string;
+  caseUserId: string;
+  cancelReamrk: string;
+  status: number;
+  reserveDate:string;
+  fromAddr: string;
+  toAddr: string;
+  canShared: boolean;
+  carCategoryId: string;
+  carCategoryName: string;
+  familyWith: number;
+  hasViolation: boolean;
+  name: string;
+  phone: string;
+  uid: string;
+}
+
 export interface RecordDetail {
-    id: string;
-    caseUserId: string;
-    orgName: string;
-    createdIdentity: string;
-    createDate: string;
-    userName: string;
-    userUID: string;
-    userPhone: string;
-    orderNo: string;
-    caseUserNo: string;
-    reserveDate: string,
-    status: number;
-    fromAddr: string;
-    fromAddrRemark: string;
-    toAddr: string;
-    toAddrRemark: string;
-    fromLat: number;
-    fromLon: number;
-    toLat: number;
-    toLon: number;
-    carCategoryName: string;
-    wheelchairType: string;
-    familyWith: number;
-    maidWith: number;
-    noticePhone: string;
-    canShared: boolean;
-    etTotalAmt: number;
-    etDiscountAmt: number;
-    etSelfPay: number;
-    etWithAmt: number;
-    cancelRemark: string;
-    wealTypeId: string;
-    wealTypeName: string;
-    expectedMinute: number;
-    totalMileage: number;
-    isBack: boolean;
+  id: string;
+  caseUserId: string;
+  orgName: string;
+  createdIdentity: string;
+  createDate: string;
+  userName: string;
+  userUID: string;
+  userPhone: string;
+  orderNo: string;
+  caseUserNo: string;
+  reserveDate: string,
+  status: number;
+  fromAddr: string;
+  fromAddrRemark: string;
+  toAddr: string;
+  toAddrRemark: string;
+  fromLat: number;
+  fromLon: number;
+  toLat: number;
+  toLon: number;
+  carCategoryName: string;
+  wheelchairType: string;
+  familyWith: number;
+  maidWith: number;
+  noticePhone: string;
+  canShared: boolean;
+  etTotalAmt: number;
+  etDiscountAmt: number;
+  etSelfPay: number;
+  etWithAmt: number;
+  cancelRemark: string;
+  wealTypeId: string;
+  wealTypeName: string;
+  expectedMinute: number;
+  totalMileage: number;
+  isBack: boolean;
 }
 
 export interface CaseOrderAmt {
@@ -85,7 +106,7 @@ export interface Route {
 
 export interface CancelOrderRequest {
   id: string;
-  cancelRemark: "CLIENT"|"CLIENT_NOTARRIVED";
+  cancelRemark: "CLIENT" |"CLIENT_NOTARRIVED";
   hasVilation: boolean;
   point: number;
   remark: string;

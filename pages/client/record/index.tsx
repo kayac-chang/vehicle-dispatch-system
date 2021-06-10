@@ -143,6 +143,9 @@ const content = {
   },
 };
 
+const INIT_PAGE = 1;
+const LIMIT = 9;
+
 interface Request {
   topic: string;
   from: Date;
@@ -151,11 +154,15 @@ interface Request {
 export default function Record() {
   const [modal, setModal] = useState<"absence" | "cancel" | undefined>();
 
+  const [page, setPage] = useState(() => INIT_PAGE);
+
   const { control, handleSubmit } = useForm<Request>();
 
   function onSubmit(data: Request) {
     console.log(data);
   }
+
+  console.log(control);
 
   return (
     <Layout.Normal title={content.title}>
@@ -175,6 +182,7 @@ export default function Record() {
                 className="bg-white"
               />
             </div>
+            <button onClick={handleSubmit(onSubmit)}>click</button>
 
             <div className="flex-1">
               <Form.Input

@@ -1,6 +1,6 @@
 import { get, KHH_API, post } from "./base";
 import { parse, format } from "date-fns";
-import { pipe, prop } from "ramda";
+import { map, pipe, prop } from "ramda";
 import {
   CancelOrderRequest,
   RecordDetail,
@@ -8,6 +8,7 @@ import {
   GeoCode,
   GetRouteRequest,
   Route,
+  ClientRecord,
 } from "types/record";
 
 const formatOnlyDate = pipe(
@@ -17,6 +18,106 @@ const formatOnlyDate = pipe(
 
 interface BaseResponse {
   code: number;
+}
+
+interface ClientRecordResponse {
+  caseUserNo: string;
+  orderNo: string;
+  id: string;
+  userId: string;
+  caseUserId: string;
+  cancelReamrk: string;
+  status: number;
+  reserveDate: string;
+  fromAddr: string;
+  toAddr: string;
+  canShared: boolean;
+  carCategoryId: string;
+  carCategoryName: string;
+  familyWith: number;
+  hasViolation: boolean;
+  name: string;
+  phone: string;
+  uid: string;
+}
+
+interface GetClientRecordResponse extends BaseResponse {
+  data: ClientRecordResponse[];
+  count: number;
+}
+
+function toClientRecord({
+  caseUserNo,
+  orderNo,
+  id,
+  userId,
+  caseUserId,
+  cancelReamrk,
+  status,
+  reserveDate,
+  fromAddr,
+  toAddr,
+  canShared,
+  carCategoryId,
+  carCategoryName,
+  familyWith,
+  hasViolation,
+  name,
+  phone,
+  uid,
+}: ClientRecordResponse): ClientRecord {
+  return {
+    caseUserNo: caseUserNo,
+    orderNo: orderNo,
+    id: id,
+    userId: userId,
+    caseUserId: caseUserId,
+    cancelReamrk: cancelReamrk,
+    status: status,
+    reserveDate: reserveDate,
+    fromAddr: fromAddr,
+    toAddr: toAddr,
+    canShared: canShared,
+    carCategoryId: carCategoryId,
+    carCategoryName: carCategoryName,
+    familyWith: familyWith,
+    hasViolation: hasViolation,
+    name: name,
+    phone: phone,
+    uid: uid,
+  };
+}
+
+interface GetClientRecordQuery {
+  limit: number;
+  page: number;
+  startDate: string;
+  endDate: string;
+  orderby: string;
+  status: string;
+}
+
+/**
+ * [GET /api/OrderOfCaseUsers/LoadClient]
+ *
+ * get Client Record from service
+ */
+export function getClientRecord(
+  props: Partial<GetClientRecordQuery> | undefined
+): Promise<{ total: number; record: ClientRecord[] } | undefined> {
+  return get<GetClientRecordResponse>(
+    KHH_API("/api/OrderOfCaseUsers/LoadClient", {
+      limit: props?.limit,
+      page: props?.page,
+      StartDate: props?.startDate,
+      EndDate: props?.endDate,
+      orderby: props?.orderby,
+      Status: props?.status,
+    })
+  ).then(({ data, count }) => ({
+    total: Number(count),
+    record: map(toClientRecord, data),
+  }));
 }
 
 interface CaseDetailResponse {
