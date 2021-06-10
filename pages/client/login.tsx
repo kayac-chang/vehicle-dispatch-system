@@ -3,6 +3,8 @@ import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import { List } from "components/molecules";
 import { useCallback } from "react";
+import { signIn } from "next-auth/client";
+import { useHistory } from "contexts";
 
 const content = {
   title: "登入",
@@ -48,9 +50,16 @@ export default function Login() {
     formState: { errors },
   } = useForm<Request>();
 
-  const onSubmit = useCallback((data: Request) => {
-    // @TODO submit logic
-    console.log(data);
+  const history = useHistory();
+
+  const onSubmit = useCallback(async (data: Request) => {
+    const prev = history[history.length - 2] || "/";
+
+    await signIn("credentials", {
+      username: data.username,
+      password: data.password,
+      callbackUrl: prev,
+    });
   }, []);
 
   return (

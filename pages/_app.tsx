@@ -4,6 +4,8 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { Provider as AuthProvider } from "next-auth/client";
+import { HistoryProvider } from "contexts";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [client] = useState(() => new QueryClient());
@@ -11,7 +13,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={client}>
       <Hydrate state={pageProps.dehydratedState}>
-        <Component {...pageProps} />
+        <HistoryProvider>
+          <AuthProvider session={pageProps.session}>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </HistoryProvider>
 
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
