@@ -9,4 +9,6 @@ export type CommonProps<T> = {
   required?: boolean;
   "aria-describedby"?: string;
   className?: string;
+  minLength?: number;
+  pattern?: RegExp;
 };

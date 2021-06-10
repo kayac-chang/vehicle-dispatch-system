@@ -1,6 +1,7 @@
 import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
+import Rule from "functions/regexp";
 
 const content = {
   title: "設定密碼",
@@ -23,12 +24,18 @@ export default function SetupPassword() {
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Request>();
 
-  function onSubmit(data: Request) {
+  function onSubmit({ password, repeat }: Request) {
+    if (password !== repeat) {
+      setError("repeat", { type: "validate" });
+      return;
+    }
+
     // @TODO submit logic
-    console.log(data);
+    console.log(password, repeat);
   }
 
   return (
@@ -54,6 +61,7 @@ export default function SetupPassword() {
             control={control}
             aria-describedby="alert"
             required
+            pattern={Rule.Password}
           />
 
           <Form.Input
@@ -64,6 +72,7 @@ export default function SetupPassword() {
             control={control}
             aria-describedby="alert"
             required
+            pattern={Rule.Password}
           />
         </div>
 
