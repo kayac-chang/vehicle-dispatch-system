@@ -90,4 +90,3 @@ export interface CancelOrderRequest {
   point: number;
   remark: string;
 }
-

@@ -1,5 +1,6 @@
 import { Modal } from "components/molecules";
 import { Button } from "components/atoms";
+import { DiscountData } from "types/user-info";
 
 type CurrencyFieldProps = {
   title: string;
@@ -23,8 +24,8 @@ const content = {
   submit: "確定",
 };
 
-type Props = { onClose: () => void };
-export function BalanceModal({ onClose }: Props) {
+type Props = { data: DiscountData; onClose: () => void };
+export function BalanceModal({ data, onClose }: Props) {
   return (
     <Modal.Dialog
       name="password"
@@ -39,9 +40,9 @@ export function BalanceModal({ onClose }: Props) {
       onClose={onClose}
       className="py-2 space-y-4 w-64"
     >
-      <CurrencyField title={content.total} value={1840} />
-      <CurrencyField title={content.used} value={0} />
-      <CurrencyField title={content.available} value={1840} />
+      <CurrencyField title={content.total} value={data.totalDiscount} />
+      <CurrencyField title={content.used} value={data.useDiscount} />
+      <CurrencyField title={content.available} value={data.lastDiscount} />
     </Modal.Dialog>
   );
 }

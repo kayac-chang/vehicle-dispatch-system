@@ -34,16 +34,12 @@ export function get<T>(url: RequestInfo): Promise<T> {
   return fetch(url).then(status).then(json).catch(error);
 }
 
-export function post<T>(
-  url: string,
-  payload: any,
-  authorization?: string
-): Promise<T> {
+export function post<T>(url: string, payload: any, token?: string): Promise<T> {
   return fetch(url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      ...(authorization ? { authorization: `Bearer ${authorization}` } : {}),
+      ...(token ? { "X-Token": token } : {}),
     },
     body: JSON.stringify(payload),
   })

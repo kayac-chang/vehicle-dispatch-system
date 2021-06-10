@@ -8,27 +8,88 @@ import {
   PhoneModal,
   InfoField,
 } from "components/userInfo";
-import { format } from "date-fns";
+import { UnPermissionUserType, User } from "types/user";
+import { CaseUserInfo, DiscountData } from "types/user-info";
 
 // /api/Users/Get
-const user = {
-  name: "吳幼緞",
-  sex: 2,
-  phone: "0987654321",
-  birthday: "1993-03-12T08:52:45.780Z",
-  uid: "A201186566",
+const user: User = {
+  id: "6789314826878885888",
+  account: "G122112739",
+  name: "阿華",
+  uid: "G122112739",
+  sex: 1,
+  phone: "0987837233",
 };
 
 // /api/CaseUsers/Get
-const caseUsers = {
-  caseUserNo: "AAAAA",
-  county: "台北市",
-  district: "大安區",
-  addr: "信義路三段143號",
-  urgentName: "王小明",
+const caseUsers: UnPermissionUserType[] = [
+  {
+    caseId: "6789315035470012416",
+    userId: "6789314826878885888",
+    caseUserNo: "1",
+    userType: "caseuser",
+    isEnable: false,
+  },
+  {
+    caseId: "6789568027834228736",
+    userId: "6789314826878885888",
+    caseUserNo: "2",
+    userType: "caseuser",
+    isEnable: true,
+  },
+  {
+    caseId: "6789611603716775936",
+    userId: "6789314826878885888",
+    caseUserNo: "3",
+    userType: "caseuser",
+    isEnable: false,
+  },
+  {
+    caseId: "",
+    userId: "6789314826878885888",
+    caseUserNo: "",
+    userType: "user",
+    isEnable: true,
+  },
+];
+
+const caseUserInfo: CaseUserInfo = {
+  id: "6789568027834228736",
+  userId: "6789314826878885888",
+  caseUserId: "6789568027834228736",
+  caseUserNo: "2",
+  orgAId: "6742474724290895872",
+  orgBId1: "6789315307839725568",
+  orgBId2: "6792100599483113474",
+  orgBId3: "6791937415971381248",
+  uid: "G122112739",
+  otherPhone: "",
+  birthday: "1994-09-12",
+  disabilityLevel: 2,
+  county: "高雄市",
+  district: "苓雅區",
+  addr: "武慶三路86號",
+  lat: 22.620308,
+  lon: 120.331955,
+  urgentName: "",
   urgentRelationship: "",
-  urgentPhone: "09123456789",
-  urgentTel: "0423456789",
+  urgentPhone: "",
+  urgentTel: "",
+  startDate: "2021-06-05",
+  expiredDate: "2099-12-31",
+  remark: "",
+  caseUserStatus: 1,
+  statusReason: null,
+  reviewDate: "2021-05-01",
+  wealTypeId: "1",
+  wealTypeName: "中低收入戶",
+  isEffectNow: false,
+};
+
+const discount: DiscountData = {
+  useDiscount: 0,
+  lastDiscount: 2000,
+  totalDiscount: 2000,
 };
 
 const content = {
@@ -71,10 +132,12 @@ const content = {
 };
 
 type PersonalInformationProps = {
+  data: User & CaseUserInfo;
   onPasswordClick: () => void;
   onChangePhoneClick: () => void;
 };
 function PersonalInformation({
+  data,
   onPasswordClick,
   onChangePhoneClick,
 }: PersonalInformationProps) {
@@ -111,12 +174,9 @@ function PersonalInformation({
           "lg:space-x-4 items-end pt-3 pb-2 lg:pb-0"
         )}
       >
-        <InfoField title={content.personal.name} content={user.name} />
+        <InfoField title={content.personal.name} content={data.name} />
 
-        <InfoField
-          title={content.personal.birthday}
-          content={format(new Date(user.birthday), "yyyy-MM-dd")}
-        />
+        <InfoField title={content.personal.birthday} content={data.birthday} />
 
         <InfoField
           title={content.personal.gender.title}
@@ -125,22 +185,23 @@ function PersonalInformation({
               0: content.personal.gender.private,
               1: content.personal.gender.man,
               2: content.personal.gender.woman,
-            }[user.sex] || content.personal.gender.none
+            }[data.sex] || content.personal.gender.none
           }
         />
 
-        <InfoField title={content.personal.identity} content={user.uid} />
+        <InfoField title={content.personal.identity} content={data.uid} />
 
-        <InfoField title={content.personal.phone} content={user.phone} />
+        <InfoField title={content.personal.phone} content={data.phone} />
       </div>
     </article>
   );
 }
 
 type LongTermCareProps = {
+  data: User & CaseUserInfo;
   onBalanceClick: () => void;
 };
-function LongTermCare({ onBalanceClick }: LongTermCareProps) {
+function LongTermCare({ data, onBalanceClick }: LongTermCareProps) {
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
       <div className="flex justify-between items-center">
@@ -166,14 +227,14 @@ function LongTermCare({ onBalanceClick }: LongTermCareProps) {
         <InfoField
           className="w-full lg:w-1/5"
           title={content.ltc.caseNo}
-          content={caseUsers.caseUserNo}
+          content={data.caseUserNo}
           section="case"
         />
 
         <InfoField
           className="w-full lg:w-1/2"
           title={content.ltc.address}
-          content={`${caseUsers.county}${caseUsers.district}${caseUsers.addr}`}
+          content={`${data.county}${data.district}${data.addr}`}
           section="case"
         />
       </div>
@@ -181,22 +242,22 @@ function LongTermCare({ onBalanceClick }: LongTermCareProps) {
       <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
         <InfoField
           title={content.ltc.urgent.name}
-          content={caseUsers.urgentName}
+          content={data.urgentName || content.ltc.urgent.none}
           section="case"
         />
         <InfoField
           title={content.ltc.urgent.relationship}
-          content={caseUsers.urgentRelationship || content.ltc.urgent.none}
+          content={data.urgentRelationship || content.ltc.urgent.none}
           section="case"
         />
         <InfoField
           title={content.ltc.urgent.phone}
-          content={caseUsers.urgentPhone}
+          content={data.urgentPhone || content.ltc.urgent.none}
           section="case"
         />
         <InfoField
           title={content.ltc.urgent.tel}
-          content={caseUsers.urgentTel}
+          content={data.urgentTel || content.ltc.urgent.none}
           section="case"
         />
       </div>
@@ -205,25 +266,30 @@ function LongTermCare({ onBalanceClick }: LongTermCareProps) {
 }
 
 export default function UserInfo() {
-  const [modal, setModal] = useState<
-    "password" | "balance" | "phone" | undefined
-  >();
+  const [modal, setModal] =
+    useState<"password" | "balance" | "phone" | undefined>();
 
   const close = () => setModal(undefined);
+
+  const userInfo: User & CaseUserInfo = { ...user, ...caseUserInfo };
 
   return (
     <Layout.Normal title={content.title}>
       <div className="-mx-6 sm:mx-auto">
         <PersonalInformation
+          data={userInfo}
           onPasswordClick={() => setModal("password")}
           onChangePhoneClick={() => setModal("phone")}
         />
 
-        <LongTermCare onBalanceClick={() => setModal("balance")} />
+        <LongTermCare
+          data={userInfo}
+          onBalanceClick={() => setModal("balance")}
+        />
       </div>
 
       {modal === "password" && <PasswordModal onClose={close} />}
-      {modal === "balance" && <BalanceModal onClose={close} />}
+      {modal === "balance" && <BalanceModal data={discount} onClose={close} />}
       {modal === "phone" && <PhoneModal onClose={close} />}
     </Layout.Normal>
   );
