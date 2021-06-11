@@ -58,10 +58,11 @@ function statusDecoder(status: number): string {
   }
 }
 
-type Props = {
+type BasicTitleProps = {
   detail: RecordDetail | undefined;
+  status: number | undefined;
 };
-export function BasicTitle({ detail }: Props) {
+export function BasicTitle({ detail, status }: BasicTitleProps) {
   if (!detail) return <></>;
   return (
     <div
@@ -97,7 +98,7 @@ export function BasicTitle({ detail }: Props) {
             />
           )}
 
-          <Tag status={detail.status} label={statusDecoder(detail.status)} />
+          {status && <Tag status={status} label={statusDecoder(status)} />}
         </div>
       </div>
 
@@ -120,7 +121,10 @@ export function BasicTitle({ detail }: Props) {
   );
 }
 
-export function BasicInfo({ detail }: Props) {
+type BasicInfoProps = {
+  detail: RecordDetail | undefined;
+};
+export function BasicInfo({ detail }: BasicInfoProps) {
   if (!detail) return <></>;
   const basicInfo = [
     { title: content.label.createdIdentity, content: detail.createdIdentity },

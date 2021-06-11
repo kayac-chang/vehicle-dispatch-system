@@ -11,6 +11,7 @@ import {
   ClientRecord,
   OrderPayOfCaseUsers,
   Despatch,
+  StatueLog,
 } from "types/record";
 
 const formatOnlyDate = pipe(
@@ -20,6 +21,14 @@ const formatOnlyDate = pipe(
 
 interface BaseResponse {
   code: number;
+}
+
+interface Token {
+  token: string;
+}
+
+interface CaseOrderNo {
+  orderNo: string;
 }
 
 interface ClientRecordResponse {
@@ -108,7 +117,7 @@ export function getClientRecord(
   props: Partial<GetClientRecordQuery> | undefined
 ): Promise<{ total: number; record: ClientRecord[] } | undefined> {
   return get<GetClientRecordResponse>(
-    KHH_API("/api/OrderOfCaseUsers/LoadClient", {
+    KHH_API("OrderOfCaseUsers/LoadClient", {
       limit: props?.limit,
       page: props?.page,
       StartDate: props?.startDate,
@@ -248,12 +257,55 @@ function toCaseDetail({
  *
  * get Case Detail by orderNo from service
  */
-export function getCaseDetail(
-  orderNo: string
-): Promise<RecordDetail | undefined> {
+export function getCaseDetail({
+  orderNo,
+  token,
+}: CaseOrderNo & Token): Promise<RecordDetail | undefined> {
   return get<GetCaseDetailResponse>(
-    KHH_API("api/OrderOfCaseUsers/GetDetail", { orderNo })
+    KHH_API("api/OrderOfCaseUsers/GetDetail", { orderNo }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toCaseDetail));
+}
+
+interface StatueLogResponse {
+  status: number;
+  createDate: string;
+  createUserName: string;
+}
+
+interface GetStatueLogResponse extends BaseResponse {
+  result: StatueLogResponse;
+}
+
+function toStatueLog({
+  status,
+  createDate,
+  createUserName,
+}: StatueLogResponse): StatueLog {
+  return {
+    status: status,
+    createDate: formatOnlyDate(createDate),
+    createUserName: createUserName,
+  };
+}
+
+/**
+ * [GET /api/OrderOfCaseUsers/GetStatusLog]
+ *
+ * get Case Despatch info by orderId from service
+ */
+export function getStatusLog({
+  orderNo,
+  token,
+}: CaseOrderNo & Token): Promise<StatueLog | undefined> {
+  return get<GetStatueLogResponse>(
+    KHH_API("OrderOfCaseUsers/GetStatusLog", { orderNo }),
+    {
+      "X-Token": token,
+    }
+  ).then(pipe(prop("result"), toStatueLog));
 }
 
 interface DespatchResponse {
@@ -283,11 +335,15 @@ function toDespatch({
  *
  * get Case Despatch info by orderId from service
  */
-export function getDespatchByOrderId(
-  orderId: string
-): Promise<Despatch | undefined> {
+export function getDespatchByOrderId({
+  orderNo,
+  token,
+}: CaseOrderNo & Token): Promise<Despatch | undefined> {
   return get<GetDespatchResponse>(
-    KHH_API("/api/Despatchs/GetByOrderId", { orderId })
+    KHH_API("Despatchs/GetByOrderId", { orderNo }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toDespatch));
 }
 
@@ -339,11 +395,15 @@ function toOrderPayOfCaseUsers({
  *
  * get Case payment detail by orderNo from service
  */
-export function getOrderPayOfCaseUsers(
-  orderId: string
-): Promise<OrderPayOfCaseUsers | undefined> {
+export function getOrderPayOfCaseUsers({
+  orderNo,
+  token,
+}: CaseOrderNo & Token): Promise<OrderPayOfCaseUsers | undefined> {
   return get<GetOrderPayOfCaseUsersResponse>(
-    KHH_API("/api/OrderPayOfCaseUsers/GetDetail", { orderId })
+    KHH_API("OrderPayOfCaseUsers/GetDetail", { orderNo }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
 }
 
@@ -398,11 +458,15 @@ function toCaseOrderAmt({
  *
  * get Case Order Amount by orderNo from service
  */
-export function getCaseOrderAmt(
-  orderNo: string
-): Promise<CaseOrderAmt | undefined> {
+export function getCaseOrderAmt({
+  orderNo,
+  token,
+}: CaseOrderNo & Token): Promise<CaseOrderAmt | undefined> {
   return get<GetCaseOrderAmtResponse>(
-    KHH_API("/api/OrderOfCaseUsers/GetCaseOrderAmt", { orderNo })
+    KHH_API("OrderOfCaseUsers/GetCaseOrderAmt", { orderNo }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toCaseOrderAmt));
 }
 
@@ -438,9 +502,9 @@ function toGeoCode({
  * get GeoCode by addr from service
  */
 export function getGeoCode(address: string): Promise<GeoCode | undefined> {
-  return get<GetGeoCodeResponse>(
-    KHH_API("/api/Maps/Geocode", { address })
-  ).then(pipe(prop("result"), toGeoCode));
+  return get<GetGeoCodeResponse>(KHH_API("Maps/Geocode", { address })).then(
+    pipe(prop("result"), toGeoCode)
+  );
 }
 
 interface RouteResponse {
@@ -510,7 +574,7 @@ function toRoute({
  * get Route by from - to addr from service
  */
 export function getRoute(payload: GetRouteRequest): Promise<Route | undefined> {
-  return post<GetRouteResponse>(KHH_API("/api/Maps/Route").url, payload).then(
+  return post<GetRouteResponse>(KHH_API("Maps/Route").url, payload).then(
     pipe(prop("result"), toRoute)
   );
 }
@@ -530,7 +594,7 @@ export function cancelOrder(
   payload: CancelOrderRequest
 ): Promise<BaseResponse | undefined> {
   return post<BaseResponse>(
-    KHH_API("/api/OrderOfCaseUsers/CancelOrder").url,
+    KHH_API("OrderOfCaseUsers/CancelOrder"),
     payload
   ).then(toCancelOrder);
 }

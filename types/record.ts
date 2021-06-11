@@ -131,6 +131,12 @@ export interface OrderPayOfCaseUsers {
   useDiscount:     number;
 }
 
+export interface StatueLog{
+  status:         number;
+  createDate:     string;
+  createUserName: string;
+}
+
 export interface History{
   status:   string;
   editDate: string;

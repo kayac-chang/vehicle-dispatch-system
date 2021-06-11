@@ -1,4 +1,5 @@
-import { GetStaticPropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/client";
 import Layout from "components/templates";
 import {
   BasicTitle,
@@ -7,12 +8,13 @@ import {
   PaymentInfo,
   HistoryList,
 } from "components/record/detail";
-// import { Despatch, OrderPayOfCaseUsers, RecordDetail } from "types/record";
 import {
   getCaseDetail,
   getDespatchByOrderId,
   getOrderPayOfCaseUsers,
+  getStatusLog,
 } from "api/record";
+// import { Despatch, OrderPayOfCaseUsers, RecordDetail } from "types/record";
 
 // 註解掉的部分是swagger打回來的資料
 // const detail: RecordDetail = {
@@ -54,6 +56,8 @@ import {
 //   isBack: false,
 // };
 
+// const status = { status: 1, editDate: "", editor: "" };
+
 // const despatches: Despatch = {
 //   driverName: "尤大富",
 //   carNo: "TAK-1005",
@@ -78,38 +82,45 @@ import {
 //   { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
 // ];
 
+// 測試單號:"CN6800049758945193984"
+
 const content = {
   title: "乘車明細",
 };
-// 測試單號:"CN6800049758945193984"
-type Context = GetStaticPropsContext<{ id: string }>;
-export async function getServerSideProps({ params }: Context) {
-  if (!params) {
+
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ params, req }: Context) {
+  const session = await getSession({ req });
+
+  if (!session || !params) {
     return {
       redirect: {
         destination: "/client/record",
+        permanent: true,
       },
-      props: {
-        detail: undefined,
-        despatches: undefined,
-        payment: undefined,
-        history: undefined,
-      },
+      props: {},
     };
   }
 
-  const detail = await getCaseDetail(params.id);
-  const despatches = await getDespatchByOrderId(params.id);
-  const payment = await getOrderPayOfCaseUsers(params.id);
-  const history = undefined;
-
   return {
-    notFound: true,
     props: {
-      detail: detail,
-      despatches: despatches,
-      payment: payment,
-      history: history,
+      detail: await getCaseDetail({
+        orderNo: params.id,
+        token: session.accessToken,
+      }),
+      status: await getStatusLog({
+        orderNo: params.id,
+        token: session.accessToken,
+      }),
+      despatches: await getDespatchByOrderId({
+        orderNo: params.id,
+        token: session.accessToken,
+      }),
+      payment: await getOrderPayOfCaseUsers({
+        orderNo: params.id,
+        token: session.accessToken,
+      }),
+      history: undefined,
     },
   };
 }
@@ -117,6 +128,7 @@ export async function getServerSideProps({ params }: Context) {
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function RecordDetailPage({
   detail,
+  status,
   despatches,
   payment,
   history,
@@ -124,7 +136,7 @@ export default function RecordDetailPage({
   return (
     <Layout.Normal title={content.title} prev="/client/record">
       <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
-        <BasicTitle detail={detail} />
+        <BasicTitle detail={detail} status={status?.status} />
 
         <BasicInfo detail={detail} />
 
