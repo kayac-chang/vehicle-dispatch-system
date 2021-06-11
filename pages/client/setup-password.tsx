@@ -2,6 +2,9 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Rule from "functions/regexp";
+import { changePassword, getUsername } from "api";
+import { getSession } from "next-auth/client";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 
 const content = {
   title: "設定密碼",
@@ -15,12 +18,34 @@ const content = {
   },
 };
 
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ req }: Context) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
+
+  return {
+    props: {
+      username: await getUsername({ token: session.accessToken }),
+      token: session.accessToken,
+    },
+  };
+}
+
 interface Request {
   password: string;
   repeat: string;
 }
-
-export default function SetupPassword() {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function SetupPassword({ username, token }: Props) {
   const {
     control,
     handleSubmit,
@@ -29,13 +54,28 @@ export default function SetupPassword() {
   } = useForm<Request>();
 
   function onSubmit({ password, repeat }: Request) {
+    if (!username || !token) return;
+
     if (password !== repeat) {
       setError("repeat", { type: "validate" });
       return;
     }
 
-    // @TODO submit logic
-    console.log(password, repeat);
+    return changePassword({
+      username,
+      password,
+      token,
+    })
+      .then(() => {
+        // @TODO success logic
+
+        console.log("change password successful");
+      })
+      .catch((error) => {
+        console.error(error);
+
+        return setError("repeat", { type: "validate" });
+      });
   }
 
   return (

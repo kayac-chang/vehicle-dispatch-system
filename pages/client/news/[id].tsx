@@ -10,6 +10,7 @@ export async function getServerSideProps({ params }: Context) {
     return {
       redirect: {
         destination: "/client/news",
+        permanent: true,
       },
       props: {
         news: undefined,

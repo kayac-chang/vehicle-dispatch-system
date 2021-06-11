@@ -1,25 +1,27 @@
 import { prop } from "ramda";
-import { KHH_API, post } from "./base";
+import { KHH_API, post, get } from "./base";
 
 interface BaseResponse {
   code: 200;
 }
 
-interface LoginResponse extends BaseResponse {
+interface Token {
   token: string;
 }
 
-interface LoginRequest {
+interface Request {
   username: string;
   password: string;
 }
+
+type LoginResponse = BaseResponse & Token;
 
 /**
  * [POST /api/Check/Login]
  *
  * login with username and password
  */
-export function login({ username, password }: LoginRequest): Promise<string> {
+export function login({ username, password }: Request): Promise<string> {
   return post<LoginResponse>(KHH_API("Check/Login"), {
     account: username,
     password: password,
@@ -27,4 +29,36 @@ export function login({ username, password }: LoginRequest): Promise<string> {
     mobileDevice: "",
     pushKey: "",
   }).then(prop("token"));
+}
+
+/**
+ * [POST /api/Users/ChangePassword]
+ *
+ * change user password
+ */
+export function changePassword({ username, password, token }: Request & Token) {
+  return post(
+    KHH_API("Users/ChangePassword"),
+    {
+      account: username,
+      password: password,
+      isSelf: true,
+    },
+    {
+      "X-Token": token,
+    }
+  ).then(() => true);
+}
+
+type UsernameResponse = BaseResponse & { result: string };
+
+/**
+ * [GET /api/Check/GetUserName]
+ *
+ * get username by token
+ */
+export function getUsername({ token }: Token): Promise<string> {
+  return get<UsernameResponse>(KHH_API("Check/GetUserName"), {
+    "X-Token": token,
+  }).then(({ result }) => result);
 }

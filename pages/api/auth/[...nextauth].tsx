@@ -1,6 +1,12 @@
 import { login } from "api";
 import NextAuth from "next-auth";
+import { JWT } from "next-auth/jwt";
 import Providers from "next-auth/providers";
+
+type Credentials = {
+  username: string;
+  password: string;
+};
 
 export default NextAuth({
   providers: [
@@ -11,19 +17,19 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials: { username: string; password: string }) {
+      async authorize({ username, password }: Credentials) {
         const token = await login({
-          username: credentials.username,
-          password: credentials.password,
+          username,
+          password,
         });
 
-        return token ? { token } : null;
+        return token ? { token, username } : null;
       },
     }),
   ],
 
   callbacks: {
-    async session(session, token) {
+    async session(session, token: JWT) {
       session.accessToken = token.accessToken;
 
       return session;
