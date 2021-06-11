@@ -1,5 +1,10 @@
 import { join } from "path";
 
+interface BaseResponse {
+  code: number;
+  message: string;
+}
+
 type Query = Record<string, string | number | boolean | undefined>;
 export function KHH_API(path: string, query?: Query) {
   const url = new URL("./" + join(path), process.env.NEXT_PUBLIC_KHH_API);
@@ -13,15 +18,21 @@ export function KHH_API(path: string, query?: Query) {
 }
 
 function status(response: Response) {
-  if (response.ok) {
-    return Promise.resolve(response);
+  if (!response.ok) {
+    throw new Error(response.statusText);
   }
 
-  return Promise.reject(new Error(response.statusText));
+  return Promise.resolve(response);
 }
 
 function json(response: Response) {
-  return response.json();
+  return response.json().then((body) => {
+    if (body.code === 500) {
+      throw new Error(body.message);
+    }
+
+    return Promise.resolve(body);
+  });
 }
 
 function error(err: Error) {
@@ -30,17 +41,32 @@ function error(err: Error) {
   return err;
 }
 
-export function get<T>(url: RequestInfo): Promise<T> {
-  return fetch(url).then(status).then(json).catch(error);
+export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
+  return fetch(
+    new Request(req, {
+      headers: new Headers(headers),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
 }
 
-export function post<T>(req: RequestInfo, body: object): Promise<T> {
-  const headers = new Headers();
-  headers.append("accept", "text/plain");
-  headers.append("Content-Type", "application/json-patch+json");
-
+export function post<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {}
+): Promise<T> {
   return fetch(
-    new Request(req, { method: "POST", body: JSON.stringify(body), headers })
+    new Request(req, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: new Headers({
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
+        ...headers,
+      }),
+    })
   )
     .then(status)
     .then(json)
