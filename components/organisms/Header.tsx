@@ -8,14 +8,14 @@ const links = [
     label: "預約訂車",
     icon: <Icon.Order />,
     items: [
-      { label: "預約訂車", href: "/" },
-      { label: "快速叫車", href: "/" },
+      { label: "預約訂車", href: "/client/dispatch" },
+      { label: "快速叫車", href: "/client/fast-call" },
     ],
   },
-  { label: "訂單檢視", icon: <Icon.History />, href: "/" },
-  { label: "用戶資料", icon: <Icon.User />, href: "/" },
-  { label: "聯繫客服", icon: <Icon.Customer />, href: "/" },
-  { label: "常見問題", icon: <Icon.QA />, href: "/" },
+  { label: "訂單檢視", icon: <Icon.History />, href: "/client/record" },
+  { label: "用戶資料", icon: <Icon.User />, href: "/client/user-info" },
+  { label: "聯繫客服", icon: <Icon.Customer />, href: "/client/contact" },
+  { label: "常見問題", icon: <Icon.QA />, href: "/client/qna" },
 ];
 
 export function Header() {
