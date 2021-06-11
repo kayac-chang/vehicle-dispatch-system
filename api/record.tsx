@@ -1,4 +1,4 @@
-import { get, getWithToken, KHH_API, post } from "./base";
+import { get, KHH_API, post } from "./base";
 import { parse, format } from "date-fns";
 import { map, pipe, prop } from "ramda";
 import {
