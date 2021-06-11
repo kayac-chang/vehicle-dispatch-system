@@ -8,7 +8,6 @@ export function KHH_API(path: string, query?: Query) {
     Object.entries(query)
       .filter(([, value]) => value !== undefined)
       .forEach(([key, value]) => url.searchParams.append(key, String(value)));
-
   return new Request(url.toString());
 }
 
@@ -32,6 +31,19 @@ function error(err: Error) {
 
 export function get<T>(url: RequestInfo): Promise<T> {
   return fetch(url).then(status).then(json).catch(error);
+}
+
+export function getWithToken<T>(url: RequestInfo): Promise<T> {
+  return fetch(url, {
+    method: "GET",
+    headers: new Headers({
+      "Content-Type": "application/json",
+      "X-Token": "99d8a8fd",
+    }),
+  })
+    .then(status)
+    .then(json)
+    .catch(error);
 }
 
 export function post<T>(req: RequestInfo, body: object): Promise<T> {

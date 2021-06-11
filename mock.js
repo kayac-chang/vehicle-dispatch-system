@@ -327,3 +327,35 @@ const RecordList = [
     uid: "G122112739",
   },
 ];
+
+// https://khhdev.mass.org.tw/api/OrderOfCaseUsers/GetStatusLog?orderId=CN6799760026935799825
+const status = {
+  status: 0,
+  createDate: "2021-06-11T10:57:57.021Z",
+  createUserName: "string",
+};
+
+// https://khhdev.mass.org.tw/api/Despatchs/GetByOrderId?orderId=CN6800049758945193984
+const despatch = {
+  result: {
+    driverName: null,
+    carNo: null,
+    orderNos: [],
+  },
+  message: "操作成功",
+  code: 200,
+};
+
+// https://khhdev.mass.org.tw/api/OrderPayOfCaseUsers/GetDetail?orderId=CN6799760026935799825
+const OrderPayOfCaseUsers = {
+  id: "string",
+  realFamilyWith: 0,
+  realMaidWith: 0,
+  realWithAmt: 0,
+  realDiscountAmt: 0,
+  realSelfPay: 0,
+  receivePay: 0,
+  signPic: "string",
+  remark: "string",
+  useDiscount: 0,
+};

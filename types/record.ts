@@ -111,3 +111,28 @@ export interface CancelOrderRequest {
   point: number;
   remark: string;
 }
+
+export interface Despatch {
+  driverName: string;
+  carNo:      string;
+  orderNos:   string[];
+}
+
+export interface OrderPayOfCaseUsers {
+  id:              string;
+  realFamilyWith:  number;
+  realMaidWith:    number;
+  realWithAmt:     number;
+  realDiscountAmt: number;
+  realSelfPay:     number;
+  receivePay:      number;
+  signPic:         string;
+  remark:          string;
+  useDiscount:     number;
+}
+
+export interface History{
+  status:   string;
+  editDate: string;
+  editor:   string;
+}

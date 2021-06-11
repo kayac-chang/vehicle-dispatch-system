@@ -1,93 +1,138 @@
+import { GetStaticPropsContext, InferGetServerSidePropsType } from "next";
 import Layout from "components/templates";
 import {
   BasicTitle,
   BasicInfo,
   CaseInfo,
   PaymentInfo,
-  History,
+  HistoryList,
 } from "components/record/detail";
-import { RecordDetail as IRecordDetail } from "types";
-import { useState } from "react";
+// import { Despatch, OrderPayOfCaseUsers, RecordDetail } from "types/record";
+import {
+  getCaseDetail,
+  getDespatchByOrderId,
+  getOrderPayOfCaseUsers,
+} from "api/record";
 
-const detail: IRecordDetail = {
-  orderNo: "TS16063797554258",
-  pickDate: "2020-11-29 21:30",
-  status: 1,
-  isCarpool: true,
-  passenger: "王小明明",
-  caseNo: "1081213001",
-  phone: "0987654321",
-  phoneSms: "0987654321",
-  caseDistance: 100,
-  caseCostTime: 18,
-  basicInfo: [
-    { title: "訂車人身份", content: "高雄縣政府衛生局" },
-    { title: "可否共乘", content: "不願共乘" },
-    { title: "陪同人數", content: "0人" },
-    { title: "福利身份別", content: "中低收入戶" },
-    { title: "建單時間", content: "2021-05-17 10:06:21" },
-    { title: "預估車資總額", content: "384" },
-    { title: "預估政府補助", content: "0" },
-    { title: "預估自付額", content: "280" },
-    { title: "預估陪同金額", content: "0" },
-    { title: "應收金額", content: "280" },
-  ],
-  caseInfo: [
-    { title: "司機姓名", content: "未排班" },
-    { title: "車牌號碼", content: "未排班" },
-    { title: "車輛類型", content: "一般車" },
-    { title: "輪椅類型", content: "無" },
-  ],
-  carpoolNo: "",
-  pickupInfo: {
-    lat: 22.611729,
-    lon: 120.30026,
-    description: "住家",
-    address: "新北市板橋區中山路一段161號",
-    note: "在立德路和延和路交叉口,靠近延和路這邊。",
-  },
-  dropInfo: {
-    lat: 22.611729,
-    lon: 120.30026,
-    description: "復健中心",
-    address: "新北市板橋區中山路一段161號",
-    note: "在立德路和延和路交叉口,靠近延和路這邊。",
-  },
-  mapInfo: {},
-  paymentInfo: [
-    { title: "營收金額", content: "無" },
-    { title: "實際政府補助", content: "無" },
-    { title: "實際自付額", content: "無" },
-    { title: "實際陪同金額", content: "無" },
-    { title: "實際陪同人數", content: "無" },
-    { title: "使用額度", content: "無" },
-    { title: "實收金額", content: "無" },
-  ],
-  paymentNote: "月結",
-  signature: "",
-  history: [
-    { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-    { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-  ],
-};
+// 註解掉的部分是swagger打回來的資料
+// const detail: RecordDetail = {
+//   id: "6800049758915829760",
+//   caseUserId: "6789568027834228736",
+//   orgName: "",
+//   createdIdentity: "高雄縣政府衛生局",
+//   createDate: "",
+//   userName: "王小明明",
+//   userUID: "G122112739",
+//   userPhone: "0987654321",
+//   orderNo: "CN6800049758840336384",
+//   caseUserNo: "2",
+//   reserveDate: "2020-11-29 21:30",
+//   status: 1,
+//   fromAddr: "高雄市苓雅區三多四路3巷12號",
+//   fromAddrRemark: "住家",
+//   toAddr: "807高雄市三民區明吉路13號",
+//   toAddrRemark: "復健中心",
+//   fromLat: 22.620308,
+//   fromLon: 120.331955,
+//   toLat: 22.620308,
+//   toLon: 120.331955,
+//   carCategoryName: "一般車",
+//   wheelchairType: "",
+//   familyWith: 2,
+//   maidWith: 0,
+//   noticePhone: "0987654123",
+//   canShared: true,
+//   etTotalAmt: 384,
+//   etDiscountAmt: 0,
+//   etSelfPay: 280,
+//   etWithAmt: 0,
+//   cancelRemark: "",
+//   wealTypeId: "1",
+//   wealTypeName: "中低收入戶",
+//   expectedMinute: 108,
+//   totalMileage: 64,
+//   isBack: false,
+// };
+
+// const despatches: Despatch = {
+//   driverName: "尤大富",
+//   carNo: "TAK-1005",
+//   orderNos: ["CN6799057965822816256", "CN6799064577723641856"],
+// };
+
+// const payment: OrderPayOfCaseUsers = {
+//   id: "6800049758915829760",
+//   realFamilyWith: 2,
+//   realMaidWith: 0,
+//   realWithAmt: 200,
+//   realDiscountAmt: 0,
+//   realSelfPay: 280,
+//   receivePay: 480,
+//   signPic: "https://i.imgur.com/8S73Y.png",
+//   remark: "月結",
+//   useDiscount: 20,
+// };
+
+// const history = [
+//   { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
+//   { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
+// ];
 
 const content = {
   title: "乘車明細",
 };
+// 測試單號:"CN6800049758945193984"
+type Context = GetStaticPropsContext<{ id: string }>;
+export async function getServerSideProps({ params }: Context) {
+  if (!params) {
+    return {
+      redirect: {
+        destination: "/client/record",
+      },
+      props: {
+        detail: undefined,
+        despatches: undefined,
+        payment: undefined,
+        history: undefined,
+      },
+    };
+  }
 
-export default function RecordDetail() {
+  const detail = await getCaseDetail(params.id);
+  const despatches = await getDespatchByOrderId(params.id);
+  const payment = await getOrderPayOfCaseUsers(params.id);
+  const history = undefined;
+
+  return {
+    notFound: true,
+    props: {
+      detail: detail,
+      despatches: despatches,
+      payment: payment,
+      history: history,
+    },
+  };
+}
+
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function RecordDetailPage({
+  detail,
+  despatches,
+  payment,
+  history,
+}: Props) {
   return (
     <Layout.Normal title={content.title} prev="/client/record">
-      <div className="-mx-6 mb-4 sm:m-0 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
-        <BasicTitle item={detail} />
+      <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
+        <BasicTitle detail={detail} />
 
-        <BasicInfo item={detail} />
+        <BasicInfo detail={detail} />
 
-        <CaseInfo item={detail} />
+        <CaseInfo journey={detail} despatches={despatches} />
 
-        <PaymentInfo item={detail} />
+        <PaymentInfo payment={payment} />
 
-        <History item={detail} />
+        <HistoryList history={history} />
       </div>
     </Layout.Normal>
   );

@@ -2,110 +2,130 @@ import Layout from "components/templates";
 import { Pagination, Modal } from "components/molecules";
 import { Form, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
-import { Record as IRecord } from "types";
 import { RecordCard } from "components/record";
 import { useState } from "react";
+import { ClientRecord } from "types/record";
 
-const items: IRecord[] = [
+const mockData: ClientRecord[] = [
   {
+    caseUserNo: "2",
+    orderNo: "CN6800049758840336384",
+    id: "6800049758777417728",
+    userId: "6789314826878885888",
+    caseUserId: "6789568027834228736",
+    cancelReamrk: "",
     status: 1,
-    passenger: "王小明",
-    isCarpool: true,
-    ridership: 1,
-    orderNo: "TP16063797554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號同吉大樓9樓8-12室",
-    dropLocation:
-      "台灣新北市板橋區自由路車站前蚵仔麵線旁邊的小公園第三個長板凳",
+    reserveDate: "2021-06-18 15:15:00",
+    fromAddr: "高雄市苓雅區三多四路3巷12號",
+    toAddr: "807高雄市三民區明吉路13號",
+    canShared: false,
+    carCategoryId: "一般車",
+    carCategoryName: "一般車",
+    familyWith: 2,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
   {
+    caseUserNo: "2",
+    orderNo: "CN6800048979379269649",
+    id: "6800048979324739584",
+    userId: "6789314826878885888",
+    caseUserId: "6789568027834228736",
+    cancelReamrk: "",
     status: 2,
-    passenger: "王小明",
-    isCarpool: false,
-    ridership: 0,
-    orderNo: "TP16063797554252",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
+    reserveDate: "2021-06-30 09:00:00",
+    fromAddr: "高雄市苓雅區三多四路3巷12號",
+    toAddr: "高雄市三民區明吉路13號",
+    canShared: true,
+    carCategoryId: "一般車",
+    carCategoryName: "一般車",
+    familyWith: 2,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
   {
+    caseUserNo: "2",
+    orderNo: "CN6800048979379269648",
+    id: "6800048979307962368",
+    userId: "6789314826878885888",
+    caseUserId: "6789568027834228736",
+    cancelReamrk: "",
     status: 3,
-    passenger: "王小明",
-    isCarpool: true,
-    ridership: 3,
-    orderNo: "TP16063797534258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
+    reserveDate: "2021-06-30 21:20:00",
+    fromAddr: "高雄市三民區明吉路13號",
+    toAddr: "高雄市苓雅區武慶三路86號",
+    canShared: false,
+    carCategoryId: "一般車",
+    carCategoryName: "一般車",
+    familyWith: 2,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
   {
+    caseUserNo: "3",
+    orderNo: "CN6799760026935799824",
+    id: "6799760026906435587",
+    userId: "6789314826878885888",
+    caseUserId: "6789611603716775936",
+    cancelReamrk: "",
     status: 4,
-    passenger: "王小明",
-    isCarpool: false,
-    ridership: 0,
-    orderNo: "TP16063797544258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
+    reserveDate: "2021-06-04 14:45:00",
+    fromAddr: "高雄市苓雅區三多四路高雄大遠百",
+    toAddr: "高雄市苓雅區高雄市苓雅區自強三路171號",
+    canShared: true,
+    carCategoryId: "SYS_CAR_GENERAL",
+    carCategoryName: "一般車",
+    familyWith: 1,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
   {
+    caseUserNo: "3",
+    orderNo: "CN6799760026935799825",
+    id: "6799760026889658368",
+    userId: "6789314826878885888",
+    caseUserId: "6789611603716775936",
+    cancelReamrk: "",
     status: 5,
-    passenger: "王小明",
-    isCarpool: true,
-    ridership: 0,
-    orderNo: "TP16023797554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
+    reserveDate: "2021-06-04 14:15:00",
+    fromAddr: "高雄市苓雅區高雄市苓雅區自強三路171號",
+    toAddr: "高雄市苓雅區三多四路高雄大遠百",
+    canShared: false,
+    carCategoryId: "SYS_CAR_GENERAL",
+    carCategoryName: "一般車",
+    familyWith: 1,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
   {
-    status: 6,
-    passenger: "王小明",
-    isCarpool: false,
-    ridership: 0,
-    orderNo: "TP16063737554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號同吉大樓9樓8-12室",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
-  },
-  {
-    status: 7,
-    passenger: "王小明",
-    isCarpool: false,
-    ridership: 0,
-    orderNo: "TP16063197554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
-  },
-  {
-    status: 8,
-    passenger: "王小明",
-    isCarpool: true,
-    ridership: 1,
-    orderNo: "TP16068797554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
-  },
-  {
+    caseUserNo: "2",
+    orderNo: "CN6799064577723641856",
+    id: "6799064577270652928",
+    userId: "6789314826878885888",
+    caseUserId: "6789568027834228736",
+    cancelReamrk: "",
     status: 9,
-    passenger: "王小明",
-    isCarpool: false,
-    ridership: 0,
-    orderNo: "TP06063797554258",
-    pickUpDate: "2021-06-01 16:00",
-    carType: 1,
-    pickupLocation: "台灣新北市板橋區中山路一段123號",
-    dropLocation: "台灣新北市板橋區自由路車站前蚵仔麵線",
+    reserveDate: "2021-06-07 17:30:00",
+    fromAddr: "高雄市仁武區八德中路49號",
+    toAddr: "高雄市前鎮區鎮中路148號",
+    canShared: false,
+    carCategoryId: "SYS_CAR_GENERAL",
+    carCategoryName: "一般車",
+    familyWith: 0,
+    hasViolation: true,
+    name: "阿華",
+    phone: "0987654321",
+    uid: "G122112739",
   },
 ];
 
@@ -162,14 +182,14 @@ export default function Record() {
     console.log(data);
   }
 
-  console.log(control);
+  const data = mockData;
 
   return (
     <Layout.Normal title={content.title}>
       <div className="space-y-6">
         <form
-          onSubmit={handleSubmit(onSubmit)}
           className="lg:flex lg:justify-end"
+          onChange={handleSubmit(onSubmit)}
         >
           <div className="xl:w-1/2 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="lg:w-1/3">
@@ -182,7 +202,6 @@ export default function Record() {
                 className="bg-white"
               />
             </div>
-            <button onClick={handleSubmit(onSubmit)}>click</button>
 
             <div className="flex-1">
               <Form.Input
@@ -207,8 +226,8 @@ export default function Record() {
         </form>
 
         <div className="space-y-4 pb-8">
-          {items.length ? (
-            items.map((item) => (
+          {data.length ? (
+            data.map((item) => (
               <RecordCard
                 item={item}
                 key={item.orderNo}
@@ -220,7 +239,7 @@ export default function Record() {
             <NoData />
           )}
 
-          {items.length && (
+          {data.length && (
             <div className="flex justify-end pt-2">
               <Pagination total={10} page={0} />
             </div>

@@ -1,4 +1,4 @@
-import { get, KHH_API, post } from "./base";
+import { get, getWithToken, KHH_API, post } from "./base";
 import { parse, format } from "date-fns";
 import { map, pipe, prop } from "ramda";
 import {
@@ -9,6 +9,8 @@ import {
   GetRouteRequest,
   Route,
   ClientRecord,
+  OrderPayOfCaseUsers,
+  Despatch,
 } from "types/record";
 
 const formatOnlyDate = pipe(
@@ -74,7 +76,7 @@ function toClientRecord({
     caseUserId: caseUserId,
     cancelReamrk: cancelReamrk,
     status: status,
-    reserveDate: reserveDate,
+    reserveDate: formatOnlyDate(reserveDate),
     fromAddr: fromAddr,
     toAddr: toAddr,
     canShared: canShared,
@@ -250,8 +252,99 @@ export function getCaseDetail(
   orderNo: string
 ): Promise<RecordDetail | undefined> {
   return get<GetCaseDetailResponse>(
-    KHH_API("/api/OrderOfCaseUsers/GetDetail", { orderNo })
+    KHH_API("api/OrderOfCaseUsers/GetDetail", { orderNo })
   ).then(pipe(prop("result"), toCaseDetail));
+}
+
+interface DespatchResponse {
+  driverName: string;
+  carNo: string;
+  orderNos: string[];
+}
+
+interface GetDespatchResponse extends BaseResponse {
+  result: DespatchResponse;
+}
+
+function toDespatch({
+  driverName,
+  carNo,
+  orderNos,
+}: DespatchResponse): Despatch {
+  return {
+    driverName: driverName,
+    carNo: carNo,
+    orderNos: orderNos,
+  };
+}
+
+/**
+ * [GET /api/Despatchs/GetByOrderId]
+ *
+ * get Case Despatch info by orderId from service
+ */
+export function getDespatchByOrderId(
+  orderId: string
+): Promise<Despatch | undefined> {
+  return get<GetDespatchResponse>(
+    KHH_API("/api/Despatchs/GetByOrderId", { orderId })
+  ).then(pipe(prop("result"), toDespatch));
+}
+
+interface OrderPayOfCaseUsersResponse {
+  id: string;
+  realFamilyWith: number;
+  realMaidWith: number;
+  realWithAmt: number;
+  realDiscountAmt: number;
+  realSelfPay: number;
+  receivePay: number;
+  signPic: string;
+  remark: string;
+  useDiscount: number;
+}
+
+interface GetOrderPayOfCaseUsersResponse extends BaseResponse {
+  result: OrderPayOfCaseUsersResponse;
+}
+
+function toOrderPayOfCaseUsers({
+  id,
+  realFamilyWith,
+  realMaidWith,
+  realWithAmt,
+  realDiscountAmt,
+  realSelfPay,
+  receivePay,
+  signPic,
+  remark,
+  useDiscount,
+}: OrderPayOfCaseUsersResponse): OrderPayOfCaseUsers {
+  return {
+    id: id,
+    realFamilyWith: realFamilyWith,
+    realMaidWith: realMaidWith,
+    realWithAmt: realWithAmt,
+    realDiscountAmt: realDiscountAmt,
+    realSelfPay: realSelfPay,
+    receivePay: receivePay,
+    signPic: signPic,
+    remark: remark,
+    useDiscount: useDiscount,
+  };
+}
+
+/**
+ * [GET /api/OrderPayOfCaseUsers/GetDetail]
+ *
+ * get Case payment detail by orderNo from service
+ */
+export function getOrderPayOfCaseUsers(
+  orderId: string
+): Promise<OrderPayOfCaseUsers | undefined> {
+  return get<GetOrderPayOfCaseUsersResponse>(
+    KHH_API("/api/OrderPayOfCaseUsers/GetDetail", { orderId })
+  ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
 }
 
 interface CaseOrderAmtResponse {
