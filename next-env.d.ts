@@ -1,6 +1,8 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
 
+import NextAuth from "next-auth";
+
 declare module "\*.svg" {
   import React = require("react");
   export const ReactComponent: React.SFC<React.SVGProps<SVGSVGElement>>;
@@ -21,4 +23,10 @@ declare module "\*.png" {
 declare module "\*.json" {
   const content: string;
   export default content;
+}
+
+declare module "next-auth" {
+  interface User {
+    token: string;
+  }
 }
