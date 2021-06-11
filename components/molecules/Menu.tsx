@@ -86,7 +86,7 @@ function Expanded({ label, icon, items, className }: ExpandedProps) {
   const [isExpanded, setExpand] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <button
         className={clsx(
           className,
