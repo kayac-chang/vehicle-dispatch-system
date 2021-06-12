@@ -121,7 +121,7 @@ function toCaseUser({
 }
 
 interface CaseUserRequest {
-  caseId: string | undefined;
+  id: string | undefined;
 }
 
 /**
@@ -130,10 +130,10 @@ interface CaseUserRequest {
  * get CaseUsers info by caseId from service
  */
 export function getCaseUsers({
-  caseId,
+  id,
   token,
 }: CaseUserRequest & Token): Promise<CaseUserInfo | undefined> {
-  return get<GetCaseUserResponse>(KHH_API("CaseUsers/Get", { caseId }), {
+  return get<GetCaseUserResponse>(KHH_API("CaseUsers/Get", { id }), {
     "X-Token": token,
   }).then(pipe(prop("result"), toCaseUser));
 }

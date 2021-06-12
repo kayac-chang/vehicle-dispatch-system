@@ -34,26 +34,24 @@ export async function getServerSideProps({ req }: Context) {
     };
   }
 
-  const caseId = await getUnPermissionUserType({
+  const caseUserData = await getUnPermissionUserType({
     userId: username,
     UID: username,
     token: session.accessToken,
-  }).then((res) => {
-    return res?.find((item) => item.caseId !== "" && item.isEnable)?.userId;
-  });
+  }).then((res) => res?.find((item) => item.caseId !== "" && item.isEnable));
 
   const user = await getUser({
-    caseId: caseId,
+    id: caseUserData?.userId,
     token: session.accessToken,
   });
 
   const caseUser = await getCaseUsers({
-    caseId: caseId,
+    id: caseUserData?.caseId,
     token: session.accessToken,
   });
 
   const discount = await getDiscountData({
-    caseuserId: caseUserInfo.caseUserId,
+    caseuserId: caseUser.caseUserId,
     token: session.accessToken,
   });
 

@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
 import { changePassword, logout } from "api";
 import { Button, Form } from "components/atoms";
 import { Modal } from "components/molecules";
-import { useState } from "react";
+import Rule from "functions/regexp";
 
 const content = {
   title: "修改密碼",
@@ -44,7 +45,7 @@ export function PasswordModal({ onClose, username, token }: Props) {
   function onSubmit(data: Request) {
     setAlert("");
 
-    if (!username || !token) return;
+    if (!username || !token || !data.old || !data.new || !data.repeat) return;
 
     if (data.new !== data.repeat) {
       setAlert(content.alert.notMatch);
@@ -103,6 +104,7 @@ export function PasswordModal({ onClose, username, token }: Props) {
           label={content.form.old}
           name="old"
           control={control}
+          pattern={Rule.Password}
         />
 
         <Form.Input
@@ -110,6 +112,7 @@ export function PasswordModal({ onClose, username, token }: Props) {
           label={content.form.new}
           name="new"
           control={control}
+          pattern={Rule.Password}
         />
 
         <Form.Input
@@ -117,6 +120,7 @@ export function PasswordModal({ onClose, username, token }: Props) {
           label={content.form.repeat}
           name="repeat"
           control={control}
+          pattern={Rule.Password}
         />
         <p className="text-xs text-red-bright px-2">{alert}</p>
       </form>

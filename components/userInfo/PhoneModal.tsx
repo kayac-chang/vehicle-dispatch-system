@@ -4,6 +4,7 @@ import { useEffect, useReducer, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { wait } from "functions/async";
 import { updateUserPhone } from "api/user";
+import Rule from "functions/regexp";
 
 const content = {
   title: "修改手機",
@@ -79,6 +80,7 @@ function Init({ control }: InitProps) {
       name="phone"
       control={control}
       label={content.init.phone}
+      pattern={Rule.Phone}
     />
   );
 }

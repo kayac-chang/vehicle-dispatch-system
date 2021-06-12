@@ -57,7 +57,7 @@ interface UserResponse {
   phone: string;
   status: number;
   type: number;
-  unLockDate: string;
+  unLockDate: string | null;
   createDate: string;
   createUserId: string;
   createUserName: string;
@@ -78,13 +78,13 @@ function toUser({ id, account, name, uid, sex, phone }: UserResponse): User {
     account: account,
     name: name,
     uid: uid,
-    sex: sex,
+    gender: sex == 1 ? "male" : "female",
     phone: phone,
   };
 }
 
 interface UserRequest {
-  caseId: string | undefined;
+  id: string | undefined;
 }
 
 /**
@@ -93,16 +93,12 @@ interface UserRequest {
  * get CaseUsers info by caseId from service
  */
 export function getUser({
-  caseId,
+  id,
   token,
 }: UserRequest & Token): Promise<User | undefined> {
-  return get<GetUserResponse>(KHH_API("Users/Get", { caseId }), {
+  return get<GetUserResponse>(KHH_API("Users/Get", { id }), {
     "X-Token": token,
-  }).then((res) => {
-    //TODO: mock要拿掉
-    if (res.result === null) return mockUsersGet.result;
-    return toUser(res.result);
-  });
+  }).then(pipe(prop("result"), toUser));
 }
 
 function toChangePassword({ code }: BaseResponse): BaseResponse {
@@ -149,8 +145,5 @@ export function updateUserPhone({
     {
       "X-Token": token,
     }
-  ).then((e) => {
-    if (e.code === 200) return true;
-    return e;
-  });
+  ).then(() => true);
 }
