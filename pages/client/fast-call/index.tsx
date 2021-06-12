@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Path } from "types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getAllFavorites } from "api";
+import { deleteFavorite, getAllFavorites } from "api";
 import { Query } from "functions/query";
 import { useQuery } from "react-query";
 
@@ -35,7 +35,7 @@ type PathProps = {
   total: number;
   page: number;
   onChange: (page: number) => void;
-  onDeleteClick?: () => void;
+  onDeleteClick?: (id: string) => void;
 };
 function CardView({
   loading,
@@ -61,7 +61,7 @@ function CardView({
                   name={name}
                   from={from}
                   to={to}
-                  onDeleteClick={onDeleteClick}
+                  onDeleteClick={() => onDeleteClick?.(id)}
                 />
               </li>
             ))}
@@ -112,7 +112,7 @@ function TableView({
                 name={name}
                 from={from}
                 to={to}
-                onDeleteClick={onDeleteClick}
+                onDeleteClick={() => onDeleteClick?.(id)}
               />
             </li>
           ))}
@@ -169,13 +169,15 @@ export async function getServerSideProps({ req }: Context) {
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function FastCall({ token }: Props) {
   const [page, setPage] = useState(() => INIT_PAGE);
-  const { data, isFetching } = useQuery({
+  const { data, isFetching, refetch } = useQuery({
     ...FavoriteQuery(token!, INIT_PAGE),
     keepPreviousData: true,
     enabled: Boolean(token),
   });
 
-  const [modal, setModal] = useState<"delete" | undefined>();
+  const [deleteTarget, setDeleteTarget] = useState<string | undefined>(
+    undefined
+  );
   const favorites = data?.items || [];
   const max = data?.total ? Math.ceil(data.total / LIMIT) : 0;
 
@@ -202,7 +204,7 @@ export default function FastCall({ token }: Props) {
           <CardView
             loading={isFetching}
             items={favorites}
-            onDeleteClick={() => setModal("delete")}
+            onDeleteClick={setDeleteTarget}
             total={max}
             page={page}
             onChange={setPage}
@@ -211,7 +213,7 @@ export default function FastCall({ token }: Props) {
           <TableView
             loading={isFetching}
             items={favorites}
-            onDeleteClick={() => setModal("delete")}
+            onDeleteClick={setDeleteTarget}
             total={max}
             page={page}
             onChange={setPage}
@@ -219,7 +221,7 @@ export default function FastCall({ token }: Props) {
         </div>
       </div>
 
-      {modal === "delete" && (
+      {deleteTarget && (
         <Modal.Alert
           title={content.delete.title}
           name="delete"
@@ -227,8 +229,14 @@ export default function FastCall({ token }: Props) {
             cancel: content.delete.cancel,
             submit: content.delete.submit,
           }}
-          onClose={() => setModal(undefined)}
-          onSubmit={() => setModal(undefined)}
+          onClose={() => setDeleteTarget(undefined)}
+          onSubmit={() => {
+            if (!token) return;
+
+            deleteFavorite({ token, items: [deleteTarget] })
+              .then(() => refetch())
+              .then(() => setDeleteTarget(undefined));
+          }}
         >
           <p>{content.delete.content}</p>
         </Modal.Alert>

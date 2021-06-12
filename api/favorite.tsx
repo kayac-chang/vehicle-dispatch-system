@@ -66,23 +66,23 @@ export async function addFavorite({
   return post(
     KHH_API("UserFavorite/Add"),
     {
-      id: user.id,
-      userId: user.uid,
-      userType: "caseuser",
+      userId: user.id,
+      userType: "SYS_USERCATEGORY_CASEUSER",
       name,
       fromAddr: from,
       toAddr: to,
-
-      createDate: new Date().toISOString(),
-      createUserId: user.uid,
-      createUserName: user.name,
-
-      modifyDate: new Date().toISOString(),
-      modifyUserId: user.uid,
-      modifyUserName: user.name,
     },
     {
       "X-Token": token,
     }
   ).then(() => true);
+}
+
+export async function deleteFavorite({
+  token,
+  items,
+}: Token & { items: string[] }): Promise<boolean> {
+  return post(KHH_API("UserFavorite/Delete"), items, {
+    "X-Token": token,
+  }).then(() => true);
 }
