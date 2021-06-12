@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { loadJSON } from "functions/load";
 import { InferGetStaticPropsType as Infer } from "next";
 import { Corporation } from "types";
+import { useState } from "react";
 
 export async function getStaticProps() {
   return {
@@ -28,10 +29,11 @@ interface Request {
 }
 type Props = Infer<typeof getStaticProps>;
 export default function Contact({ posts }: Props) {
+  const [keyword, setKeyword] = useState("");
   const { control, handleSubmit } = useForm<Request>();
 
-  function search(data: Request) {
-    console.log(data);
+  function search({ search }: Request) {
+    setKeyword(search);
   }
 
   return (
@@ -57,9 +59,15 @@ export default function Contact({ posts }: Props) {
           </div>
         </form>
 
-        {posts.map((item, index) => (
-          <Card info={item} key={index} />
-        ))}
+        <ul role="region" aria-live="polite" aria-relevant="additions removals">
+          {posts
+            .filter(({ name }) => name.includes(keyword))
+            .map((item, index) => (
+              <li key={index}>
+                <Card info={item} />
+              </li>
+            ))}
+        </ul>
       </div>
     </Layout.Normal>
   );
