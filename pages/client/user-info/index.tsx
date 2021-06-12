@@ -103,12 +103,9 @@ const content = {
 
 type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ req }: Context) {
-  // const session = await getSession({ req });
+  const session = await getSession({ req });
 
-  // const username = await getUsername({ token: session.accessToken });
-  const session = { accessToken: "a87ff9ef" };
-
-  const username = "G122112739";
+  const username = await getUsername({ token: session.accessToken });
 
   const caseId = await getUnPermissionUserType({
     userId: username,
