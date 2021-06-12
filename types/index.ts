@@ -64,3 +64,10 @@ export interface RecordDetail {
   signature: string;
   history: { status: string; editDate: string; editor: string }[];
 }
+
+export interface Path {
+  id: string;
+  name: string;
+  from: string;
+  to: string;
+}

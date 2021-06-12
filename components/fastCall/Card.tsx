@@ -1,5 +1,6 @@
-import { Icon } from "components/atoms";
-import { Location, IconButton } from "components/fastCall";
+import { Icon, Button } from "components/atoms";
+import { Location } from "components/fastCall";
+import { Path } from "types";
 
 const content = {
   title: "路線名稱",
@@ -8,65 +9,55 @@ const content = {
   delete: "刪除",
 };
 
-type Props = {
-  pathNo: number;
-  pathName: string;
-  pickupLocation: string;
-  dropLocation: string;
-  onOrderClick?: () => void;
-  onEditClick?: () => void;
+type Props = Path & {
   onDeleteClick?: () => void;
 };
-export function Card({
-  pathName,
-  pickupLocation,
-  dropLocation,
-  onOrderClick,
-  onEditClick,
-  onDeleteClick,
-}: Props) {
+export function Card({ name, from, to, onDeleteClick }: Props) {
   return (
     <div className="font-normal text-sm leading-6 text-gray-dark">
       <div className="flex items-center px-4 py-2">
         <span className="text-xs text-gray-light mr-2">{content.title}</span>
 
-        <span className="flex-1 truncate">{pathName}</span>
+        <span className="flex-1 truncate">{name}</span>
       </div>
 
       <div className="w-full py-2 px-4 bg-gray-extralight">
-        <Location location={pickupLocation} icon={<Icon.EllipseHole />} />
+        <Location location={from} icon={<Icon.EllipseHole />} />
 
-        <Location location={dropLocation} icon={<Icon.EllipseFill />} />
+        <Location location={to} icon={<Icon.EllipseFill />} />
       </div>
 
       <div className="w-full py-2 flex justify-center items-center space-x-1">
-        <IconButton
+        <Button.Icon
+          type="anchor"
           className="text-orange-dark"
           icon={<Icon.Car />}
-          onClick={onOrderClick}
+          href="/client/call-car"
         >
           {content.order}
-        </IconButton>
+        </Button.Icon>
 
         <hr className="border-r border-gray h-3 transform rotate-0" />
 
-        <IconButton
+        <Button.Icon
+          type="anchor"
           className="text-blue-light"
           icon={<Icon.Edit />}
-          onClick={onEditClick}
+          href="/client/fast-call/edit"
         >
           {content.edit}
-        </IconButton>
+        </Button.Icon>
 
         <hr className="border-r border-gray h-3 transform rotate-0" />
 
-        <IconButton
+        <Button.Icon
+          type="button"
           className="text-red-light"
           icon={<Icon.Delete />}
           onClick={onDeleteClick}
         >
           {content.delete}
-        </IconButton>
+        </Button.Icon>
       </div>
     </div>
   );
