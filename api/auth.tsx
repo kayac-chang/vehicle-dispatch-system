@@ -116,3 +116,51 @@ export function getUserProfile({ token }: Token): Promise<User> {
       phone,
     }));
 }
+
+interface GetVerificationRequest {
+  username: string;
+}
+
+interface GetVerificationResponse extends BaseResponse {
+  result: string;
+  message: string;
+}
+
+/**
+ * [GET /api/Users/AddClientVerification]
+ *
+ * get verification with username
+ */
+export function getVerification({
+  username,
+}: GetVerificationRequest): Promise<string> {
+  return get<GetVerificationResponse>(
+    KHH_API("Users/AddClientVerification", { UserAcc: username })
+  ).then(prop("result"));
+}
+
+interface CheckVerificationRequest {
+  username: string;
+  verificationCode: string;
+}
+
+interface CheckVerificationResponse extends BaseResponse {
+  message: string;
+}
+
+/**
+ * [GET /api/Users/CheckMobileVerification]
+ *
+ * check verification with username and verificationCode
+ */
+export function checkVerification({
+  username,
+  verificationCode,
+}: CheckVerificationRequest) {
+  return get<CheckVerificationResponse>(
+    KHH_API("Users/CheckMobileVerification", {
+      UserAcc: username,
+      VerificationCode: verificationCode,
+    })
+  ).then(() => true);
+}
