@@ -20,7 +20,7 @@ export async function addFavorite({
     {
       id: user.id,
       userId: user.uid,
-      userType: "SYS_USERCATEGORY_CASEUSER",
+      userType: "caseuser",
       name,
       fromAddr: from,
       toAddr: to,

@@ -102,6 +102,11 @@ interface UserProfile {
 }
 
 type UserProfileResponse = BaseResponse & { result: UserProfile };
+/**
+ * [GET /api/Check/GetUserProfile]
+ *
+ * get user profile by token
+ */
 export function getUserProfile({ token }: Token): Promise<User> {
   return get<UserProfileResponse>(KHH_API("Check/GetUserProfile"), {
     "X-Token": token,
