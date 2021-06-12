@@ -20,8 +20,6 @@ const history = [
   { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
 ];
 
-// 測試單號:"CN6800049758945193984"
-
 const content = {
   title: "乘車明細",
 };
@@ -29,7 +27,7 @@ const content = {
 type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ params, req }: Context) {
   const session = await getSession({ req });
-
+  // const session = { accessToken: "9cf4151c" };
   if (!session || !params) {
     return {
       redirect: {
@@ -39,23 +37,22 @@ export async function getServerSideProps({ params, req }: Context) {
       props: {},
     };
   }
-
   return {
     props: {
       detail: await getCaseDetail({
-        orderNo: params.id,
+        orderId: params.id,
         token: session.accessToken,
       }),
       status: await getStatusLog({
-        orderNo: params.id,
+        orderId: params.id,
         token: session.accessToken,
       }),
       despatches: await getDespatchByOrderId({
-        orderNo: params.id,
+        orderId: params.id,
         token: session.accessToken,
       }),
       payment: await getOrderPayOfCaseUsers({
-        orderNo: params.id,
+        orderId: params.id,
         token: session.accessToken,
       }),
       // history: undefined,

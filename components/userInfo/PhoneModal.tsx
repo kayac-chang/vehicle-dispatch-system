@@ -1,15 +1,17 @@
 import { Button, Form, Icon } from "components/atoms";
 import { Modal } from "components/molecules";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { wait } from "functions/async";
+import { updateUserPhone } from "api/user";
 
 const content = {
   title: "修改手機",
 
   init: {
     phone: "請輸入手機號碼",
-    submit: "發送驗證碼",
+    // submit: "發送驗證碼",
+    submit: "修改",
   },
 
   send: {
@@ -24,6 +26,11 @@ const content = {
   success: {
     note: "手機驗證成功",
     submit: "確認",
+  },
+
+  alert: {
+    illegal: "請輸入正確的手機號碼。",
+    failed: "請再次檢查您輸入的手機號碼。",
   },
 
   cancel: "取消",
@@ -150,22 +157,44 @@ function Success() {
   );
 }
 
-type Props = { onClose: () => void };
-export function PhoneModal({ onClose }: Props) {
-  const { control, handleSubmit } = useForm<Response>();
+type Props = {
+  onClose: () => void;
+  username: string | undefined;
+  token: string | undefined;
+};
+
+export function PhoneModal({ onClose, username, token }: Props) {
+  const { control, handleSubmit, setError } = useForm<Response>();
 
   const [state, dispatch] = useReducer(reducer, { type: "init" });
 
+  const [alert, setAlert] = useState("");
+
   function onSubmit(data: Response) {
+    setAlert("");
+
+    if (!username || !token) return;
+
     if (state.type === "init") {
-      return dispatch({ type: "send" });
+      if (!RegExp(/^09\d{8}$/).test(data.phone)) {
+        setAlert(content.alert.illegal);
+        setError("phone", { type: "validate" });
+        return;
+      }
+
+      updateUserPhone({ id: username, phone: data.phone, token }).then((e) => {
+        if (e !== true) setAlert(content.alert.failed);
+
+        return onClose();
+      });
+      // return dispatch({ type: "send" });
     }
 
     if (state.type === "success") {
       return onClose();
     }
 
-    return dispatch({ type: "submit" });
+    // return dispatch({ type: "submit" });
   }
 
   useEffect(() => {
@@ -217,14 +246,16 @@ export function PhoneModal({ onClose }: Props) {
     >
       <form className="space-y-4 pb-4 text-sm">
         {state.type === "init" && <Init control={control} />}
-        {state.type === "sending" && <Sending control={control} />}
+        {/* {state.type === "sending" && <Sending control={control} />}
         {state.type === "stop-send" && (
           <StopSend
             control={control}
             onClick={() => dispatch({ type: "resend" })}
           />
-        )}
+        )} */}
         {state.type === "success" && <Success />}
+
+        <span className="text-xs text-red-bright px-2">{alert}</span>
       </form>
     </Modal.Dialog>
   );

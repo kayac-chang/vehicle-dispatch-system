@@ -124,3 +124,33 @@ export function postChangePassword(
     payload
   ).then(pipe(toChangePassword));
 }
+
+interface UpdateUserPhoneRequest {
+  id: string;
+  phone: string;
+}
+
+/**
+ * [POST /api/Users/UpdateUserPhone]
+ *
+ * change user password
+ */
+export function updateUserPhone({
+  id,
+  phone,
+  token,
+}: UpdateUserPhoneRequest & Token) {
+  return post(
+    KHH_API("Users/UpdateUserPhone"),
+    {
+      id: id,
+      phone: phone,
+    },
+    {
+      "X-Token": token,
+    }
+  ).then((e) => {
+    if (e.code === 200) return true;
+    return e;
+  });
+}

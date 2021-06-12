@@ -26,7 +26,7 @@ const content = {
 };
 
 type PersonalInfoProps = {
-  data: User & CaseUserInfo;
+  data: (User & CaseUserInfo) | undefined;
   onPasswordClick: () => void;
   onChangePhoneClick: () => void;
 };
@@ -35,6 +35,7 @@ export function PersonalInfo({
   onPasswordClick,
   onChangePhoneClick,
 }: PersonalInfoProps) {
+  if (!data) <></>;
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
       <div className="flex justify-between items-center">

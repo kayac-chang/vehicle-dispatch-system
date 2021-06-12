@@ -4,7 +4,7 @@ export interface ClientRecord{
   id: string;
   userId: string;
   caseUserId: string;
-  cancelReamrk: string;
+  cancelRemark: string;
   status: number;
   reserveDate:string;
   fromAddr: string;

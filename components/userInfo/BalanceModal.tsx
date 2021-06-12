@@ -4,7 +4,7 @@ import { DiscountData } from "types/user-info";
 
 type CurrencyFieldProps = {
   title: string;
-  value: number;
+  value: number | undefined;
 };
 function CurrencyField({ title, value }: CurrencyFieldProps) {
   return (
@@ -24,8 +24,9 @@ const content = {
   submit: "確定",
 };
 
-type Props = { data: DiscountData; onClose: () => void };
+type Props = { data: DiscountData | undefined; onClose: () => void };
 export function BalanceModal({ data, onClose }: Props) {
+  if (!data) <></>;
   return (
     <Modal.Dialog
       name="password"
@@ -40,9 +41,9 @@ export function BalanceModal({ data, onClose }: Props) {
       onClose={onClose}
       className="py-2 space-y-4 w-64"
     >
-      <CurrencyField title={content.total} value={data.totalDiscount} />
-      <CurrencyField title={content.used} value={data.useDiscount} />
-      <CurrencyField title={content.available} value={data.lastDiscount} />
+      <CurrencyField title={content.total} value={data?.totalDiscount} />
+      <CurrencyField title={content.used} value={data?.useDiscount} />
+      <CurrencyField title={content.available} value={data?.lastDiscount} />
     </Modal.Dialog>
   );
 }

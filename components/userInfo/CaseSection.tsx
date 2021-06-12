@@ -20,10 +20,11 @@ const content = {
 };
 
 type CaseSectionProps = {
-  data: User & CaseUserInfo;
+  data: (User & CaseUserInfo) | undefined;
   onBalanceClick: () => void;
 };
 export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
+  if (!data) <></>;
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
       <div className="flex justify-between items-center">

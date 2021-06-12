@@ -1,6 +1,9 @@
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/dist/client/router";
+import { changePassword, logout } from "api";
 import { Button, Form } from "components/atoms";
 import { Modal } from "components/molecules";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const content = {
   title: "修改密碼",
@@ -9,24 +12,65 @@ const content = {
   form: {
     old: "舊密碼",
     new: "新密碼",
-    reply: "確認新密碼",
+    repeat: "確認新密碼",
     cancel: "取消",
     submit: "確定",
+  },
+
+  alert: {
+    notMatch: "兩次輸入的密碼不相同",
+    failed:
+      "請再次檢查您輸入的密碼。提醒您，新的密碼不可與近3次修改的密碼相同。",
   },
 };
 
 interface Request {
   old: string;
   new: string;
-  reply: string;
+  repeat: string;
 }
 
-type Props = { onClose: () => void };
-export function PasswordModal({ onClose }: Props) {
-  const { control, handleSubmit } = useForm<Request>();
+type Props = {
+  onClose: () => void;
+  username: string | undefined;
+  token: string | undefined;
+};
+export function PasswordModal({ onClose, username, token }: Props) {
+  const { control, handleSubmit, setError } = useForm<Request>();
 
+  const [alert, setAlert] = useState<string>("");
+
+  const router = useRouter();
   function onSubmit(data: Request) {
-    console.log(data);
+    setAlert("");
+
+    if (!username || !token) return;
+
+    if (data.new !== data.repeat) {
+      setAlert(content.alert.notMatch);
+      setError("repeat", { type: "validate" });
+      return;
+    }
+
+    changePassword({
+      username,
+      password: data.new,
+      token,
+    })
+      .then((e) => {
+        console.log(e);
+        if (e === true) {
+          logout({ token });
+          router.push("/client/login");
+          return;
+        }
+
+        setAlert(content.alert.failed);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError("repeat", { type: "validate" });
+      });
   }
 
   return (
@@ -70,10 +114,11 @@ export function PasswordModal({ onClose }: Props) {
 
         <Form.Input
           type="password"
-          label={content.form.reply}
-          name="reply"
+          label={content.form.repeat}
+          name="repeat"
           control={control}
         />
+        <p className="text-xs text-red-bright px-2">{alert}</p>
       </form>
     </Modal.Dialog>
   );

@@ -9,93 +9,9 @@ import {
   CaseSection,
   PersonalInfo,
 } from "components/userInfo";
-import { UnPermissionUserType, User } from "types/user";
-import { CaseUserInfo, DiscountData } from "types/user-info";
 import { getUsername } from "api";
 import { getUnPermissionUserType, getUser } from "api/user";
-import { getCaseUsers } from "api/user-info";
-
-// /api/Users/Get
-const user: User = {
-  id: "6789314826878885888",
-  account: "G122112739",
-  name: "阿華",
-  uid: "G122112739",
-  sex: 1,
-  phone: "0987837233",
-};
-
-// /api/CaseUsers/Get
-const caseUsers: UnPermissionUserType[] = [
-  {
-    caseId: "6789315035470012416",
-    userId: "6789314826878885888",
-    caseUserNo: "1",
-    userType: "caseuser",
-    isEnable: false,
-  },
-  {
-    caseId: "6789568027834228736",
-    userId: "6789314826878885888",
-    caseUserNo: "2",
-    userType: "caseuser",
-    isEnable: true,
-  },
-  {
-    caseId: "6789611603716775936",
-    userId: "6789314826878885888",
-    caseUserNo: "3",
-    userType: "caseuser",
-    isEnable: false,
-  },
-  {
-    caseId: "",
-    userId: "6789314826878885888",
-    caseUserNo: "",
-    userType: "user",
-    isEnable: true,
-  },
-];
-
-const caseUserInfo: CaseUserInfo = {
-  id: "6789568027834228736",
-  userId: "6789314826878885888",
-  caseUserId: "6789568027834228736",
-  caseUserNo: "2",
-  orgAId: "6742474724290895872",
-  orgBId1: "6789315307839725568",
-  orgBId2: "6792100599483113474",
-  orgBId3: "6791937415971381248",
-  uid: "G122112739",
-  otherPhone: "",
-  birthday: "1994-09-12",
-  disabilityLevel: 2,
-  county: "高雄市",
-  district: "苓雅區",
-  addr: "武慶三路86號",
-  lat: 22.620308,
-  lon: 120.331955,
-  urgentName: "",
-  urgentRelationship: "",
-  urgentPhone: "",
-  urgentTel: "",
-  startDate: "2021-06-05",
-  expiredDate: "2099-12-31",
-  remark: "",
-  caseUserStatus: 1,
-  statusReason: null,
-  reviewDate: "2021-05-01",
-  wealTypeId: "1",
-  wealTypeName: "中低收入戶",
-  isEffectNow: false,
-};
-
-const discount: DiscountData = {
-  caseUserId: "6789568027834228736",
-  useDiscount: 0,
-  lastDiscount: 2000,
-  totalDiscount: 2000,
-};
+import { getCaseUsers, getDiscountData } from "api/user-info";
 
 const content = {
   title: "用戶資料",
@@ -106,6 +22,17 @@ export async function getServerSideProps({ req }: Context) {
   const session = await getSession({ req });
 
   const username = await getUsername({ token: session.accessToken });
+
+  if (!session || !username) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
+
+      props: {},
+    };
+  }
 
   const caseId = await getUnPermissionUserType({
     userId: username,
@@ -125,28 +52,29 @@ export async function getServerSideProps({ req }: Context) {
     token: session.accessToken,
   });
 
-  if (!session || !caseId || !user || !caseUser) {
-    return {
-      redirect: {
-        destination: "/client/login",
-        permanent: true,
-      },
-
-      props: {},
-    };
-  }
+  const discount = await getDiscountData({
+    caseuserId: caseUserInfo.caseUserId,
+    token: session.accessToken,
+  });
 
   return {
     props: {
       username: username,
+      token: session.accessToken,
       userInfo: { ...user, ...caseUser },
+      discount: discount,
     },
   };
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-export default function UserInfo({ username, userInfo }: Props) {
+export default function UserInfo({
+  username,
+  token,
+  userInfo,
+  discount,
+}: Props) {
   if (!userInfo) return <></>;
 
   const [modal, setModal] =
@@ -169,9 +97,13 @@ export default function UserInfo({ username, userInfo }: Props) {
         />
       </div>
 
-      {modal === "password" && <PasswordModal onClose={close} />}
+      {modal === "password" && (
+        <PasswordModal onClose={close} username={username} token={token} />
+      )}
       {modal === "balance" && <BalanceModal data={discount} onClose={close} />}
-      {modal === "phone" && <PhoneModal onClose={close} />}
+      {modal === "phone" && (
+        <PhoneModal onClose={close} username={username} token={token} />
+      )}
     </Layout.Normal>
   );
 }

@@ -62,7 +62,10 @@ export function changePassword({ username, password, token }: Request & Token) {
     {
       "X-Token": token,
     }
-  ).then(() => true);
+  ).then((e) => {
+    if (e.code === 200) return true;
+    return e;
+  });
 }
 
 type UsernameResponse = BaseResponse & { result: string };
