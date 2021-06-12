@@ -2,75 +2,156 @@ import Layout from "components/templates";
 import { Card } from "components/molecules";
 import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/client";
+import { getUserProfile } from "api";
+import { useRouter } from "next/dist/client/router";
+import { addFavorite } from "api/favorite";
+
+const content = {
+  title: "新增常用路線",
+
+  form: {
+    name: "路線名稱",
+
+    journey: {
+      title: "行程",
+
+      from: {
+        title: "起點",
+        label: "地址",
+      },
+      to: {
+        title: "迄點",
+        label: "地址",
+      },
+    },
+
+    cancel: "取消",
+    submit: "儲存",
+  },
+};
+
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ req }: Context) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
+
+  const user = await getUserProfile({ token: session.accessToken });
+
+  return {
+    props: {
+      username: user.name,
+      token: session.accessToken,
+    },
+  };
+}
 
 interface Request {
   name: string;
   from: string;
-  end: string;
+  to: string;
 }
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function FastCallAdd({ username, token }: Props) {
+  const router = useRouter();
+  const { control, handleSubmit } = useForm<Request>();
 
-export default function FastCallAdd() {
-  const { control } = useForm<Request>();
+  function onSubmit(data: Request) {
+    if (!token) return;
+
+    const { name, from, to } = data;
+
+    return addFavorite({ token, name, from, to }).then(() =>
+      router.push("/client/fast-call")
+    );
+  }
 
   return (
-    <Layout.Normal title="新增常用路線" prev="/fast-call">
-      <div className="-mx-6 sm:m-0 pb-8">
-        <Card.Panel
-          title={
-            <h2 className="flex-1 text-white  text-2xl font-semibold">
-              王小明
-            </h2>
-          }
-        >
-          <form className="flex flex-col space-y-4 py-4">
-            <Form.Input
-              type="text"
-              label="路線名稱"
-              name="name"
-              control={control}
-            />
+    <Layout.Normal title={content.title} prev="/client/fast-call">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="-mx-6 sm:m-0 pb-8">
+          <Card.Panel
+            title={
+              <h2 className="flex-1 text-white  text-2xl font-semibold">
+                {username}
+              </h2>
+            }
+          >
+            <div className="flex flex-col space-y-4 py-4">
+              <Form.Input
+                type="text"
+                label={content.form.name}
+                name="name"
+                control={control}
+                required
+              />
 
-            <Form.FieldSet
-              label="行程"
-              labelClass="w-full border-b-2 border-black border-opacity-50"
-            >
-              <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 py-4">
-                <Card.Paper title="起點" icon="hole" className="flex-1">
-                  <Form.Input
-                    type="text"
-                    label="地址"
-                    name="from"
-                    control={control}
-                  />
-                </Card.Paper>
+              <Form.FieldSet
+                label={content.form.journey.title}
+                labelClass="w-full border-b-2 border-black border-opacity-50"
+              >
+                <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 py-4">
+                  <Card.Paper
+                    title={content.form.journey.from.title}
+                    icon="hole"
+                    className="flex-1"
+                  >
+                    <Form.Input
+                      type="text"
+                      label={content.form.journey.from.label}
+                      name="from"
+                      control={control}
+                      required
+                    />
+                  </Card.Paper>
 
-                <Card.Paper title="迄點" icon="fill" className="flex-1">
-                  <Form.Input
-                    type="text"
-                    label="地址"
-                    name="end"
-                    control={control}
-                  />
-                </Card.Paper>
-              </div>
-            </Form.FieldSet>
-          </form>
-        </Card.Panel>
+                  <Card.Paper
+                    title={content.form.journey.to.title}
+                    icon="fill"
+                    className="flex-1"
+                  >
+                    <Form.Input
+                      type="text"
+                      label={content.form.journey.to.label}
+                      name="to"
+                      control={control}
+                      required
+                    />
+                  </Card.Paper>
+                </div>
+              </Form.FieldSet>
+            </div>
+          </Card.Panel>
 
-        <div className="bg-black bg-opacity-75 flex justify-end text-sm py-3 space-x-4 px-4">
-          <div>
-            <Button.Outline type="button" className="bg-white h-full px-4">
-              取消
-            </Button.Outline>
-          </div>
+          <div className="bg-black bg-opacity-75 flex justify-end text-sm py-3 space-x-4 px-4">
+            <div>
+              <Button.Outline
+                type="button"
+                className="bg-white h-full px-4"
+                onClick={() => router.push("/client/fast-call")}
+              >
+                {content.form.cancel}
+              </Button.Outline>
+            </div>
 
-          <div>
-            <Button.Flat type="button" className="h-full py-2 px-4">
-              儲存
-            </Button.Flat>
+            <div>
+              <Button.Flat type="submit" className="h-full py-2 px-4">
+                {content.form.submit}
+              </Button.Flat>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </Layout.Normal>
   );
 }
