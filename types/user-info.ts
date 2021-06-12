@@ -32,7 +32,7 @@ export interface CaseUserInfo{
 }
 
 export interface DiscountData {
-  // caseUserId: string;
+  caseUserId: string;
   useDiscount: number;
   lastDiscount: number;
   totalDiscount: number;

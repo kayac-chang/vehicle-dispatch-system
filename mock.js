@@ -27,13 +27,6 @@ const GetUnPermissionUserType = {
       userType: "caseuser",
       isEnable: false,
     },
-    {
-      caseId: "",
-      userId: "6789314826878885888",
-      caseUserNo: "",
-      userType: "user",
-      isEnable: true,
-    },
   ],
 };
 

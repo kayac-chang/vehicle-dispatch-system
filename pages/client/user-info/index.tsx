@@ -1,15 +1,19 @@
-import { useState } from "react";
-import clsx from "clsx";
+import React, { useState } from "react";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/client";
 import Layout from "components/templates";
-import { Button } from "components/atoms";
 import {
   PasswordModal,
   BalanceModal,
   PhoneModal,
-  InfoField,
+  CaseSection,
+  PersonalInfo,
 } from "components/userInfo";
 import { UnPermissionUserType, User } from "types/user";
 import { CaseUserInfo, DiscountData } from "types/user-info";
+import { getUsername } from "api";
+import { getUnPermissionUserType, getUser } from "api/user";
+import { getCaseUsers } from "api/user-info";
 
 // /api/Users/Get
 const user: User = {
@@ -87,6 +91,7 @@ const caseUserInfo: CaseUserInfo = {
 };
 
 const discount: DiscountData = {
+  caseUserId: "6789568027834228736",
   useDiscount: 0,
   lastDiscount: 2000,
   totalDiscount: 2000,
@@ -94,195 +99,74 @@ const discount: DiscountData = {
 
 const content = {
   title: "用戶資料",
-
-  edit: {
-    password: "修改密碼",
-    phone: "修改手機",
-    balance: "額度狀況",
-  },
-
-  personal: {
-    title: "基本資料",
-
-    name: "姓名",
-    birthday: "生日",
-    gender: {
-      title: "性別",
-      private: "不提供",
-      man: "男",
-      woman: "女",
-      none: "無資料",
-    },
-    identity: "身分證字號",
-    phone: "手機",
-  },
-
-  ltc: {
-    title: "長照",
-    caseNo: "案號",
-    address: "居住地址",
-    urgent: {
-      name: "緊急聯絡人姓名",
-      relationship: "緊急聯絡人關係",
-      phone: "緊急聯絡人手機",
-      tel: "緊急聯絡人市話",
-      none: "未填寫",
-    },
-  },
 };
 
-type PersonalInformationProps = {
-  data: User & CaseUserInfo;
-  onPasswordClick: () => void;
-  onChangePhoneClick: () => void;
-};
-function PersonalInformation({
-  data,
-  onPasswordClick,
-  onChangePhoneClick,
-}: PersonalInformationProps) {
-  return (
-    <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-gold-darker text-xl font-semibold leading-7">
-          {content.personal.title}
-        </h2>
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ req }: Context) {
+  // const session = await getSession({ req });
 
-        <div className="flex space-x-2">
-          <Button.Outline
-            className="px-4 py-1 font-semibold text-sm bg-white"
-            type="button"
-            onClick={onPasswordClick}
-          >
-            {content.edit.password}
-          </Button.Outline>
+  // const username = await getUsername({ token: session.accessToken });
+  const session = { accessToken: "a87ff9ef" };
 
-          <Button.Outline
-            className="px-4 py-1 font-semibold text-sm bg-white"
-            type="button"
-            onClick={onChangePhoneClick}
-          >
-            {content.edit.phone}
-          </Button.Outline>
-        </div>
-      </div>
-      <hr className="my-3 border-gold-darker" />
+  const username = "G122112739";
 
-      <div
-        className={clsx(
-          "flex flex-col lg:flex-row space-y-4",
-          "lg:space-x-4 items-end pt-3 pb-2 lg:pb-0"
-        )}
-      >
-        <InfoField title={content.personal.name} content={data.name} />
+  const caseId = await getUnPermissionUserType({
+    userId: username,
+    UID: username,
+    token: session.accessToken,
+  }).then((res) => {
+    return res?.find((item) => item.caseId !== "" && item.isEnable)?.userId;
+  });
 
-        <InfoField title={content.personal.birthday} content={data.birthday} />
+  const user = await getUser({
+    caseId: caseId,
+    token: session.accessToken,
+  });
 
-        <InfoField
-          title={content.personal.gender.title}
-          content={
-            {
-              0: content.personal.gender.private,
-              1: content.personal.gender.man,
-              2: content.personal.gender.woman,
-            }[data.sex] || content.personal.gender.none
-          }
-        />
+  const caseUser = await getCaseUsers({
+    caseId: caseId,
+    token: session.accessToken,
+  });
 
-        <InfoField title={content.personal.identity} content={data.uid} />
+  if (!session || !caseId || !user || !caseUser) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
 
-        <InfoField title={content.personal.phone} content={data.phone} />
-      </div>
-    </article>
-  );
+      props: {},
+    };
+  }
+
+  return {
+    props: {
+      username: username,
+      userInfo: { ...user, ...caseUser },
+    },
+  };
 }
 
-type LongTermCareProps = {
-  data: User & CaseUserInfo;
-  onBalanceClick: () => void;
-};
-function LongTermCare({ data, onBalanceClick }: LongTermCareProps) {
-  return (
-    <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
-      <div className="flex justify-between items-center">
-        <h2 className="text-orange-dark text-xl font-semibold leading-7">
-          {content.ltc.title}
-        </h2>
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-        <div className="flex space-x-2">
-          <Button.Outline
-            className="px-4 py-1 font-semibold text-sm bg-white"
-            color="border-orange-dark text-orange-dark"
-            type="button"
-            onClick={onBalanceClick}
-          >
-            {content.edit.balance}
-          </Button.Outline>
-        </div>
-      </div>
+export default function UserInfo({ username, userInfo }: Props) {
+  if (!userInfo) return <></>;
 
-      <hr className="my-3 border-orange-dark" />
-
-      <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3">
-        <InfoField
-          className="w-full lg:w-1/5"
-          title={content.ltc.caseNo}
-          content={data.caseUserNo}
-          section="case"
-        />
-
-        <InfoField
-          className="w-full lg:w-1/2"
-          title={content.ltc.address}
-          content={`${data.county}${data.district}${data.addr}`}
-          section="case"
-        />
-      </div>
-
-      <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
-        <InfoField
-          title={content.ltc.urgent.name}
-          content={data.urgentName || content.ltc.urgent.none}
-          section="case"
-        />
-        <InfoField
-          title={content.ltc.urgent.relationship}
-          content={data.urgentRelationship || content.ltc.urgent.none}
-          section="case"
-        />
-        <InfoField
-          title={content.ltc.urgent.phone}
-          content={data.urgentPhone || content.ltc.urgent.none}
-          section="case"
-        />
-        <InfoField
-          title={content.ltc.urgent.tel}
-          content={data.urgentTel || content.ltc.urgent.none}
-          section="case"
-        />
-      </div>
-    </article>
-  );
-}
-
-export default function UserInfo() {
   const [modal, setModal] =
     useState<"password" | "balance" | "phone" | undefined>();
 
   const close = () => setModal(undefined);
 
-  const userInfo: User & CaseUserInfo = { ...user, ...caseUserInfo };
-
   return (
     <Layout.Normal title={content.title}>
       <div className="-mx-6 sm:mx-auto">
-        <PersonalInformation
+        <PersonalInfo
           data={userInfo}
           onPasswordClick={() => setModal("password")}
           onChangePhoneClick={() => setModal("phone")}
         />
 
-        <LongTermCare
+        <CaseSection
           data={userInfo}
           onBalanceClick={() => setModal("balance")}
         />

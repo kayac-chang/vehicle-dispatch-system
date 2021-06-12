@@ -3,13 +3,18 @@ import { parse, format } from "date-fns";
 import { pipe, prop } from "ramda";
 import { CaseUserInfo, DiscountData } from "types/user-info";
 
-const formatOnlyDate = pipe(
-  (value: string) => parse(value, "yyyy-MM-dd HH:mm:ss", new Date()),
-  (date) => format(date, "yyyy-MM-dd")
-);
+const formatOnlyDate = (value: string) => {
+  if (!value) return "";
+  const date = parse(value, "yyyy-MM-dd HH:mm:ss", new Date());
+  return format(date, "yyyy-MM-dd");
+};
 
 interface BaseResponse {
-  code: number;
+  code: 200;
+}
+
+interface Token {
+  token: string;
 }
 
 interface CaseUserResponse {
@@ -115,15 +120,22 @@ function toCaseUser({
   };
 }
 
+interface CaseUserRequest {
+  caseId: string | undefined;
+}
+
 /**
  * [GET /api/CaseUsers/Get]
  *
- * get CaseUsers info by id from service
+ * get CaseUsers info by caseId from service
  */
-export function getGeoCode(id: string): Promise<CaseUserInfo | undefined> {
-  return get<GetCaseUserResponse>(KHH_API("/api/CaseUsers/Get", { id })).then(
-    pipe(prop("result"), toCaseUser)
-  );
+export function getCaseUsers({
+  caseId,
+  token,
+}: CaseUserRequest & Token): Promise<CaseUserInfo | undefined> {
+  return get<GetCaseUserResponse>(KHH_API("CaseUsers/Get", { caseId }), {
+    "X-Token": token,
+  }).then(pipe(prop("result"), toCaseUser));
 }
 
 interface DiscountDataResponse {
@@ -138,13 +150,13 @@ interface GetUserResponse extends BaseResponse {
 }
 
 function toDiscountData({
-  // caseUserId,
+  caseUserId,
   useDiscount,
   lastDiscount,
   totalDiscount,
 }: DiscountDataResponse): DiscountData {
   return {
-    // caseUserId: caseUserId,
+    caseUserId: caseUserId,
     useDiscount: useDiscount,
     lastDiscount: lastDiscount,
     totalDiscount: totalDiscount,

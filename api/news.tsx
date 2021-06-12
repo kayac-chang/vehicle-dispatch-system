@@ -58,7 +58,6 @@ interface GetNewsListQuery {
 export function getNewsList(
   props: Partial<GetNewsListQuery> | undefined
 ): Promise<{ total: number; news: News[] }> {
-  console.log("newsLoad");
   return get<GetNewsListResponse>(
     KHH_API("Newss/Load", {
       isClient: true,
@@ -69,15 +68,6 @@ export function getNewsList(
       orderby: "ReleaseDate",
     })
   ).then(({ data, count }) => {
-    console.log({
-      isClient: true,
-      limit: props?.limit,
-      page: props?.page,
-      NewsCategoryId: props?.category,
-      ReleaseDate: props?.date,
-      orderby: "ReleaseDate",
-    });
-    console.log(data);
     return {
       total: Number(count),
       news: map(toNews, data),

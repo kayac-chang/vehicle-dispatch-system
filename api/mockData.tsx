@@ -1,0 +1,105 @@
+export const mockUsersGet = {
+  result: {
+    id: "6789314826878885888",
+    account: "G122112739",
+    name: "阿華",
+    uid: "G122112739",
+    sex: 1,
+    phone: "0987837233",
+    status: 1,
+    type: 0,
+    unLockDate: null,
+    createDate: "2021-05-06 18:24:06",
+    createUserId: "00000000-0000-0000-0000-000000000000",
+    createUserName: "超級管理員",
+    modifyDate: "2021-05-06 18:24:06",
+    modifyUserId: "",
+    modifyUserName: "",
+    organizations: "",
+    organizationIds: "",
+  },
+  message: "操作成功",
+  code: 200,
+};
+
+export const mockCaseGetDetail = {
+  result: {
+    id: "6800049758915829760",
+    caseUserId: "6789568027834228736",
+    orgName: "",
+    createdIdentity: "高雄縣政府衛生局",
+    createDate: "",
+    userName: "王小明明",
+    userUID: "G122112739",
+    userPhone: "0987654321",
+    orderNo: "CN6800049758840336384",
+    caseUserNo: "2",
+    reserveDate: "2020-11-29 21:30",
+    status: 1,
+    fromAddr: "高雄市苓雅區三多四路3巷12號",
+    fromAddrRemark: "住家",
+    toAddr: "807高雄市三民區明吉路13號",
+    toAddrRemark: "復健中心",
+    fromLat: 22.620308,
+    fromLon: 120.331955,
+    toLat: 22.620308,
+    toLon: 120.331955,
+    carCategoryName: "一般車",
+    wheelchairType: "",
+    familyWith: 2,
+    maidWith: 0,
+    noticePhone: "0987654123",
+    canShared: true,
+    etTotalAmt: 384,
+    etDiscountAmt: 0,
+    etSelfPay: 280,
+    etWithAmt: 0,
+    cancelRemark: "",
+    wealTypeId: "1",
+    wealTypeName: "中低收入戶",
+    expectedMinute: 108,
+    totalMileage: 64,
+    isBack: false,
+  },
+  message: "操作成功",
+  code: 200,
+};
+
+export const mockOrderPayOfCaseUsersDetail = {
+  result: {
+    id: "6800049758915829760",
+    realFamilyWith: 2,
+    realMaidWith: 0,
+    realWithAmt: 200,
+    realDiscountAmt: 0,
+    realSelfPay: 280,
+    receivePay: 480,
+    signPic: "https://i.imgur.com/8S73Y.png",
+    remark: "月結",
+    useDiscount: 20,
+  },
+  message: "操作成功",
+  code: 200,
+};
+
+export const mockStatusLog = {
+  result: [
+    {
+      status: 4,
+      createDate: "2021-06-12T06:50:33.943Z",
+      createUserName: "string",
+    },
+  ],
+  message: "操作成功",
+  code: 200,
+};
+
+export const mockDespatches = {
+  result: {
+    driverName: "尤大富",
+    carNo: "TAK-1005",
+    orderNos: ["CN6799057965822816256", "CN6799064577723641856"],
+  },
+  message: "操作成功",
+  code: 200,
+};

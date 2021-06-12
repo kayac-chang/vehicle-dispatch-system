@@ -1,23 +1,29 @@
 import { get, KHH_API, post } from "./base";
 import { pipe, prop } from "ramda";
 import { ChangePasswordRequest, UnPermissionUserType, User } from "types/user";
+import { mockUsersGet } from "./mockData";
 
 interface BaseResponse {
-  code: number;
+  code: 200;
 }
 
-interface UnPermissionUserTypeResponse {
-  data: UnPermissionUserType[];
+interface Token {
+  token: string;
 }
 
 interface GetUnPermissionUserTypeResponse extends BaseResponse {
-  data: UnPermissionUserTypeResponse;
+  data: UnPermissionUserType[];
 }
 
-function toUnPermissionUserType({
-  data,
-}: UnPermissionUserTypeResponse): UnPermissionUserType[] {
+function toUnPermissionUserType(
+  data: UnPermissionUserType[]
+): UnPermissionUserType[] {
   return data;
+}
+
+interface UnPermissionUserRequest {
+  userId: string;
+  UID: string;
 }
 
 /**
@@ -25,13 +31,21 @@ function toUnPermissionUserType({
  *
  * get User info by userId and UID from service
  */
-export function getUnPermissionUserType(
-  userId: string,
-  UID: string
-): Promise<UnPermissionUserType[] | undefined> {
+export function getUnPermissionUserType({
+  userId,
+  UID,
+  token,
+}: UnPermissionUserRequest & Token): Promise<
+  UnPermissionUserType[] | undefined
+> {
   return get<GetUnPermissionUserTypeResponse>(
-    KHH_API("/api/Users/GetUnPermissionUserType", { userId, UID })
-  ).then(pipe(prop("data"), toUnPermissionUserType));
+    KHH_API("Users/GetUnPermissionUserType", { userId, UID }),
+    {
+      "X-Token": token,
+    }
+  ).then((res) => {
+    return toUnPermissionUserType(res.data);
+  });
 }
 
 interface UserResponse {
@@ -69,15 +83,26 @@ function toUser({ id, account, name, uid, sex, phone }: UserResponse): User {
   };
 }
 
+interface UserRequest {
+  caseId: string | undefined;
+}
+
 /**
  * [GET /api/Users/Get]
  *
- * get CaseUsers info by id from service
+ * get CaseUsers info by caseId from service
  */
-export function getUser(id: string): Promise<User | undefined> {
-  return get<GetUserResponse>(KHH_API("/api/Users/Get", { id })).then(
-    pipe(prop("result"), toUser)
-  );
+export function getUser({
+  caseId,
+  token,
+}: UserRequest & Token): Promise<User | undefined> {
+  return get<GetUserResponse>(KHH_API("Users/Get", { caseId }), {
+    "X-Token": token,
+  }).then((res) => {
+    //TODO: mock要拿掉
+    if (res.result === null) return mockUsersGet.result;
+    return toUser(res.result);
+  });
 }
 
 function toChangePassword({ code }: BaseResponse): BaseResponse {
@@ -95,7 +120,7 @@ export function postChangePassword(
   payload: ChangePasswordRequest
 ): Promise<BaseResponse | undefined> {
   return post<GetUserResponse>(
-    KHH_API("/api/Users/ClientChangePassword").url,
+    KHH_API("Users/ClientChangePassword").url,
     payload
   ).then(pipe(toChangePassword));
 }

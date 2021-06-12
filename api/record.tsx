@@ -13,14 +13,21 @@ import {
   Despatch,
   StatueLog,
 } from "types/record";
+import {
+  mockCaseGetDetail,
+  mockDespatches,
+  mockOrderPayOfCaseUsersDetail,
+  mockStatusLog,
+} from "./mockData";
 
-const formatOnlyDate = pipe(
-  (value: string) => parse(value, "yyyy-MM-dd HH:mm:ss", new Date()),
-  (date) => format(date, "yyyy-MM-dd")
-);
+const formatOnlyDate = (value: string) => {
+  if (!value) return "";
+  const date = parse(value, "yyyy-MM-dd HH:mm", new Date());
+  return format(date, "yyyy-MM-dd");
+};
 
 interface BaseResponse {
-  code: number;
+  code: 200;
 }
 
 interface Token {
@@ -108,14 +115,21 @@ interface GetClientRecordQuery {
   status: string;
 }
 
+interface ClientRecordRequest {
+  props: Partial<GetClientRecordQuery> | undefined;
+}
+
 /**
  * [GET /api/OrderOfCaseUsers/LoadClient]
  *
  * get Client Record from service
  */
-export function getClientRecord(
-  props: Partial<GetClientRecordQuery> | undefined
-): Promise<{ total: number; record: ClientRecord[] } | undefined> {
+export function getClientRecord({
+  props,
+  token,
+}: ClientRecordRequest & Token): Promise<
+  { total: number; record: ClientRecord[] } | undefined
+> {
   return get<GetClientRecordResponse>(
     KHH_API("OrderOfCaseUsers/LoadClient", {
       limit: props?.limit,
@@ -124,7 +138,10 @@ export function getClientRecord(
       EndDate: props?.endDate,
       orderby: props?.orderby,
       Status: props?.status,
-    })
+    }),
+    {
+      "X-Token": token,
+    }
   ).then(({ data, count }) => ({
     total: Number(count),
     record: map(toClientRecord, data),
@@ -261,34 +278,29 @@ export function getCaseDetail({
   orderNo,
   token,
 }: CaseOrderNo & Token): Promise<RecordDetail | undefined> {
-  return get<GetCaseDetailResponse>(
-    KHH_API("api/OrderOfCaseUsers/GetDetail", { orderNo }),
-    {
-      "X-Token": token,
-    }
-  ).then(pipe(prop("result"), toCaseDetail));
-}
-
-interface StatueLogResponse {
-  status: number;
-  createDate: string;
-  createUserName: string;
+  return (
+    get<GetCaseDetailResponse>(
+      KHH_API("OrderOfCaseUsers/GetDetail", { orderNo }),
+      {
+        "X-Token": token,
+      }
+    )
+      .then((res) => {
+        // TODO: 刪掉mock，實際打回500
+        if (!res) return toCaseDetail(mockCaseGetDetail.result);
+        return toCaseDetail(res.result);
+      })
+      // TODO: 刪掉mock
+      .catch(() => toCaseDetail(mockCaseGetDetail.result))
+  );
 }
 
 interface GetStatueLogResponse extends BaseResponse {
-  result: StatueLogResponse;
+  result: StatueLog[];
 }
 
-function toStatueLog({
-  status,
-  createDate,
-  createUserName,
-}: StatueLogResponse): StatueLog {
-  return {
-    status: status,
-    createDate: formatOnlyDate(createDate),
-    createUserName: createUserName,
-  };
+function toStatueLog(result: StatueLog[]): StatueLog[] {
+  return result;
 }
 
 /**
@@ -299,13 +311,18 @@ function toStatueLog({
 export function getStatusLog({
   orderNo,
   token,
-}: CaseOrderNo & Token): Promise<StatueLog | undefined> {
+}: CaseOrderNo & Token): Promise<StatueLog[] | undefined> {
   return get<GetStatueLogResponse>(
     KHH_API("OrderOfCaseUsers/GetStatusLog", { orderNo }),
     {
       "X-Token": token,
     }
-  ).then(pipe(prop("result"), toStatueLog));
+  ).then((res) => {
+    // TODO: 刪掉mock, 實打回[]
+    if (!res || res.result.length === 0)
+      return toStatueLog(mockStatusLog.result);
+    return toStatueLog(res.result);
+  });
 }
 
 interface DespatchResponse {
@@ -339,12 +356,14 @@ export function getDespatchByOrderId({
   orderNo,
   token,
 }: CaseOrderNo & Token): Promise<Despatch | undefined> {
-  return get<GetDespatchResponse>(
-    KHH_API("Despatchs/GetByOrderId", { orderNo }),
-    {
+  return (
+    get<GetDespatchResponse>(KHH_API("Despatchs/GetByOrderId", { orderNo }), {
       "X-Token": token,
-    }
-  ).then(pipe(prop("result"), toDespatch));
+    })
+      .then(pipe(prop("result"), toDespatch))
+      // TODO: 刪掉mock
+      .catch(() => toDespatch(mockDespatches.result))
+  );
 }
 
 interface OrderPayOfCaseUsersResponse {
@@ -404,7 +423,14 @@ export function getOrderPayOfCaseUsers({
     {
       "X-Token": token,
     }
-  ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
+  ).then((res) => {
+    // TODO: 刪掉mock
+    if (!res.result)
+      return toOrderPayOfCaseUsers(mockOrderPayOfCaseUsersDetail.result);
+    return toOrderPayOfCaseUsers(res.result);
+  });
+  // .catch(() => toOrderPayOfCaseUsers(mockOrderPayOfCaseUsersDetail.result));
+  // ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
 }
 
 interface CaseOrderAmtResponse {

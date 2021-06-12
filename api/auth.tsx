@@ -55,7 +55,7 @@ type UsernameResponse = BaseResponse & { result: string };
 /**
  * [GET /api/Check/GetUserName]
  *
- * get username by token
+ * get username(UID) by token
  */
 export function getUsername({ token }: Token): Promise<string> {
   return get<UsernameResponse>(KHH_API("Check/GetUserName"), {

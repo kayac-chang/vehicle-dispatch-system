@@ -4,13 +4,11 @@ type InfoFieldProps = {
   className?: string;
   title: string;
   content: string;
-  section?: "basic" | "case";
 };
 export function InfoField({
   className = "w-full",
   title,
   content,
-  section = "basic",
 }: InfoFieldProps) {
   return (
     <div className={clsx("text-sm font-normal", className)}>
@@ -18,9 +16,7 @@ export function InfoField({
 
       <p
         className={clsx(
-          "w-full pt-3 pb-2 text-gray-dark border-b border-dashed",
-          section === "basic" && "border-gold-darker",
-          section === "case" && "border-orange-dark"
+          "w-full min-h-10 pt-3 pb-2 text-gray-dark border-b border-dashed border-gold-darker"
         )}
       >
         {content}

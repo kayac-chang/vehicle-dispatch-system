@@ -56,8 +56,6 @@ import {
 //   isBack: false,
 // };
 
-// const status = { status: 1, editDate: "", editor: "" };
-
 // const despatches: Despatch = {
 //   driverName: "尤大富",
 //   carNo: "TAK-1005",
@@ -77,10 +75,10 @@ import {
 //   useDiscount: 20,
 // };
 
-// const history = [
-//   { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-//   { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-// ];
+const history = [
+  { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
+  { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
+];
 
 // 測試單號:"CN6800049758945193984"
 
@@ -90,8 +88,8 @@ const content = {
 
 type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ params, req }: Context) {
-  const session = await getSession({ req });
-
+  // const session = await getSession({ req });
+  const session = { accessToken: "a87ff9ef" };
   if (!session || !params) {
     return {
       redirect: {
@@ -120,7 +118,7 @@ export async function getServerSideProps({ params, req }: Context) {
         orderNo: params.id,
         token: session.accessToken,
       }),
-      history: undefined,
+      // history: undefined,
     },
   };
 }
@@ -131,12 +129,16 @@ export default function RecordDetailPage({
   status,
   despatches,
   payment,
-  history,
-}: Props) {
+}: // history,
+Props) {
   return (
     <Layout.Normal title={content.title} prev="/client/record">
       <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
-        <BasicTitle detail={detail} status={status?.status} />
+        {/* TODO: status取回為array, 取得最新status的規則? */}
+        <BasicTitle
+          detail={detail}
+          status={status[0].status || detail?.status}
+        />
 
         <BasicInfo detail={detail} />
 

@@ -130,7 +130,11 @@ export function CaseInfo({ journey, despatches }: Props) {
 
       <InfoSet
         title={content.journey.canShared.no}
-        content={despatches.orderNos.join(", ") || content.label.unbooked}
+        content={
+          despatches.orderNos
+            ? despatches.orderNos.join(", ")
+            : content.label.unbooked
+        }
         titleSize="xs"
         align="v"
       />
