@@ -32,6 +32,21 @@ export function login({ username, password }: Request): Promise<string> {
 }
 
 /**
+ * [POST /api/Check/Logout]
+ *
+ * logout with token
+ */
+export function logout({ token }: Token) {
+  return post(
+    KHH_API("Check/Logout"),
+    {},
+    {
+      "X-Token": token,
+    }
+  ).then(() => true);
+}
+
+/**
  * [POST /api/Users/ChangePassword]
  *
  * change user password
