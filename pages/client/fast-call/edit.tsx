@@ -1,5 +1,5 @@
 import Layout from "components/templates";
-import { Card, Accordion } from "components/molecules";
+import { Card } from "components/molecules";
 import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
 

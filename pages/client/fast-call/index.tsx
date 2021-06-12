@@ -4,82 +4,12 @@ import { Button, Icon, NoData } from "components/atoms";
 import clsx from "clsx";
 import { Card, Table } from "components/fastCall";
 import { useState } from "react";
-
-interface Item {
-  pathNo: number;
-  pathName: string;
-  pickupLocation: string;
-  dropLocation: string;
-}
-
-const items: Item[] = [
-  {
-    pathNo: 1,
-    pathName: "家-亞東醫院測試用個案-名字有點長的一個個案第1組類別a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 2,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 3,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 4,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 5,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 6,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 7,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 8,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 9,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 10,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-  {
-    pathNo: 11,
-    pathName: "家-亞東醫院測試用個案a",
-    pickupLocation: "新北市板橋區板新路27號",
-    dropLocation: "220新北市板橋區長安街331巷83號",
-  },
-];
+import { Path } from "types";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/client";
+import { deleteFavorite, getAllFavorites } from "api";
+import { Query } from "functions/query";
+import { useQuery } from "react-query";
 
 const content = {
   title: "快速叫車",
@@ -99,34 +29,46 @@ const content = {
   },
 };
 
-type Props = {
-  items: Item[];
-  onOrderClick?: () => void;
-  onEditClick?: () => void;
-  onDeleteClick?: () => void;
+type PathProps = {
+  loading: boolean;
+  items?: Path[];
+  total: number;
+  page: number;
+  onChange: (page: number) => void;
+  onDeleteClick?: (id: string) => void;
 };
-function CardView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
+function CardView({
+  loading,
+  items = [],
+  total,
+  page,
+  onChange,
+  onDeleteClick,
+}: PathProps) {
   return (
     <div className="lg:hidden">
       {items.length ? (
         <div className="bg-white">
-          <div className="divide-y border-b">
-            {items.map(({ pathNo, pathName, pickupLocation, dropLocation }) => (
-              <Card
-                key={pathNo}
-                pathNo={pathNo}
-                pathName={pathName}
-                pickupLocation={pickupLocation}
-                dropLocation={dropLocation}
-                onOrderClick={onOrderClick}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
+          <ul
+            className="divide-y border-b"
+            aria-live="polite"
+            aria-busy={loading ? "true" : "false"}
+          >
+            {items.map(({ id, name, from, to }) => (
+              <li key={id}>
+                <Card
+                  id={id}
+                  name={name}
+                  from={from}
+                  to={to}
+                  onDeleteClick={() => onDeleteClick?.(id)}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
 
           <div className="flex justify-center pt-8 pb-10">
-            <Pagination total={10} page={0} />
+            <Pagination total={total} page={page} onChange={onChange} />
           </div>
         </div>
       ) : (
@@ -136,7 +78,14 @@ function CardView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
   );
 }
 
-function TableView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
+function TableView({
+  loading,
+  items = [],
+  total,
+  page,
+  onChange,
+  onDeleteClick,
+}: PathProps) {
   return (
     <div className="hidden lg:block pb-8">
       <div
@@ -151,25 +100,28 @@ function TableView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
           <p className="w-3/12">{content.table.operation}</p>
         </div>
 
-        <div className="divide-y">
-          {items.map(({ pathNo, pathName, pickupLocation, dropLocation }) => (
-            <Table
-              key={pathNo}
-              pathNo={pathNo}
-              pathName={pathName}
-              pickupLocation={pickupLocation}
-              dropLocation={dropLocation}
-              onOrderClick={onOrderClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-            />
+        <ul
+          className="divide-y"
+          aria-live="polite"
+          aria-busy={loading ? "true" : "false"}
+        >
+          {items.map(({ id, name, from, to }) => (
+            <li key={id}>
+              <Table
+                id={id}
+                name={name}
+                from={from}
+                to={to}
+                onDeleteClick={() => onDeleteClick?.(id)}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       {items.length ? (
         <div className="flex justify-end pt-2">
-          <Pagination total={10} page={1} />
+          <Pagination total={total} page={page} onChange={onChange} />
         </div>
       ) : (
         <NoData />
@@ -178,8 +130,56 @@ function TableView({ items, onOrderClick, onEditClick, onDeleteClick }: Props) {
   );
 }
 
-export default function FastCall() {
-  const [modal, setModal] = useState<"delete" | undefined>();
+const INIT_PAGE = 1;
+const LIMIT = 10;
+
+function FavoriteQuery(token: string, page: number) {
+  return {
+    queryKey: ["favorites", token, page],
+    queryFn: () => getAllFavorites({ token, limit: LIMIT, page }),
+  };
+}
+
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ req }: Context) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
+
+  const { dehydratedState } = await Query(
+    FavoriteQuery(session.accessToken, INIT_PAGE)
+  );
+
+  return {
+    props: {
+      dehydratedState,
+      token: session.accessToken,
+    },
+  };
+}
+
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function FastCall({ token }: Props) {
+  const [page, setPage] = useState(() => INIT_PAGE);
+  const { data, isFetching, refetch } = useQuery({
+    ...FavoriteQuery(token!, INIT_PAGE),
+    keepPreviousData: true,
+    enabled: Boolean(token),
+  });
+
+  const [deleteTarget, setDeleteTarget] = useState<string | undefined>(
+    undefined
+  );
+  const favorites = data?.items || [];
+  const max = data?.total ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
     <Layout.Normal title={content.title}>
@@ -188,7 +188,8 @@ export default function FastCall() {
           <div>
             <Button.Outline
               className="bg-white flex items-center px-4 py-1"
-              type="button"
+              type="anchor"
+              href="/client/fast-call/add"
             >
               <span className="w-4 mr-2" aria-hidden>
                 <Icon.Plus />
@@ -200,13 +201,27 @@ export default function FastCall() {
         </div>
 
         <div className="-mx-6 sm:m-0 space-y-4">
-          <CardView items={items} onDeleteClick={() => setModal("delete")} />
+          <CardView
+            loading={isFetching}
+            items={favorites}
+            onDeleteClick={setDeleteTarget}
+            total={max}
+            page={page}
+            onChange={setPage}
+          />
 
-          <TableView items={items} onDeleteClick={() => setModal("delete")} />
+          <TableView
+            loading={isFetching}
+            items={favorites}
+            onDeleteClick={setDeleteTarget}
+            total={max}
+            page={page}
+            onChange={setPage}
+          />
         </div>
       </div>
 
-      {modal === "delete" && (
+      {deleteTarget && (
         <Modal.Alert
           title={content.delete.title}
           name="delete"
@@ -214,8 +229,14 @@ export default function FastCall() {
             cancel: content.delete.cancel,
             submit: content.delete.submit,
           }}
-          onClose={() => setModal(undefined)}
-          onSubmit={() => setModal(undefined)}
+          onClose={() => setDeleteTarget(undefined)}
+          onSubmit={() => {
+            if (!token) return;
+
+            deleteFavorite({ token, items: [deleteTarget] })
+              .then(() => refetch())
+              .then(() => setDeleteTarget(undefined));
+          }}
         >
           <p>{content.delete.content}</p>
         </Modal.Alert>
