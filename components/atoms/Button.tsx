@@ -6,6 +6,7 @@ type CommonProps = {
   children?: ReactNode;
   className?: string;
   color?: string;
+  disabled?: boolean;
 };
 
 type AnchorProps = CommonProps & {
@@ -29,10 +30,15 @@ function Base(props: ButtonProps | AnchorProps) {
     );
   }
 
-  const { type, className = "", children, onClick } = props;
+  const { type, className = "", children, onClick, disabled = false } = props;
 
   return (
-    <button type={type} className={className} onClick={onClick}>
+    <button
+      type={type}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   );
@@ -64,9 +70,24 @@ function Outline({
   );
 }
 
+function Disabled({
+  className,
+  color = "bg-gray-extralight border-black-dark text-black-light ",
+  ...props
+}: ButtonProps | AnchorProps) {
+  return (
+    <Base
+      className={clsx("border w-full rounded-sm", color, className)}
+      disabled
+      {...props}
+    />
+  );
+}
+
 const Button = {
   Flat,
   Outline,
+  Disabled,
   Base,
 };
 
