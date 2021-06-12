@@ -2,9 +2,10 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Rule from "functions/regexp";
-import { changePassword, getUsername } from "api";
+import { changePassword, getUsername, logout } from "api";
 import { getSession } from "next-auth/client";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/dist/client/router";
 
 const content = {
   title: "設定密碼",
@@ -53,6 +54,8 @@ export default function SetupPassword({ username, token }: Props) {
     formState: { errors },
   } = useForm<Request>();
 
+  const router = useRouter();
+
   function onSubmit({ password, repeat }: Request) {
     if (!username || !token) return;
 
@@ -66,11 +69,8 @@ export default function SetupPassword({ username, token }: Props) {
       password,
       token,
     })
-      .then(() => {
-        // @TODO success logic
-
-        console.log("change password successful");
-      })
+      .then(() => logout({ token }))
+      .then(() => router.push("/client/login"))
       .catch((error) => {
         console.error(error);
 
