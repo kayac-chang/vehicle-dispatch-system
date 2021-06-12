@@ -35,7 +35,7 @@ export function PersonalInfo({
   onPasswordClick,
   onChangePhoneClick,
 }: PersonalInfoProps) {
-  if (!data) <></>;
+  if (!data) return <></>;
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
       <div className="flex justify-between items-center">

@@ -1,3 +1,4 @@
+
 export interface UnPermissionUserType{
   caseId: string;
   userId: string;
@@ -11,7 +12,7 @@ export interface User{
   account: string;
   name: string;
   uid: string;
-  sex: number;
+  gender: "male" | "female";
   phone: string;
 }
 
@@ -20,3 +21,4 @@ export interface ChangePasswordRequest{
   newPassword: string;
   confirmPassword: string;
 }
+

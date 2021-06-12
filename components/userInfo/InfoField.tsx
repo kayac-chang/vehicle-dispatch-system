@@ -3,7 +3,7 @@ import clsx from "clsx";
 type InfoFieldProps = {
   className?: string;
   title: string;
-  content: string;
+  content: string | undefined;
 };
 export function InfoField({
   className = "w-full",
