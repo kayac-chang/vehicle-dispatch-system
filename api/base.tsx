@@ -1,8 +1,7 @@
 import { join } from "path";
 
-interface BaseResponse {
-  code: number;
-  message: string;
+export interface Token {
+  token: string;
 }
 
 type Query = Record<string, string | number | boolean | undefined>;
