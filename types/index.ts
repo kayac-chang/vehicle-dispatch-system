@@ -17,3 +17,11 @@ export interface Corporation {
   operatingHours: string[];
   customerServiceHours: string[];
 }
+
+export interface Path {
+  id: string;
+  name: string;
+  from: string;
+  to: string;
+}
+

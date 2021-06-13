@@ -1,5 +1,6 @@
-import { Icon } from "components/atoms";
-import { Location, IconButton } from "components/fastCall";
+import { Icon, Button } from "components/atoms";
+import { Location } from "components/fastCall";
+import { Path } from "types";
 
 const content = {
   title: "路線名稱",
@@ -8,61 +9,51 @@ const content = {
   delete: "刪除",
 };
 
-type Props = {
-  pathNo: number;
-  pathName: string;
-  pickupLocation: string;
-  dropLocation: string;
-  onOrderClick?: () => void;
-  onEditClick?: () => void;
+type Props = Path & {
   onDeleteClick?: () => void;
 };
-export function Table({
-  pathName,
-  pickupLocation,
-  dropLocation,
-  onOrderClick,
-  onEditClick,
-  onDeleteClick,
-}: Props) {
+export function Table({ id, name, from, to, onDeleteClick }: Props) {
   return (
     <div className="font-normal text-gray-dark text-sm flex items-center">
-      <strong className="w-4/12 px-4">{pathName}</strong>
+      <strong className="w-4/12 px-4">{name}</strong>
 
       <div className="w-5/12 py-3 flex-col space-y-1">
-        <Location location={pickupLocation} icon={<Icon.EllipseHole />} />
+        <Location location={from} icon={<Icon.EllipseHole />} />
 
-        <Location location={dropLocation} icon={<Icon.EllipseFill />} />
+        <Location location={to} icon={<Icon.EllipseFill />} />
       </div>
 
       <div className="w-3/12 flex items-center space-x-1">
-        <IconButton
+        <Button.Icon
+          type="anchor"
           className="text-orange-dark"
           icon={<Icon.Car />}
-          onClick={onOrderClick}
+          href="/client/call-car"
         >
           {content.order}
-        </IconButton>
+        </Button.Icon>
 
         <hr className="border-r h-3 transform rotate-0" />
 
-        <IconButton
+        <Button.Icon
+          type="anchor"
           className="text-blue-light"
           icon={<Icon.Edit />}
-          onClick={onEditClick}
+          href={`/client/fast-call/edit/${id}`}
         >
           {content.edit}
-        </IconButton>
+        </Button.Icon>
 
         <hr className="border-r h-3 transform rotate-0" />
 
-        <IconButton
+        <Button.Icon
+          type="button"
           className="text-red-light"
           icon={<Icon.Delete />}
           onClick={onDeleteClick}
         >
           {content.delete}
-        </IconButton>
+        </Button.Icon>
       </div>
     </div>
   );

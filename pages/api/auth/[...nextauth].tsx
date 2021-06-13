@@ -9,6 +9,10 @@ type Credentials = {
 };
 
 export default NextAuth({
+  session: {
+    maxAge: 1 * 24 * 60 * 60, // 1 day
+  },
+
   providers: [
     Providers.Credentials({
       name: "Credentials",

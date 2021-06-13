@@ -45,6 +45,13 @@ export function PasswordModal({ onClose, username, token }: Props) {
 
   function onSubmit(data: Request) {
     setAlert("");
+
+    if (data.old === "") setError("old", { type: "validate" });
+
+    if (data.new === "") setError("new", { type: "validate" });
+
+    if (data.repeat === "") setError("repeat", { type: "validate" });
+
     if (!username || !token || !data.old || !data.new || !data.repeat) return;
 
     if (data.new !== data.repeat) {
@@ -57,15 +64,10 @@ export function PasswordModal({ onClose, username, token }: Props) {
       username,
       password: data.new,
       token,
-    }).then((e) => {
-      if (e === true) {
-        logout({ token });
-        router.push("/client/login");
-        return;
-      }
-
-      setAlert(content.alert.failed);
-    });
+    })
+      .then(() => logout({ token }))
+      .then(() => router.push("/client/login"))
+      .catch(() => setAlert(content.alert.failed));
   }
 
   return (

@@ -1,5 +1,5 @@
 import { News, NewsCategory } from "types";
-import { get, KHH_API } from "./base";
+import { get, KHH_API, Count } from "./base";
 import { parse, format } from "date-fns";
 import { pipe, map, prop } from "ramda";
 
@@ -57,7 +57,7 @@ interface GetNewsListQuery {
  */
 export function getNewsList(
   props: Partial<GetNewsListQuery> | undefined
-): Promise<{ total: number; news: News[] }> {
+): Promise<Count<News>> {
   return get<GetNewsListResponse>(
     KHH_API("Newss/Load", {
       isClient: true,
@@ -67,12 +67,10 @@ export function getNewsList(
       ReleaseDate: props?.date,
       orderby: "ReleaseDate",
     })
-  ).then(({ data, count }) => {
-    return {
-      total: Number(count),
-      news: map(toNews, data),
-    };
-  });
+  ).then(({ data, count }) => ({
+    total: Number(count),
+    items: map(toNews, data),
+  }));
 }
 
 interface GetNewsResponse extends BaseResponse {

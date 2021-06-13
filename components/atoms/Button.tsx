@@ -84,11 +84,30 @@ function Disabled({
   );
 }
 
+type IconProps = (ButtonProps | AnchorProps) & {
+  icon: ReactNode;
+};
+export function Icon({ className, icon, children, ...props }: IconProps) {
+  return (
+    <Base
+      className={clsx("flex items-center space-x-1 px-1", className)}
+      {...props}
+    >
+      <span className="w-4" aria-hidden>
+        {icon}
+      </span>
+
+      <span>{children}</span>
+    </Base>
+  );
+}
+
 const Button = {
   Flat,
   Outline,
   Disabled,
   Base,
+  Icon,
 };
 
 export default Button;

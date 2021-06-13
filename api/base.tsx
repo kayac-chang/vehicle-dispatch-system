@@ -1,5 +1,10 @@
 import { join } from "path";
 
+export type Count<T> = {
+  total: number;
+  items: T[];
+};
+
 export interface Token {
   token: string;
 }

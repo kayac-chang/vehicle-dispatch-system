@@ -86,7 +86,7 @@ export default function News() {
     date && setDate(date);
   }
 
-  const news = data?.news || [];
+  const news = data?.items || [];
   const max = data?.total ? Math.ceil(data.total / LIMIT) : 0;
 
   return (
