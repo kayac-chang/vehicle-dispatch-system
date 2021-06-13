@@ -1,10 +1,10 @@
 import { getNewsByID } from "api";
 import Layout from "components/templates";
 import ReactMarkdown from "react-markdown";
-import { GetStaticPropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import rehypeRaw from "rehype-raw";
 
-type Context = GetStaticPropsContext<{ id: string }>;
+type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ params }: Context) {
   if (!params) {
     return {

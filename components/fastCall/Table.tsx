@@ -12,7 +12,7 @@ const content = {
 type Props = Path & {
   onDeleteClick?: () => void;
 };
-export function Table({ name, from, to, onDeleteClick }: Props) {
+export function Table({ id, name, from, to, onDeleteClick }: Props) {
   return (
     <div className="font-normal text-gray-dark text-sm flex items-center">
       <strong className="w-4/12 px-4">{name}</strong>
@@ -39,7 +39,7 @@ export function Table({ name, from, to, onDeleteClick }: Props) {
           type="anchor"
           className="text-blue-light"
           icon={<Icon.Edit />}
-          href="/client/fast-call/edit"
+          href={`/client/fast-call/edit/${id}`}
         >
           {content.edit}
         </Button.Icon>

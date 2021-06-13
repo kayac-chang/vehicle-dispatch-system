@@ -1,4 +1,4 @@
-import { map } from "ramda";
+import { map, prop } from "ramda";
 import { Path } from "types";
 import { getUserProfile } from "./auth";
 import { KHH_API, post, get, Token, Count } from "./base";
@@ -29,7 +29,7 @@ interface GetAllFavoriteResponse {
   data: FavoriteResponse[];
 }
 
-interface GetNewsListQuery {
+interface GetAllFavoritesQuery {
   limit: number;
   page: number;
 }
@@ -37,7 +37,7 @@ export function getAllFavorites({
   token,
   limit,
   page,
-}: Partial<GetNewsListQuery> & Token): Promise<Count<Path>> {
+}: Partial<GetAllFavoritesQuery> & Token): Promise<Count<Path>> {
   return get<GetAllFavoriteResponse>(
     KHH_API("UserFavorite/Load", { limit, page }),
     {
@@ -49,12 +49,27 @@ export function getAllFavorites({
   }));
 }
 
+interface GetFavoriteResponse {
+  result: FavoriteResponse;
+}
+
+export function getFavorite({
+  token,
+  id,
+}: Token & { id: string }): Promise<Path> {
+  return get<GetFavoriteResponse>(KHH_API("UserFavorite/Get", { id }), {
+    "X-Token": token,
+  })
+    .then(prop("result"))
+    .then(toPath);
+}
+
 interface Favorite {
+  id?: string;
   name: string;
   from: string;
   to: string;
 }
-
 export async function addFavorite({
   token,
   name,
@@ -66,6 +81,31 @@ export async function addFavorite({
   return post(
     KHH_API("UserFavorite/Add"),
     {
+      userId: user.id,
+      userType: "SYS_USERCATEGORY_CASEUSER",
+      name,
+      fromAddr: from,
+      toAddr: to,
+    },
+    {
+      "X-Token": token,
+    }
+  ).then(() => true);
+}
+
+export async function updateFavorite({
+  token,
+  id,
+  name,
+  from,
+  to,
+}: Required<Favorite> & Token): Promise<boolean> {
+  const user = await getUserProfile({ token });
+
+  return post(
+    KHH_API("UserFavorite/Update"),
+    {
+      id,
       userId: user.id,
       userType: "SYS_USERCATEGORY_CASEUSER",
       name,

@@ -2,15 +2,13 @@ import Layout from "components/templates";
 import { Card } from "components/molecules";
 import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/client";
-import { getUserProfile } from "api";
 import { useRouter } from "next/dist/client/router";
-import { addFavorite } from "api/favorite";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getFavorite, getUserProfile, updateFavorite } from "api";
+import { getSession } from "next-auth/client";
 
 const content = {
-  title: "新增常用路線",
-
+  title: "編輯常用路線",
   form: {
     name: "路線名稱",
 
@@ -21,22 +19,23 @@ const content = {
         title: "起點",
         label: "地址",
       },
+
       to: {
         title: "迄點",
         label: "地址",
       },
     },
 
-    cancel: "取消",
     submit: "儲存",
+    cancel: "取消",
   },
 };
 
 type Context = GetServerSidePropsContext<{ id: string }>;
-export async function getServerSideProps({ req }: Context) {
+export async function getServerSideProps({ params, req }: Context) {
   const session = await getSession({ req });
 
-  if (!session) {
+  if (!session || !params) {
     return {
       redirect: {
         destination: "/client/login",
@@ -46,12 +45,19 @@ export async function getServerSideProps({ req }: Context) {
     };
   }
 
-  const user = await getUserProfile({ token: session.accessToken });
+  const [user, favorite] = await Promise.all([
+    getUserProfile({ token: session.accessToken }),
+    getFavorite({
+      token: session.accessToken,
+      id: params.id,
+    }),
+  ]);
 
   return {
     props: {
       username: user.name,
       token: session.accessToken,
+      favorite,
     },
   };
 }
@@ -62,16 +68,22 @@ interface Request {
   to: string;
 }
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function FastCallAdd({ username, token }: Props) {
+export default function FastCallEdit({ username, token, favorite }: Props) {
   const router = useRouter();
-  const { control, handleSubmit } = useForm<Request>();
+  const { control, handleSubmit } = useForm<Request>({
+    defaultValues: {
+      name: favorite?.name,
+      from: favorite?.from,
+      to: favorite?.to,
+    },
+  });
 
   function onSubmit(data: Request) {
-    if (!token) return;
+    if (!token || !favorite) return;
 
     const { name, from, to } = data;
 
-    return addFavorite({ token, name, from, to }).then(() =>
+    return updateFavorite({ token, id: favorite.id, name, from, to }).then(() =>
       router.push("/client/fast-call")
     );
   }
@@ -133,7 +145,7 @@ export default function FastCallAdd({ username, token }: Props) {
             </div>
           </Card.Panel>
 
-          <div className="bg-black bg-opacity-75 flex justify-end text-sm py-3 space-x-4 px-4">
+          <div className="bg-black bg-opacity-75 flex justify-to text-sm py-3 space-x-4 px-4">
             <div>
               <Button.Outline
                 type="anchor"
