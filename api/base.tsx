@@ -17,7 +17,6 @@ export function KHH_API(path: string, query?: Query) {
     Object.entries(query)
       .filter(([, value]) => value !== undefined)
       .forEach(([key, value]) => url.searchParams.append(key, String(value)));
-
   return new Request(url.toString());
 }
 

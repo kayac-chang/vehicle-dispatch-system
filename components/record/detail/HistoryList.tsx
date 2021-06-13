@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { RecordDetail } from "types";
+import { History } from "types/record";
 
 const content = {
   title: "訂單歷程",
@@ -11,9 +11,10 @@ const content = {
 };
 
 type Props = {
-  item: RecordDetail;
+  history: History[] | undefined;
 };
-export function History({ item }: Props) {
+export function HistoryList({ history }: Props) {
+  if (!history) <></>;
   return (
     <div
       className={clsx(
@@ -41,17 +42,18 @@ export function History({ item }: Props) {
         </thead>
 
         <tbody className="text-sm text-left">
-          {item.history.map((item, index) => (
-            <tr key={index} className="border-b">
-              <th className="py-4 pl-4 font-semibold">{item.status}</th>
-              <th className="py-4 font-normal text-center lg:text-left">
-                {item.editDate}
-              </th>
-              <th className="py-4 px-2 lg:px-0 font-normal text-left lg:text-center">
-                {item.editor}
-              </th>
-            </tr>
-          ))}
+          {history &&
+            history.map((item: History, index: number) => (
+              <tr key={index} className="border-b">
+                <th className="py-4 pl-4 font-semibold">{item.status}</th>
+                <th className="py-4 font-normal text-center lg:text-left">
+                  {item.editDate}
+                </th>
+                <th className="py-4 px-2 lg:px-0 font-normal text-left lg:text-center">
+                  {item.editor}
+                </th>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

@@ -1,6 +1,10 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/dist/client/router";
+import { changePassword, logout } from "api";
 import { Button, Form } from "components/atoms";
 import { Modal } from "components/molecules";
-import { useForm } from "react-hook-form";
+import Rule from "functions/regexp";
 
 const content = {
   title: "修改密碼",
@@ -9,24 +13,61 @@ const content = {
   form: {
     old: "舊密碼",
     new: "新密碼",
-    reply: "確認新密碼",
+    repeat: "確認新密碼",
     cancel: "取消",
     submit: "確定",
+  },
+
+  alert: {
+    notMatch: "兩次輸入的密碼不相同",
+    failed:
+      "請再次檢查您輸入的密碼。提醒您，新的密碼不可與近3次修改的密碼相同。",
   },
 };
 
 interface Request {
   old: string;
   new: string;
-  reply: string;
+  repeat: string;
 }
 
-type Props = { onClose: () => void };
-export function PasswordModal({ onClose }: Props) {
-  const { control, handleSubmit } = useForm<Request>();
+type Props = {
+  onClose: () => void;
+  username: string | undefined;
+  token: string | undefined;
+};
+export function PasswordModal({ onClose, username, token }: Props) {
+  const { control, handleSubmit, setError } = useForm<Request>();
+
+  const [alert, setAlert] = useState<string>("");
+
+  const router = useRouter();
 
   function onSubmit(data: Request) {
-    console.log(data);
+    setAlert("");
+
+    if (data.old === "") setError("old", { type: "validate" });
+
+    if (data.new === "") setError("new", { type: "validate" });
+
+    if (data.repeat === "") setError("repeat", { type: "validate" });
+
+    if (!username || !token || !data.old || !data.new || !data.repeat) return;
+
+    if (data.new !== data.repeat) {
+      setAlert(content.alert.notMatch);
+      setError("repeat", { type: "validate" });
+      return;
+    }
+
+    changePassword({
+      username,
+      password: data.new,
+      token,
+    })
+      .then(() => logout({ token }))
+      .then(() => router.push("/client/login"))
+      .catch(() => setAlert(content.alert.failed));
   }
 
   return (
@@ -59,6 +100,7 @@ export function PasswordModal({ onClose }: Props) {
           label={content.form.old}
           name="old"
           control={control}
+          pattern={Rule.Password}
         />
 
         <Form.Input
@@ -66,14 +108,17 @@ export function PasswordModal({ onClose }: Props) {
           label={content.form.new}
           name="new"
           control={control}
+          pattern={Rule.Password}
         />
 
         <Form.Input
           type="password"
-          label={content.form.reply}
-          name="reply"
+          label={content.form.repeat}
+          name="repeat"
           control={control}
+          pattern={Rule.Password}
         />
+        <p className="text-xs text-red-bright px-2">{alert}</p>
       </form>
     </Modal.Dialog>
   );

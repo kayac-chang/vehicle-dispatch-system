@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import { statusDecoder } from "functions/recordFunctions";
 import { Icon } from "components/atoms";
 
 type TagProps = {
   status: number;
+  label: string;
 };
-export function Tag({ status }: TagProps) {
+export function Tag({ status, label }: TagProps) {
   return (
     <span
       className={clsx(
@@ -13,29 +13,29 @@ export function Tag({ status }: TagProps) {
         status === 1 &&
           "border-orange-darker bg-orange-light text-orange-darker",
         status === 2 && " border-green-300 bg-green-100  text-green-500",
-        status === 3 && " border-blue-darker bg-blue-bright  text-blue-darker",
+        status === 3 && " border-blue-bright bg-blue-100  text-blue-bright",
         status === 4 && " border-red-300 bg-red-100  text-red-500",
         status === 5 && " border-green-300 bg-green-100  text-green-500",
-        status === 6 &&
-          "border-orange-darker bg-orange-light text-orange-darker",
-        status === 7 &&
-          "border-orange-darker bg-orange-light text-orange-darker",
-        status === 8 &&
-          "border-orange-darker bg-orange-light text-orange-darker",
+        // status === 6 &&
+        //   "border-orange-darker bg-orange-light text-orange-darker",
+        // status === 7 &&
+        //   "border-orange-darker bg-orange-light text-orange-darker",
+        // status === 8 &&
+        //   "border-orange-darker bg-orange-light text-orange-darker",
         status === 9 &&
           "border-orange-darker bg-orange-light text-orange-darker"
       )}
     >
-      {statusDecoder(status)}
+      {label}
     </span>
   );
 }
 
-type CarpoolProps = {
+type CanSharedProps = {
   className?: string;
   label: string;
 };
-export function Carpool({ className, label }: CarpoolProps) {
+export function CanShared({ className, label }: CanSharedProps) {
   return (
     <div
       className={clsx(
@@ -44,7 +44,7 @@ export function Carpool({ className, label }: CarpoolProps) {
       )}
     >
       <span className="w-4 mt-px" aria-hidden>
-        <Icon.Carpool />
+        <Icon.CanShared />
       </span>
 
       <span>{label}</span>

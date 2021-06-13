@@ -12,5 +12,7 @@ const Password = RegExp(
   ).*`.replace(/\s/g, "")
 );
 
-const Rule = { Password };
+const Phone = RegExp(/^09\d{8}$/);
+
+const Rule = { Password, Phone };
 export default Rule;

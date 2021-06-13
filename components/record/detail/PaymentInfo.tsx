@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { RecordDetail } from "types";
+import Image from "next/image";
+import { OrderPayOfCaseUsers } from "types/record";
 import { InfoSet } from "components/record";
 
 const content = {
@@ -9,9 +10,22 @@ const content = {
 };
 
 type Props = {
-  item: RecordDetail;
+  payment: OrderPayOfCaseUsers | undefined;
 };
-export function PaymentInfo({ item }: Props) {
+export function PaymentInfo({ payment }: Props) {
+  if (!payment) return <></>;
+  const paymentInfoData = [
+    { title: "營收金額", content: "??" },
+    { title: "實際政府補助", content: payment.realDiscountAmt },
+    { title: "實際自付額", content: payment.realSelfPay },
+    { title: "實際陪同金額", content: payment.realWithAmt },
+    {
+      title: "實際陪同人數",
+      content: payment.realFamilyWith + payment.realMaidWith,
+    },
+    { title: "使用額度", content: payment.useDiscount },
+    { title: "實收金額", content: payment.receivePay },
+  ];
   return (
     <div className="p-6 py-3 bg-white flex flex-col space-y-3">
       <div className="flex items-center border-b">
@@ -26,7 +40,7 @@ export function PaymentInfo({ item }: Props) {
           "lg:w-3/4 lg:flex-row lg:flex-wrap lg:space-y-0"
         )}
       >
-        {item.paymentInfo.map((item, index) => (
+        {paymentInfoData.map((item, index) => (
           <InfoSet
             key={index}
             className="w-auto lg:w-40 mb-0 lg:mb-4"
@@ -47,7 +61,7 @@ export function PaymentInfo({ item }: Props) {
         <InfoSet
           className="w-auto lg:w-40 mb-0 lg:mb-4"
           title={content.note}
-          content={item.paymentNote}
+          content={payment.remark}
           titleSize="xs"
           align="v"
         />
@@ -57,7 +71,16 @@ export function PaymentInfo({ item }: Props) {
             {content.sign}
           </span>
 
-          <div className="w-40 h-32 bg-gray-extralight">{item.signature}</div>
+          <div className="w-40 h-32 bg-gray-extralight">
+            <Image
+              className="w-6 h-6 overflow-hidden"
+              src={payment.signPic}
+              alt="client signature"
+              width={160}
+              height={128}
+              unoptimized
+            />
+          </div>
         </div>
       </div>
     </div>

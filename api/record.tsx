@@ -1,6 +1,6 @@
 import { get, KHH_API, post } from "./base";
 import { parse, format } from "date-fns";
-import { pipe, prop } from "ramda";
+import { map, pipe, prop } from "ramda";
 import {
   CancelOrderRequest,
   RecordDetail,
@@ -8,15 +8,138 @@ import {
   GeoCode,
   GetRouteRequest,
   Route,
-} from "types/record";
+  ClientRecord,
+  OrderPayOfCaseUsers,
+  Despatch,
+  StatueLog,
+} from "types";
 
-const formatOnlyDate = pipe(
-  (value: string) => parse(value, "yyyy-MM-dd HH:mm:ss", new Date()),
-  (date) => format(date, "yyyy-MM-dd")
-);
+const formatOnlyDate = (value: string) => {
+  if (!value) return "";
+  const date = parse(value, "yyyy-MM-dd HH:mm:ss", new Date());
+  return format(date, "yyyy-MM-dd");
+};
 
 interface BaseResponse {
-  code: number;
+  code: 200;
+}
+
+interface Token {
+  token: string;
+}
+
+interface CaseOrderNo {
+  orderId: string;
+}
+
+interface ClientRecordResponse {
+  caseUserNo: string;
+  orderNo: string;
+  id: string;
+  userId: string;
+  caseUserId: string;
+  cancelReamrk: string;
+  status: number;
+  reserveDate: string;
+  fromAddr: string;
+  toAddr: string;
+  canShared: boolean;
+  carCategoryId: string;
+  carCategoryName: string;
+  familyWith: number;
+  hasViolation: boolean;
+  name: string;
+  phone: string;
+  uid: string;
+}
+
+interface GetClientRecordResponse extends BaseResponse {
+  data: ClientRecordResponse[];
+  count: number;
+}
+
+function toClientRecord({
+  caseUserNo,
+  orderNo,
+  id,
+  userId,
+  caseUserId,
+  cancelReamrk,
+  status,
+  reserveDate,
+  fromAddr,
+  toAddr,
+  canShared,
+  carCategoryId,
+  carCategoryName,
+  familyWith,
+  hasViolation,
+  name,
+  phone,
+  uid,
+}: ClientRecordResponse): ClientRecord {
+  return {
+    caseUserNo: caseUserNo,
+    orderNo: orderNo,
+    id: id,
+    userId: userId,
+    caseUserId: caseUserId,
+    cancelRemark: cancelReamrk,
+    status: status,
+    reserveDate: formatOnlyDate(reserveDate),
+    fromAddr: fromAddr,
+    toAddr: toAddr,
+    canShared: canShared,
+    carCategoryId: carCategoryId,
+    carCategoryName: carCategoryName,
+    familyWith: familyWith,
+    hasViolation: hasViolation,
+    name: name,
+    phone: phone,
+    uid: uid,
+  };
+}
+
+interface GetClientRecordQuery {
+  limit: number;
+  page: number;
+  startDate: string;
+  endDate: string;
+  orderby: string;
+  status: string;
+}
+
+interface ClientRecordRequest {
+  props: Partial<GetClientRecordQuery> | undefined;
+}
+
+/**
+ * [GET /api/OrderOfCaseUsers/LoadClient]
+ *
+ * get Client Record from service
+ */
+export function getClientRecord({
+  props,
+  token,
+}: ClientRecordRequest & Token): Promise<
+  { total: number; record: ClientRecord[] } | undefined
+> {
+  return get<GetClientRecordResponse>(
+    KHH_API("OrderOfCaseUsers/LoadClient", {
+      limit: props?.limit,
+      page: props?.page,
+      StartDate: props?.startDate,
+      EndDate: props?.endDate,
+      orderby: props?.orderby,
+      Status: props?.status,
+    }),
+    {
+      "X-Token": token,
+    }
+  ).then(({ data, count }) => ({
+    total: Number(count),
+    record: map(toClientRecord, data),
+  }));
 }
 
 interface CaseDetailResponse {
@@ -145,12 +268,140 @@ function toCaseDetail({
  *
  * get Case Detail by orderNo from service
  */
-export function getCaseDetail(
-  orderNo: string
-): Promise<RecordDetail | undefined> {
+export function getCaseDetail({
+  orderId,
+  token,
+}: CaseOrderNo & Token): Promise<RecordDetail | undefined> {
   return get<GetCaseDetailResponse>(
-    KHH_API("/api/OrderOfCaseUsers/GetDetail", { orderNo })
+    KHH_API("OrderOfCaseUsers/GetDetail", { orderId }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toCaseDetail));
+}
+
+interface GetStatueLogResponse extends BaseResponse {
+  result: StatueLog[];
+}
+
+function toStatueLog(result: StatueLog[]): StatueLog[] {
+  return result;
+}
+
+/**
+ * [GET /api/OrderOfCaseUsers/GetStatusLog]
+ *
+ * get Case Despatch info by orderId from service
+ */
+export function getStatusLog({
+  orderId,
+  token,
+}: CaseOrderNo & Token): Promise<StatueLog[] | undefined> {
+  return get<GetStatueLogResponse>(
+    KHH_API("OrderOfCaseUsers/GetStatusLog", { orderId }),
+    {
+      "X-Token": token,
+    }
+  ).then(pipe(prop("result"), toStatueLog));
+}
+
+interface DespatchResponse {
+  driverName: string;
+  carNo: string;
+  orderNos: string[];
+}
+
+interface GetDespatchResponse extends BaseResponse {
+  result: DespatchResponse;
+}
+
+function toDespatch({
+  driverName,
+  carNo,
+  orderNos,
+}: DespatchResponse): Despatch {
+  return {
+    driverName: driverName,
+    carNo: carNo,
+    orderNos: orderNos,
+  };
+}
+
+/**
+ * [GET /api/Despatchs/GetByOrderId]
+ *
+ * get Case Despatch info by orderId from service
+ */
+export function getDespatchByOrderId({
+  orderId,
+  token,
+}: CaseOrderNo & Token): Promise<Despatch | undefined> {
+  return get<GetDespatchResponse>(
+    KHH_API("Despatchs/GetByOrderId", { orderId }),
+    {
+      "X-Token": token,
+    }
+  ).then(pipe(prop("result"), toDespatch));
+}
+
+interface OrderPayOfCaseUsersResponse {
+  id: string;
+  realFamilyWith: number;
+  realMaidWith: number;
+  realWithAmt: number;
+  realDiscountAmt: number;
+  realSelfPay: number;
+  receivePay: number;
+  signPic: string;
+  remark: string;
+  useDiscount: number;
+}
+
+interface GetOrderPayOfCaseUsersResponse extends BaseResponse {
+  result: OrderPayOfCaseUsersResponse;
+}
+
+function toOrderPayOfCaseUsers({
+  id,
+  realFamilyWith,
+  realMaidWith,
+  realWithAmt,
+  realDiscountAmt,
+  realSelfPay,
+  receivePay,
+  signPic,
+  remark,
+  useDiscount,
+}: OrderPayOfCaseUsersResponse): OrderPayOfCaseUsers {
+  return {
+    id: id,
+    realFamilyWith: realFamilyWith,
+    realMaidWith: realMaidWith,
+    realWithAmt: realWithAmt,
+    realDiscountAmt: realDiscountAmt,
+    realSelfPay: realSelfPay,
+    receivePay: receivePay,
+    signPic: signPic,
+    remark: remark,
+    useDiscount: useDiscount,
+  };
+}
+
+/**
+ * [GET /api/OrderPayOfCaseUsers/GetDetail]
+ *
+ * get Case payment detail by orderNo from service
+ */
+export function getOrderPayOfCaseUsers({
+  orderId,
+  token,
+}: CaseOrderNo & Token): Promise<OrderPayOfCaseUsers | undefined> {
+  return get<GetOrderPayOfCaseUsersResponse>(
+    KHH_API("OrderPayOfCaseUsers/GetDetail", { orderId }),
+    {
+      "X-Token": token,
+    }
+  ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
 }
 
 interface CaseOrderAmtResponse {
@@ -204,11 +455,15 @@ function toCaseOrderAmt({
  *
  * get Case Order Amount by orderNo from service
  */
-export function getCaseOrderAmt(
-  orderNo: string
-): Promise<CaseOrderAmt | undefined> {
+export function getCaseOrderAmt({
+  orderId,
+  token,
+}: CaseOrderNo & Token): Promise<CaseOrderAmt | undefined> {
   return get<GetCaseOrderAmtResponse>(
-    KHH_API("/api/OrderOfCaseUsers/GetCaseOrderAmt", { orderNo })
+    KHH_API("OrderOfCaseUsers/GetCaseOrderAmt", { orderId }),
+    {
+      "X-Token": token,
+    }
   ).then(pipe(prop("result"), toCaseOrderAmt));
 }
 
@@ -244,9 +499,9 @@ function toGeoCode({
  * get GeoCode by addr from service
  */
 export function getGeoCode(address: string): Promise<GeoCode | undefined> {
-  return get<GetGeoCodeResponse>(
-    KHH_API("/api/Maps/Geocode", { address })
-  ).then(pipe(prop("result"), toGeoCode));
+  return get<GetGeoCodeResponse>(KHH_API("Maps/Geocode", { address })).then(
+    pipe(prop("result"), toGeoCode)
+  );
 }
 
 interface RouteResponse {
@@ -316,7 +571,7 @@ function toRoute({
  * get Route by from - to addr from service
  */
 export function getRoute(payload: GetRouteRequest): Promise<Route | undefined> {
-  return post<GetRouteResponse>(KHH_API("/api/Maps/Route").url, payload).then(
+  return post<GetRouteResponse>(KHH_API("Maps/Route").url, payload).then(
     pipe(prop("result"), toRoute)
   );
 }
@@ -336,7 +591,7 @@ export function cancelOrder(
   payload: CancelOrderRequest
 ): Promise<BaseResponse | undefined> {
   return post<BaseResponse>(
-    KHH_API("/api/OrderOfCaseUsers/CancelOrder").url,
+    KHH_API("OrderOfCaseUsers/CancelOrder"),
     payload
   ).then(toCancelOrder);
 }

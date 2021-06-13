@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 type InfoSetProps = {
   title: string;
-  content: string;
+  content: string | number;
   titleSize?: "lg-sm" | "xs" | "sm";
   titleClass?: string;
   contentClass?: string;
