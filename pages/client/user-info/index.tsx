@@ -97,12 +97,20 @@ export default function UserInfo({
       </div>
 
       {modal === "password" && (
-        <PasswordModal onClose={close} username={username} token={token} />
+        <PasswordModal
+          onClose={close}
+          username={username}
+          token={token as string}
+        />
       )}
       {modal === "balance" && <BalanceModal data={discount} onClose={close} />}
 
       {modal === "phone" && (
-        <PhoneModal onClose={close} username={username} token={token} />
+        <PhoneModal
+          onClose={close}
+          username={username}
+          token={token as string}
+        />
       )}
     </Layout.Normal>
   );

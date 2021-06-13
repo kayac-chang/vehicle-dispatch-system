@@ -74,7 +74,10 @@ export default function RecordDetailPage({
     <Layout.Normal title={content.title} prev="/client/record">
       <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
         {/* TODO: status取回為array, 取得最新status的規則? */}
-        <BasicTitle detail={detail} status={status[0].status} />
+        <BasicTitle
+          detail={detail}
+          status={status ? status[0].status : undefined}
+        />
 
         <BasicInfo detail={detail} />
 
