@@ -1,38 +1,43 @@
 import clsx from "clsx";
 
-export function JourneyTable() {
-  const heads = [
-    {
-      label: "行程",
-      key: "type",
-      className: "text-blue-light",
-    },
-    {
-      label: "總額",
-      key: "total",
-    },
-    {
-      label: "補助",
-      key: "subsidy",
-    },
-    {
-      label: "自負",
-      key: "self",
-    },
-    {
-      label: "陪同",
-      key: "accompany",
-    },
-    {
-      label: "個案負擔",
-      key: "speical",
-      className: "text-red-light",
-    },
-  ];
+const heads = [
+  {
+    label: "行程",
+    key: "type",
+    className: "text-blue-light",
+  },
+  {
+    label: "總額",
+    key: "total",
+  },
+  {
+    label: "補助",
+    key: "subsidy",
+  },
+  {
+    label: "自負",
+    key: "self",
+  },
+  {
+    label: "陪同",
+    key: "accompany",
+  },
+  {
+    label: "個案負擔",
+    key: "speical",
+    className: "text-red-light",
+  },
+];
 
+const content = {
+  from: "去程",
+  to: "回程",
+};
+
+export function JourneyTable() {
   const rows: Record<string, string>[] = [
     {
-      type: "去程",
+      type: content.from,
       total: "$1000",
       subsidy: "$1000",
       self: "$1000",
@@ -40,7 +45,7 @@ export function JourneyTable() {
       speical: "$1000",
     },
     {
-      type: "回程",
+      type: content.to,
       total: "$1000",
       subsidy: "$1000",
       self: "$1000",

@@ -36,23 +36,32 @@ function CarItem({ label, order }: CarItemProps) {
   );
 }
 
+const content = {
+  title: "車行選擇",
+  describe: {
+    main: "優先搭乘車行排序",
+    sub: "(請依序點擊完成排序)",
+  },
+  reorder: "重新排序",
+};
+
 export function CarSelection() {
   return (
     <Form.FieldSet
-      label="車行選擇"
+      label={content.title}
       labelClass="w-full border-b-2 border-black border-opacity-50"
     >
       <div className="flex justify-between items-center lg:justify-start space-x-4 py-2">
         <p className="text-sm space-x-1">
-          <span>優先搭乘車行排序</span>
-          <span className="text-red-light">(請依序點擊完成排序)</span>
+          <span>{content.describe.main}</span>
+          <span className="text-red-light">{content.describe.sub}</span>
         </p>
 
         <Button.Base
           type="button"
           className="bg-gold-darker text-white text-sm px-2 py-1 rounded"
         >
-          重新排序
+          {content.reorder}
         </Button.Base>
       </div>
 
