@@ -8,10 +8,15 @@ import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
 import { getUserProfile } from "apis";
-
-const user = {
-  name: "王小明",
-};
+import {
+  addDays,
+  addMinutes,
+  endOfDay,
+  format,
+  isSameDay,
+  parse,
+  roundToNearestMinutes,
+} from "date-fns";
 
 const content = {
   title: "預約訂車",
@@ -75,9 +80,15 @@ export async function getServerSideProps({ req }: Context) {
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function News({ username }: Props) {
-  const { control } = useForm<Request>();
+  const { control, watch } = useForm<Request>();
 
   const [expanded, setExpanded] = useState("car-selection");
+
+  const minDay = addDays(new Date(), 5);
+  const isMinDay = isSameDay(
+    parse(watch("date"), "yyyy-MM-dd", new Date()),
+    minDay
+  );
 
   return (
     <Layout.Normal title={content.title}>
@@ -114,6 +125,7 @@ export default function News({ username }: Props) {
                 control={control}
                 label={content.form.date}
                 className="flex-1"
+                min={minDay}
               />
 
               <Form.Input
@@ -122,6 +134,14 @@ export default function News({ username }: Props) {
                 control={control}
                 label={content.form.time}
                 className="flex-1"
+                min={
+                  isMinDay
+                    ? roundToNearestMinutes(addMinutes(new Date(), 15), {
+                        nearestTo: 15,
+                      })
+                    : undefined
+                }
+                max={isMinDay ? endOfDay(new Date()) : undefined}
               />
 
               <Form.Input
