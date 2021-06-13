@@ -1,9 +1,8 @@
 import { Button, Form, Icon } from "components/atoms";
 import { Modal } from "components/molecules";
-import { useEffect, useReducer, useState } from "react";
+import { useReducer } from "react";
 import { Control, useForm } from "react-hook-form";
-import { wait } from "functions/async";
-import { updateUserPhone } from "api/user";
+import { updateUserPhone } from "api";
 import Rule from "functions/regexp";
 
 const content = {
@@ -11,17 +10,7 @@ const content = {
 
   init: {
     phone: "請輸入手機號碼",
-    // submit: "發送驗證碼",
     submit: "修改",
-  },
-
-  send: {
-    note: "已發送簡訊驗證碼到您的手機",
-    phone: "請輸入手機號碼",
-    captcha: "請輸入驗證碼",
-    sending: "重送驗證碼(300秒)",
-    resend: "重送驗證碼",
-    submit: "提交驗證碼",
   },
 
   success: {
@@ -37,27 +26,11 @@ const content = {
   cancel: "取消",
 };
 
-type Action =
-  | { type: "send" }
-  | { type: "stop" }
-  | { type: "resend" }
-  | { type: "submit" };
+type Action = { type: "submit" };
 type State = {
-  type: "init" | "sending" | "stop-send" | "success";
+  type: "init" | "success";
 };
 function reducer(state: State, action: Action): State {
-  if (action.type === "send") {
-    return { ...state, type: "sending" };
-  }
-
-  if (action.type === "stop") {
-    return { ...state, type: "stop-send" };
-  }
-
-  if (action.type === "resend") {
-    return { ...state, type: "sending" };
-  }
-
   if (action.type === "submit") {
     return { ...state, type: "success" };
   }
@@ -85,68 +58,6 @@ function Init({ control }: InitProps) {
   );
 }
 
-type SendingProps = {
-  control: Control<Response>;
-};
-function Sending({ control }: SendingProps) {
-  return (
-    <>
-      <p className="text-gold-darker font-semibold">{content.send.note}</p>
-
-      <Form.Input
-        type="text"
-        name="phone"
-        control={control}
-        label={content.send.phone}
-      />
-
-      <Form.Input
-        type="text"
-        name="captcha"
-        control={control}
-        label={content.send.captcha}
-      />
-
-      <Button.Outline
-        type="button"
-        className="px-4 py-1 bg-gray-extralight pointer-events-none"
-      >
-        {content.send.sending}
-      </Button.Outline>
-    </>
-  );
-}
-
-type StopSendProps = {
-  control: Control<Response>;
-  onClick: () => void;
-};
-function StopSend({ control, onClick }: StopSendProps) {
-  return (
-    <>
-      <p className="text-gold-darker font-semibold">{content.send.note}</p>
-
-      <Form.Input
-        type="text"
-        name="phone"
-        control={control}
-        label={content.send.phone}
-      />
-
-      <Form.Input
-        type="text"
-        name="captcha"
-        control={control}
-        label={content.send.captcha}
-      />
-
-      <Button.Flat type="button" className="px-4 py-1" onClick={onClick}>
-        {content.send.resend}
-      </Button.Flat>
-    </>
-  );
-}
-
 function Success() {
   return (
     <p className="flex items-center space-x-2">
@@ -170,48 +81,24 @@ export function PhoneModal({ onClose, username, token }: Props) {
 
   const [state, dispatch] = useReducer(reducer, { type: "init" });
 
-  const [alert, setAlert] = useState("");
-
   function onSubmit(data: Response) {
-    setAlert("");
-
     if (!username || !token) return;
 
     if (state.type === "init") {
-      if (!RegExp(/^09\d{8}$/).test(data.phone)) {
-        setAlert(content.alert.illegal);
+      if (data.phone === "" || !Rule.Phone.test(data.phone)) {
         setError("phone", { type: "validate" });
         return;
       }
 
-      updateUserPhone({ id: username, phone: data.phone, token }).then((e) => {
-        if (e !== true) setAlert(content.alert.failed);
-
-        return onClose();
-      });
-      // return dispatch({ type: "send" });
+      updateUserPhone({ id: username, phone: data.phone, token })
+        .then(() => dispatch({ type: "submit" }))
+        .catch(() => setError("phone", { type: "validate" }));
     }
 
     if (state.type === "success") {
       return onClose();
     }
-
-    // return dispatch({ type: "submit" });
   }
-
-  useEffect(() => {
-    if (state.type !== "sending") {
-      return;
-    }
-
-    const time = 30 * 1000;
-
-    const { cancel, finish } = wait(time);
-
-    finish.then(() => dispatch({ type: "stop" }));
-
-    return () => cancel();
-  }, [state]);
 
   return (
     <Modal.Dialog
@@ -236,8 +123,7 @@ export function PhoneModal({ onClose, username, token }: Props) {
               onClick={handleSubmit(onSubmit)}
             >
               {state.type === "init" && content.init.submit}
-              {(state.type === "sending" || state.type === "stop-send") &&
-                content.send.submit}
+
               {state.type === "success" && content.success.submit}
             </Button.Flat>
           </div>
@@ -248,17 +134,113 @@ export function PhoneModal({ onClose, username, token }: Props) {
     >
       <form className="space-y-4 pb-4 text-sm">
         {state.type === "init" && <Init control={control} />}
-        {/* {state.type === "sending" && <Sending control={control} />}
-        {state.type === "stop-send" && (
-          <StopSend
-            control={control}
-            onClick={() => dispatch({ type: "resend" })}
-          />
-        )} */}
-        {state.type === "success" && <Success />}
 
-        <span className="text-xs text-red-bright px-2">{alert}</span>
+        {state.type === "success" && <Success />}
       </form>
     </Modal.Dialog>
   );
 }
+
+// type Action =
+//   | { type: "send" }
+//   | { type: "stop" }
+//   | { type: "resend" }
+//   | { type: "submit" };
+// type State = {
+//   type: "init" | "sending" | "stop-send" | "success";
+// };
+// function reducer(state: State, action: Action): State {
+//   if (action.type === "send") {
+//     return { ...state, type: "sending" };
+//   }
+
+//   if (action.type === "stop") {
+//     return { ...state, type: "stop-send" };
+//   }
+
+//   if (action.type === "resend") {
+//     return { ...state, type: "sending" };
+//   }
+
+//   if (action.type === "submit") {
+//     return { ...state, type: "success" };
+//   }
+
+//   return state;
+// }
+
+// type SendingProps = {
+//   control: Control<Response>;
+// };
+// function Sending({ control }: SendingProps) {
+//   return (
+//     <>
+//       <p className="text-gold-darker font-semibold">{content.send.note}</p>
+
+//       <Form.Input
+//         type="text"
+//         name="phone"
+//         control={control}
+//         label={content.send.phone}
+//       />
+
+//       <Form.Input
+//         type="text"
+//         name="captcha"
+//         control={control}
+//         label={content.send.captcha}
+//       />
+
+//       <Button.Outline
+//         type="button"
+//         className="px-4 py-1 bg-gray-extralight pointer-events-none"
+//       >
+//         {content.send.sending}
+//       </Button.Outline>
+//     </>
+//   );
+// }
+
+// type StopSendProps = {
+//   control: Control<Response>;
+//   onClick: () => void;
+// };
+// function StopSend({ control, onClick }: StopSendProps) {
+//   return (
+//     <>
+//       <p className="text-gold-darker font-semibold">{content.send.note}</p>
+
+//       <Form.Input
+//         type="text"
+//         name="phone"
+//         control={control}
+//         label={content.send.phone}
+//       />
+
+//       <Form.Input
+//         type="text"
+//         name="captcha"
+//         control={control}
+//         label={content.send.captcha}
+//       />
+
+//       <Button.Flat type="button" className="px-4 py-1" onClick={onClick}>
+//         {content.send.resend}
+//       </Button.Flat>
+//     </>
+//   );
+// }
+
+// useEffect(() => {
+//   if (state.type !== "sending") {
+//     return;
+//   }
+
+//   const time = 30 * 1000;
+
+//   const { cancel, finish } = wait(time);
+
+//   finish.then(() => dispatch({ type: "stop" }));
+
+//   return () => cancel();
+// }, [state]);

@@ -1,7 +1,6 @@
 import { get, KHH_API, post } from "./base";
 import { pipe, prop } from "ramda";
-import { ChangePasswordRequest, UnPermissionUserType, User } from "types/user";
-import { mockUsersGet } from "./mockData";
+import { ChangePasswordRequest, UnPermissionUserType, User } from "types";
 
 interface BaseResponse {
   code: 200;

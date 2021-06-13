@@ -1,6 +1,6 @@
 import { Modal } from "components/molecules";
 import { Button } from "components/atoms";
-import { DiscountData } from "types/user-info";
+import { DiscountData } from "types";
 
 type CurrencyFieldProps = {
   title: string;
@@ -26,7 +26,7 @@ const content = {
 
 type Props = { data: DiscountData | undefined; onClose: () => void };
 export function BalanceModal({ data, onClose }: Props) {
-  if (!data) <></>;
+  if (!data) return <></>;
   return (
     <Modal.Dialog
       name="password"

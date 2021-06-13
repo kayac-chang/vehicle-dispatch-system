@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import { User } from "types/user";
-import { CaseUserInfo } from "types/user-info";
+import { User } from "types";
+import { CaseUserInfo } from "types";
 import { Button } from "components/atoms";
 import { InfoField } from "components/userInfo";
 
@@ -26,7 +26,7 @@ const content = {
 };
 
 type PersonalInfoProps = {
-  data: (User & CaseUserInfo) | undefined;
+  data: User & CaseUserInfo;
   onPasswordClick: () => void;
   onChangePhoneClick: () => void;
 };
@@ -35,7 +35,6 @@ export function PersonalInfo({
   onPasswordClick,
   onChangePhoneClick,
 }: PersonalInfoProps) {
-  if (!data) return <></>;
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-6">
       <div className="flex justify-between items-center">
@@ -77,10 +76,10 @@ export function PersonalInfo({
           title={content.personal.gender.title}
           content={
             {
-              0: content.personal.gender.private,
-              1: content.personal.gender.man,
-              2: content.personal.gender.woman,
-            }[data.sex] || content.personal.gender.none
+              // 0: content.personal.gender.private,
+              male: content.personal.gender.man,
+              female: content.personal.gender.woman,
+            }[data.gender] || content.personal.gender.none
           }
         />
 

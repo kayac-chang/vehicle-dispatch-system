@@ -1,5 +1,5 @@
-import { User } from "types/user";
-import { CaseUserInfo } from "types/user-info";
+import { User } from "types";
+import { CaseUserInfo } from "types";
 import { Button } from "components/atoms";
 import { InfoField } from "components/userInfo";
 
@@ -20,11 +20,10 @@ const content = {
 };
 
 type CaseSectionProps = {
-  data: (User & CaseUserInfo) | undefined;
+  data: User & CaseUserInfo;
   onBalanceClick: () => void;
 };
 export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
-  if (!data) return <></>;
   return (
     <article className="p-6 bg-white rounded-lg shadow-lg mb-20">
       <div className="flex justify-between items-center">

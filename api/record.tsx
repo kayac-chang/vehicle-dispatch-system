@@ -12,13 +12,7 @@ import {
   OrderPayOfCaseUsers,
   Despatch,
   StatueLog,
-} from "types/record";
-import {
-  mockCaseGetDetail,
-  mockDespatches,
-  mockOrderPayOfCaseUsersDetail,
-  mockStatusLog,
-} from "./mockData";
+} from "types";
 
 const formatOnlyDate = (value: string) => {
   if (!value) return "";
@@ -283,14 +277,7 @@ export function getCaseDetail({
     {
       "X-Token": token,
     }
-  ).then((res) => {
-    console.log(res);
-    // TODO: 刪掉mock，實際打回500
-    // if (!res) return toCaseDetail(mockCaseGetDetail.result);
-    return toCaseDetail(res.result);
-  });
-  // TODO: 刪掉mock
-  // .catch(() => toCaseDetail(mockCaseGetDetail.result))
+  ).then(pipe(prop("result"), toCaseDetail));
 }
 
 interface GetStatueLogResponse extends BaseResponse {
@@ -315,12 +302,7 @@ export function getStatusLog({
     {
       "X-Token": token,
     }
-  ).then((res) => {
-    // TODO: 刪掉mock, 實打回[]
-    if (!res || res.result.length === 0)
-      return toStatueLog(mockStatusLog.result);
-    return toStatueLog(res.result);
-  });
+  ).then(pipe(prop("result"), toStatueLog));
 }
 
 interface DespatchResponse {
@@ -360,8 +342,6 @@ export function getDespatchByOrderId({
       "X-Token": token,
     }
   ).then(pipe(prop("result"), toDespatch));
-  // TODO: 刪掉mock
-  // .catch(() => toDespatch(mockDespatches.result))
 }
 
 interface OrderPayOfCaseUsersResponse {
@@ -421,14 +401,7 @@ export function getOrderPayOfCaseUsers({
     {
       "X-Token": token,
     }
-  ).then((res) => {
-    // TODO: 刪掉mock
-    if (!res.result)
-      return toOrderPayOfCaseUsers(mockOrderPayOfCaseUsersDetail.result);
-    return toOrderPayOfCaseUsers(res.result);
-  });
-  // .catch(() => toOrderPayOfCaseUsers(mockOrderPayOfCaseUsersDetail.result));
-  // ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
+  ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
 }
 
 interface CaseOrderAmtResponse {

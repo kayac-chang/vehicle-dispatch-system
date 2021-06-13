@@ -1,7 +1,7 @@
 import { get, KHH_API } from "./base";
 import { parse, format } from "date-fns";
 import { pipe, prop } from "ramda";
-import { CaseUserInfo, DiscountData } from "types/user-info";
+import { CaseUserInfo, DiscountData } from "types";
 
 const formatOnlyDate = (value: string) => {
   if (!value) return "";

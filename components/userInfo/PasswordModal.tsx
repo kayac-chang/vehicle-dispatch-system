@@ -42,9 +42,9 @@ export function PasswordModal({ onClose, username, token }: Props) {
   const [alert, setAlert] = useState<string>("");
 
   const router = useRouter();
+
   function onSubmit(data: Request) {
     setAlert("");
-
     if (!username || !token || !data.old || !data.new || !data.repeat) return;
 
     if (data.new !== data.repeat) {
@@ -57,21 +57,15 @@ export function PasswordModal({ onClose, username, token }: Props) {
       username,
       password: data.new,
       token,
-    })
-      .then((e) => {
-        console.log(e);
-        if (e === true) {
-          logout({ token });
-          router.push("/client/login");
-          return;
-        }
+    }).then((e) => {
+      if (e === true) {
+        logout({ token });
+        router.push("/client/login");
+        return;
+      }
 
-        setAlert(content.alert.failed);
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("repeat", { type: "validate" });
-      });
+      setAlert(content.alert.failed);
+    });
   }
 
   return (

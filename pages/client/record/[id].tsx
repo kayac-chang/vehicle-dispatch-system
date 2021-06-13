@@ -13,9 +13,9 @@ import {
   getDespatchByOrderId,
   getOrderPayOfCaseUsers,
   getStatusLog,
-} from "api/record";
+} from "api";
 
-const history = [
+const mockHistory = [
   { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
   { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
 ];
@@ -27,7 +27,7 @@ const content = {
 type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ params, req }: Context) {
   const session = await getSession({ req });
-  // const session = { accessToken: "9cf4151c" };
+
   if (!session || !params) {
     return {
       redirect: {
@@ -37,6 +37,7 @@ export async function getServerSideProps({ params, req }: Context) {
       props: {},
     };
   }
+
   return {
     props: {
       detail: await getCaseDetail({
@@ -55,7 +56,8 @@ export async function getServerSideProps({ params, req }: Context) {
         orderId: params.id,
         token: session.accessToken,
       }),
-      // history: undefined,
+      // TODO: History尚未接
+      history: mockHistory,
     },
   };
 }
@@ -66,16 +68,13 @@ export default function RecordDetailPage({
   status,
   despatches,
   payment,
-}: // history,
-Props) {
+  history,
+}: Props) {
   return (
     <Layout.Normal title={content.title} prev="/client/record">
       <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
         {/* TODO: status取回為array, 取得最新status的規則? */}
-        <BasicTitle
-          detail={detail}
-          status={status[0].status || detail?.status}
-        />
+        <BasicTitle detail={detail} status={status[0].status} />
 
         <BasicInfo detail={detail} />
 

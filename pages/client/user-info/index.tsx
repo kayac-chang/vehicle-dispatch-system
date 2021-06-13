@@ -10,8 +10,9 @@ import {
   PersonalInfo,
 } from "components/userInfo";
 import { getUsername } from "api";
-import { getUnPermissionUserType, getUser } from "api/user";
-import { getCaseUsers, getDiscountData } from "api/user-info";
+import { getUnPermissionUserType, getUser } from "api";
+import { getCaseUsers, getDiscountData } from "api";
+import { CaseUserInfo, User } from "types";
 
 const content = {
   title: "用戶資料",
@@ -51,7 +52,7 @@ export async function getServerSideProps({ req }: Context) {
   });
 
   const discount = await getDiscountData({
-    caseuserId: caseUser.caseUserId,
+    caseuserId: caseUser ? caseUser.caseUserId : "",
     token: session.accessToken,
   });
 
@@ -84,13 +85,13 @@ export default function UserInfo({
     <Layout.Normal title={content.title}>
       <div className="-mx-6 sm:mx-auto">
         <PersonalInfo
-          data={userInfo}
+          data={userInfo as User & CaseUserInfo}
           onPasswordClick={() => setModal("password")}
           onChangePhoneClick={() => setModal("phone")}
         />
 
         <CaseSection
-          data={userInfo}
+          data={userInfo as User & CaseUserInfo}
           onBalanceClick={() => setModal("balance")}
         />
       </div>
@@ -99,6 +100,7 @@ export default function UserInfo({
         <PasswordModal onClose={close} username={username} token={token} />
       )}
       {modal === "balance" && <BalanceModal data={discount} onClose={close} />}
+
       {modal === "phone" && (
         <PhoneModal onClose={close} username={username} token={token} />
       )}
