@@ -12,7 +12,7 @@ const content = {
 type Props = Path & {
   onDeleteClick?: () => void;
 };
-export function Card({ name, from, to, onDeleteClick }: Props) {
+export function Card({ id, name, from, to, onDeleteClick }: Props) {
   return (
     <div className="font-normal text-sm leading-6 text-gray-dark">
       <div className="flex items-center px-4 py-2">
@@ -43,7 +43,7 @@ export function Card({ name, from, to, onDeleteClick }: Props) {
           type="anchor"
           className="text-blue-light"
           icon={<Icon.Edit />}
-          href="/client/fast-call/edit"
+          href={`/client/fast-call/edit/${id}`}
         >
           {content.edit}
         </Button.Icon>
