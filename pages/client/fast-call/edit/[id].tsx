@@ -4,7 +4,7 @@ import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getFavorite, getUserProfile, updateFavorite } from "api";
+import { getFavorite, getUserProfile, updateFavorite } from "apis";
 import { getSession } from "next-auth/client";
 
 const content = {

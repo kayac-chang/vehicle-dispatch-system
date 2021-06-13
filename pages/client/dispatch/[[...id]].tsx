@@ -7,7 +7,7 @@ import { CarSelection, RouteMap, Journey } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getUserProfile } from "api";
+import { getUserProfile } from "apis";
 
 const user = {
   name: "王小明",

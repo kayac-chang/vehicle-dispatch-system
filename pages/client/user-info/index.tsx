@@ -9,9 +9,9 @@ import {
   CaseSection,
   PersonalInfo,
 } from "components/userInfo";
-import { getUsername } from "api";
-import { getUnPermissionUserType, getUser } from "api";
-import { getCaseUsers, getDiscountData } from "api";
+import { getUsername } from "apis";
+import { getUnPermissionUserType, getUser } from "apis";
+import { getCaseUsers, getDiscountData } from "apis";
 import { CaseUserInfo, User } from "types";
 
 const content = {
@@ -76,8 +76,9 @@ export default function UserInfo({
 }: Props) {
   if (!userInfo) return <></>;
 
-  const [modal, setModal] =
-    useState<"password" | "balance" | "phone" | undefined>();
+  const [modal, setModal] = useState<
+    "password" | "balance" | "phone" | undefined
+  >();
 
   const close = () => setModal(undefined);
 

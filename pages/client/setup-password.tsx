@@ -2,7 +2,7 @@ import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Rule from "functions/regexp";
-import { changePassword, getUsername, logout } from "api";
+import { changePassword, getUsername, logout } from "apis";
 import { getSession } from "next-auth/client";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/dist/client/router";

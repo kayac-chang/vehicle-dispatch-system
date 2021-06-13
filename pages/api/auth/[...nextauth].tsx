@@ -1,4 +1,4 @@
-import { login } from "api/auth";
+import { login } from "apis/auth";
 import NextAuth from "next-auth";
 import { JWT } from "next-auth/jwt";
 import Providers from "next-auth/providers";

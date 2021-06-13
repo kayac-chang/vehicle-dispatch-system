@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
-import { changePassword, logout } from "api";
+import { changePassword, logout } from "apis";
 import { Button, Form } from "components/atoms";
 import { Modal } from "components/molecules";
 import Rule from "functions/regexp";
