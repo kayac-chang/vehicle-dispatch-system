@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Path } from "types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { deleteFavorite, getAllFavorites } from "api";
+import { deleteFavorite, getAllFavorites } from "apis";
 import { Query } from "functions/query";
 import { useQuery } from "react-query";
 

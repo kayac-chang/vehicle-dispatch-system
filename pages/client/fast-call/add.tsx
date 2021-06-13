@@ -4,9 +4,9 @@ import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getUserProfile } from "api";
+import { getUserProfile } from "apis";
 import { useRouter } from "next/dist/client/router";
-import { addFavorite } from "api/favorite";
+import { addFavorite } from "apis/favorite";
 
 const content = {
   title: "新增常用路線",

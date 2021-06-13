@@ -2,7 +2,7 @@ import { Button, Form, Icon } from "components/atoms";
 import { Modal } from "components/molecules";
 import { useReducer } from "react";
 import { Control, useForm } from "react-hook-form";
-import { updateUserPhone } from "api";
+import { updateUserPhone } from "apis";
 import Rule from "functions/regexp";
 
 const content = {

@@ -1,7 +1,7 @@
 import { Icon, Form, Button } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
-import { getVerification, checkVerification } from "api";
+import { getVerification, checkVerification } from "apis";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
 
@@ -41,8 +41,10 @@ export default function ForgotPassword() {
 
   const router = useRouter();
 
-  const [waitResentVerification, setWaitResentVerification] =
-    useState<NodeJS.Timeout | null>(null);
+  const [
+    waitResentVerification,
+    setWaitResentVerification,
+  ] = useState<NodeJS.Timeout | null>(null);
   const [countdown, setCountdown] = useState(countdownTime);
   const [userPhone, setUserPhone] = useState("");
 

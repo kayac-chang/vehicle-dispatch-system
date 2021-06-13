@@ -13,7 +13,7 @@ import {
   getDespatchByOrderId,
   getOrderPayOfCaseUsers,
   getStatusLog,
-} from "api";
+} from "apis";
 
 const mockHistory = [
   { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
