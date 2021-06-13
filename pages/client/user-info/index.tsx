@@ -22,9 +22,7 @@ type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ req }: Context) {
   const session = await getSession({ req });
 
-  const username = await getUsername({ token: session.accessToken });
-
-  if (!session || !username) {
+  if (!session) {
     return {
       redirect: {
         destination: "/client/login",
@@ -34,6 +32,8 @@ export async function getServerSideProps({ req }: Context) {
       props: {},
     };
   }
+
+  const username = await getUsername({ token: session.accessToken });
 
   const caseUserData = await getUnPermissionUserType({
     userId: username,
