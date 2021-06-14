@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
 import { Control } from "react-hook-form";
-import { JourneyTable } from "components/dispatch";
+import { JourneyTable, Request } from "components/dispatch";
 
 const content = {
   title: "行程",
@@ -64,25 +64,6 @@ const content = {
   },
 };
 
-interface Request {
-  date: string;
-  time: string;
-  case: "options" | "default";
-  origin: string;
-  "origin-note-type": string;
-  "origin-note": string;
-  destination: string;
-  "destination-note-type": string;
-  "destination-note": string;
-  share: boolean;
-  "is-round-trip": boolean;
-  "round-trip-time": string;
-  "car-type": string;
-  "wheelchair-type": string;
-  "accompanying-number": string;
-  "sms-code": string;
-}
-
 type JourneyProps = {
   control: Control<Request>;
 };
@@ -130,14 +111,14 @@ export function Journey({ control }: JourneyProps) {
           >
             <Form.Input
               type="text"
-              name="origin"
+              name="from"
               label={content.form.from.address}
               control={control}
             />
 
             <Form.Input
               type="select"
-              name="origin-note-type"
+              name="from-note-type"
               label={content.form.from.noteType.label}
               control={control}
               options={content.form.from.noteType.options}
@@ -145,7 +126,7 @@ export function Journey({ control }: JourneyProps) {
 
             <Form.Input
               type="text"
-              name="origin-note"
+              name="from-note"
               label={content.form.from.note}
               control={control}
             />
@@ -176,14 +157,14 @@ export function Journey({ control }: JourneyProps) {
           >
             <Form.Input
               type="text"
-              name="destination"
+              name="to"
               label={content.form.to.address}
               control={control}
             />
 
             <Form.Input
               type="select"
-              name="destination-note-type"
+              name="to-note-type"
               label={content.form.to.noteType.label}
               control={control}
               options={content.form.to.noteType.options}
@@ -191,7 +172,7 @@ export function Journey({ control }: JourneyProps) {
 
             <Form.Input
               type="text"
-              name="destination-note"
+              name="to-note"
               label={content.form.to.note}
               control={control}
             />

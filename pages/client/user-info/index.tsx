@@ -11,7 +11,7 @@ import {
 } from "components/userInfo";
 import { getUsername } from "apis";
 import { getUnPermissionUserType, getUser } from "apis";
-import { getCaseUsers, getDiscountData } from "apis";
+import { getCaseUsers, getDiscount } from "apis";
 import { CaseUserInfo, User } from "types";
 
 const content = {
@@ -51,7 +51,7 @@ export async function getServerSideProps({ req }: Context) {
     token: session.accessToken,
   });
 
-  const discount = await getDiscountData({
+  const discount = await getDiscount({
     caseuserId: caseUser ? caseUser.caseUserId : "",
     token: session.accessToken,
   });
@@ -104,7 +104,9 @@ export default function UserInfo({
           token={token as string}
         />
       )}
-      {modal === "balance" && <BalanceModal data={discount} onClose={close} />}
+      {modal === "balance" && discount && (
+        <BalanceModal data={discount} onClose={close} />
+      )}
 
       {modal === "phone" && (
         <PhoneModal

@@ -1,4 +1,4 @@
-export interface CaseUserInfo{
+export interface CaseUserInfo {
   id: string;
   userId: string;
   caseUserId: string;
@@ -11,29 +11,22 @@ export interface CaseUserInfo{
   otherPhone: string;
   birthday: string;
   disabilityLevel: number;
-  county:string;
+  county: string;
   district: string;
   addr: string;
-  lat:number;
+  lat: number;
   lon: number;
   urgentName: string;
   urgentRelationship: string;
-  urgentPhone:string;
+  urgentPhone: string;
   urgentTel: string;
   startDate: string;
-  expiredDate:string;
+  expiredDate: string;
   remark: string;
   caseUserStatus: number;
-  statusReason: string|null;
+  statusReason: string | null;
   reviewDate: string;
   wealTypeId: string;
   wealTypeName: string;
   isEffectNow: boolean;
-}
-
-export interface DiscountData {
-  caseUserId: string;
-  useDiscount: number;
-  lastDiscount: number;
-  totalDiscount: number;
 }
