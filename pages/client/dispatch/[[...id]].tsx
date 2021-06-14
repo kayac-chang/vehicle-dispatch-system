@@ -3,7 +3,7 @@ import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
-import { CarSelection, RouteMap, Journey } from "components/dispatch";
+import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
@@ -36,25 +36,6 @@ const content = {
   },
 };
 
-interface Request {
-  date: string;
-  time: string;
-  case: "options" | "default";
-  origin: string;
-  "origin-note-type": string;
-  "origin-note": string;
-  destination: string;
-  "destination-note-type": string;
-  "destination-note": string;
-  share: boolean;
-  "is-round-trip": boolean;
-  "round-trip-time": string;
-  "car-type": string;
-  "wheelchair-type": string;
-  "accompanying-number": string;
-  "sms-code": string;
-}
-
 type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ req }: Context) {
   const session = await getSession({ req });
@@ -68,13 +49,12 @@ export async function getServerSideProps({ req }: Context) {
       props: {},
     };
   }
-  const token = session.accessToken;
 
+  const token = session.accessToken;
   const [user, organizations] = await Promise.all([
     getUserProfile({ token }),
     getAllOrganizations({ token }),
   ]);
-
   const caseID = await getCaseID({ ...user, token });
   const caseUser = await getCaseUser({ token, caseID });
 
@@ -85,13 +65,18 @@ export async function getServerSideProps({ req }: Context) {
       organizations: organizations.filter(({ id }) =>
         caseUser.organizationIDs.includes(id)
       ),
+      address: caseUser.address,
     },
   };
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function News({ username, organizations = [] }: Props) {
-  const { control, watch } = useForm<Request>();
+export default function News({ username, organizations = [], address }: Props) {
+  const { control, watch } = useForm<Request>({
+    defaultValues: {
+      from: address && `${address.county}${address.district}${address.street}`,
+    },
+  });
 
   const [expanded, setExpanded] = useState("car-selection");
 

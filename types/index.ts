@@ -29,3 +29,10 @@ export interface Organization {
   id: string;
   name: string;
 }
+
+export interface Discount {
+  caseID: string;
+  used: number;
+  remain: number;
+  total: number;
+}

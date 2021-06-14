@@ -1,7 +1,7 @@
 import { get, KHH_API, Token, BaseResponse } from "./base";
 import { parse, format } from "date-fns";
 import { pipe, prop } from "ramda";
-import { CaseUserInfo, DiscountData } from "types";
+import { CaseUserInfo } from "types";
 
 const formatOnlyDate = (value: string) => {
   if (!value) return "";
@@ -130,50 +130,4 @@ export function getCaseUsers({
   return get<GetCaseUserResponse>(KHH_API("CaseUsers/Get", { id }), {
     "X-Token": token,
   }).then(pipe(prop("result"), toCaseUser));
-}
-
-interface DiscountDataResponse {
-  caseUserId: string;
-  useDiscount: number;
-  lastDiscount: number;
-  totalDiscount: number;
-}
-
-interface GetUserResponse extends BaseResponse {
-  result: DiscountDataResponse;
-}
-
-function toDiscountData({
-  caseUserId,
-  useDiscount,
-  lastDiscount,
-  totalDiscount,
-}: DiscountDataResponse): DiscountData {
-  return {
-    caseUserId: caseUserId,
-    useDiscount: useDiscount,
-    lastDiscount: lastDiscount,
-    totalDiscount: totalDiscount,
-  };
-}
-
-interface GetDiscountDataRequest {
-  caseuserId: string;
-}
-
-/**
- * [GET /api/CaseUserDiscounts/GetDiscountData]
- *
- * get Discount Data by caseuserId from service
- */
-export function getDiscountData({
-  caseuserId,
-  token,
-}: GetDiscountDataRequest & Token): Promise<DiscountData | undefined> {
-  return get<GetUserResponse>(
-    KHH_API("CaseUserDiscounts/GetDiscountData", { caseuserId }),
-    {
-      "X-Token": token,
-    }
-  ).then(pipe(prop("result"), toDiscountData));
 }
