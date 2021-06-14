@@ -1,5 +1,4 @@
 import { User } from "types";
-import { CaseUserInfo } from "types";
 import { Button } from "components/atoms";
 import { InfoField } from "components/userInfo";
 
@@ -20,7 +19,7 @@ const content = {
 };
 
 type CaseSectionProps = {
-  data: User & CaseUserInfo;
+  data: User;
   onBalanceClick: () => void;
 };
 export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
@@ -46,7 +45,7 @@ export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
       <hr className="my-3 border-gold-darker" />
 
       <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3">
-        <InfoField
+        {/* <InfoField
           className="w-full lg:w-1/5"
           title={content.case.caseNo}
           content={data.caseUserNo}
@@ -56,11 +55,11 @@ export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
           className="w-full lg:w-1/2"
           title={content.case.address}
           content={`${data.county}${data.district}${data.addr}`}
-        />
+        /> */}
       </div>
 
       <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
-        <InfoField
+        {/* <InfoField
           title={content.case.urgent.name}
           content={data.urgentName || content.case.urgent.none}
         />
@@ -75,7 +74,7 @@ export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
         <InfoField
           title={content.case.urgent.tel}
           content={data.urgentTel || content.case.urgent.none}
-        />
+        /> */}
       </div>
     </article>
   );
