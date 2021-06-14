@@ -1,5 +1,9 @@
 import { join } from "path";
 
+export interface BaseResponse {
+  code: number;
+}
+
 export type Count<T> = {
   total: number;
   items: T[];

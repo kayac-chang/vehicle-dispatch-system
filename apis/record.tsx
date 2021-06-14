@@ -1,4 +1,4 @@
-import { get, KHH_API, post } from "./base";
+import { get, KHH_API, post, BaseResponse, Token } from "./base";
 import { parse, format } from "date-fns";
 import { map, pipe, prop } from "ramda";
 import {
@@ -19,14 +19,6 @@ const formatOnlyDate = (value: string) => {
   const date = parse(value, "yyyy-MM-dd HH:mm:ss", new Date());
   return format(date, "yyyy-MM-dd");
 };
-
-interface BaseResponse {
-  code: 200;
-}
-
-interface Token {
-  token: string;
-}
 
 interface CaseOrderNo {
   orderId: string;

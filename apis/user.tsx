@@ -1,17 +1,22 @@
-import { get, KHH_API, post } from "./base";
+import { get, KHH_API, post, BaseResponse, Token } from "./base";
 import { pipe, prop } from "ramda";
-import { ChangePasswordRequest, UnPermissionUserType, User } from "types";
-
-interface BaseResponse {
-  code: 200;
-}
-
-interface Token {
-  token: string;
-}
+import { UnPermissionUserType, User } from "types";
 
 interface GetUnPermissionUserTypeResponse extends BaseResponse {
   data: UnPermissionUserType[];
+}
+
+export async function getCaseID({ id, uid, token }: User & Token) {
+  return get<GetUnPermissionUserTypeResponse>(
+    KHH_API("Users/GetUnPermissionUserType", { userId: id, UID: uid }),
+    {
+      "X-Token": token,
+    }
+  )
+    .then(prop("data"))
+    .then((data) => data.filter(({ caseId, isEnable }) => caseId && isEnable))
+    .then((data) => data[0])
+    .then(prop("caseId"));
 }
 
 function toUnPermissionUserType(
@@ -34,9 +39,7 @@ export function getUnPermissionUserType({
   userId,
   UID,
   token,
-}: UnPermissionUserRequest & Token): Promise<
-  UnPermissionUserType[] | undefined
-> {
+}: UnPermissionUserRequest & Token) {
   return get<GetUnPermissionUserTypeResponse>(
     KHH_API("Users/GetUnPermissionUserType", { userId, UID }),
     {
@@ -77,7 +80,7 @@ function toUser({ id, account, name, uid, sex, phone }: UserResponse): User {
     account: account,
     name: name,
     uid: uid,
-    gender: sex == 1 ? "male" : "female",
+    gender: sex === 1 ? "male" : "female",
     phone: phone,
   };
 }
@@ -100,10 +103,10 @@ export function getUser({
   }).then(pipe(prop("result"), toUser));
 }
 
-function toChangePassword({ code }: BaseResponse): BaseResponse {
-  return {
-    code: code,
-  };
+interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 /**
@@ -111,13 +114,11 @@ function toChangePassword({ code }: BaseResponse): BaseResponse {
  *
  * client change password
  */
-export function postChangePassword(
-  payload: ChangePasswordRequest
-): Promise<BaseResponse | undefined> {
+export function postChangePassword(payload: ChangePasswordRequest) {
   return post<GetUserResponse>(
-    KHH_API("Users/ClientChangePassword").url,
+    KHH_API("Users/ClientChangePassword"),
     payload
-  ).then(pipe(toChangePassword));
+  ).then(() => true);
 }
 
 interface UpdateUserPhoneRequest {

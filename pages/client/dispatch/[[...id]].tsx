@@ -7,16 +7,17 @@ import { CarSelection, RouteMap, Journey } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getUserProfile } from "apis";
+import { getCaseID, getUserProfile } from "apis";
 import {
   addDays,
   addMinutes,
   endOfDay,
-  format,
   isSameDay,
   parse,
   roundToNearestMinutes,
 } from "date-fns";
+import { getAllOrganizations } from "apis/organization";
+import { getCaseUser } from "apis/caseuser";
 
 const content = {
   title: "預約訂車",
@@ -67,19 +68,29 @@ export async function getServerSideProps({ req }: Context) {
       props: {},
     };
   }
+  const token = session.accessToken;
 
-  const user = await getUserProfile({ token: session.accessToken });
+  const [user, organizations] = await Promise.all([
+    getUserProfile({ token }),
+    getAllOrganizations({ token }),
+  ]);
+
+  const caseID = await getCaseID({ ...user, token });
+  const caseUser = await getCaseUser({ token, caseID });
 
   return {
     props: {
       username: user.name,
-      token: session.accessToken,
+      token,
+      organizations: organizations.filter(({ id }) =>
+        caseUser.organizationIDs.includes(id)
+      ),
     },
   };
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function News({ username }: Props) {
+export default function News({ username, organizations = [] }: Props) {
   const { control, watch } = useForm<Request>();
 
   const [expanded, setExpanded] = useState("car-selection");
@@ -154,7 +165,7 @@ export default function News({ username }: Props) {
               />
             </div>
 
-            <CarSelection />
+            <CarSelection organizations={organizations} />
 
             <Journey control={control} />
 
