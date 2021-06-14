@@ -7,6 +7,7 @@ export interface Request {
   date: string;
   time: string;
   case: "options" | "default";
+  organizations: string[];
   from: string;
   "from-note-type": string;
   "from-note": string;

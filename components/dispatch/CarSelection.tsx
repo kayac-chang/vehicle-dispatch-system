@@ -1,39 +1,81 @@
 import clsx from "clsx";
 import { Button, Form } from "components/atoms";
 import { Organization } from "types";
+import { Checkbox } from "@material-ui/core";
+import {
+  Control,
+  UseFormWatch,
+  Controller,
+  UseFormSetValue,
+} from "react-hook-form";
+import { Request } from ".";
 
 type CarItemProps = {
   label: string;
-  order?: number;
+  value: string;
+  control: Control<Request>;
+  seleted: string[];
 };
-function CarItem({ label, order }: CarItemProps) {
-  return (
-    <Button.Base
-      type="button"
+function CarItem({ label, value, control, seleted }: CarItemProps) {
+  const order = seleted.indexOf(value);
+
+  const content = (
+    <span
       className={clsx(
-        order ? "bg-black bg-opacity-75 text-white" : "border border-black",
-        "text-sm text-left",
-        "py-2 px-8 w-full",
-        "rounded relative",
-        "flex"
+        "text-sm text-left py-2 px-8",
+        order !== -1 ? "text-white" : "text-black"
       )}
     >
-      <span>{label}</span>
+      {label}
+    </span>
+  );
 
-      {order && (
-        <span
+  return (
+    <Controller
+      name="organizations"
+      control={control}
+      render={({ field: { onChange, name, ref } }) => (
+        <div
           className={clsx(
-            "absolute left-0 top-1/2",
-            "transform -translate-y-1/2 -translate-x-1",
-            "w-6 h-6",
-            "flex justify-center items-center",
-            "bg-yellow-dark text-black text-sm"
+            "rounded-sm border",
+            order !== -1
+              ? "bg-black bg-opacity-75 relative"
+              : "border-black-light"
           )}
         >
-          {order}
-        </span>
+          <Checkbox
+            disableRipple
+            icon={content}
+            checkedIcon={content}
+            inputProps={{ "aria-label": label }}
+            name={name}
+            onChange={(e) =>
+              onChange(
+                e.target.checked
+                  ? [...seleted, e.target.value]
+                  : seleted.filter((org) => org !== e.target.value)
+              )
+            }
+            inputRef={ref}
+            value={value}
+          />
+
+          {order !== -1 && (
+            <span
+              className={clsx(
+                "absolute left-0 top-1/2",
+                "transform -translate-y-1/2 -translate-x-1",
+                "w-6 h-6",
+                "flex justify-center items-center",
+                "bg-yellow-dark text-black text-sm"
+              )}
+            >
+              {order + 1}
+            </span>
+          )}
+        </div>
       )}
-    </Button.Base>
+    />
   );
 }
 
@@ -48,8 +90,18 @@ const content = {
 
 type Props = {
   organizations: Organization[];
+  control: Control<Request>;
+  watch: UseFormWatch<Request>;
+  setValue: UseFormSetValue<Request>;
 };
-export function CarSelection({ organizations }: Props) {
+export function CarSelection({
+  organizations,
+  control,
+  watch,
+  setValue,
+}: Props) {
+  const selected = watch("organizations");
+
   return (
     <Form.FieldSet
       label={content.title}
@@ -64,6 +116,7 @@ export function CarSelection({ organizations }: Props) {
         <Button.Base
           type="button"
           className="bg-gold-darker text-white text-sm px-2 py-1 rounded"
+          onClick={() => setValue("organizations", [])}
         >
           {content.reorder}
         </Button.Base>
@@ -71,7 +124,13 @@ export function CarSelection({ organizations }: Props) {
 
       <div className="flex flex-col lg:flex-row space-y-2 lg:space-y-0 lg:space-x-4">
         {organizations.map(({ id, name }) => (
-          <CarItem key={id} label={name} />
+          <CarItem
+            key={id}
+            value={id}
+            label={name}
+            control={control}
+            seleted={selected}
+          />
         ))}
       </div>
     </Form.FieldSet>

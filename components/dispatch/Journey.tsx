@@ -247,7 +247,7 @@ export function Journey({ control, watch }: JourneyProps) {
 
         <div className="space-y-6 lg:space-y-0 lg:flex lg:space-x-6">
           <div className="flex-1 space-y-4">
-            <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-4 lg:space-y-0">
+            <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-2 lg:space-y-0">
               <div className="lg:w-2/3 flex flex-col lg:flex-row">
                 <Form.Input
                   type="check"

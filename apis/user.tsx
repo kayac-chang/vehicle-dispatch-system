@@ -14,40 +14,14 @@ export async function getCaseID({ id, uid, token }: User & Token) {
     }
   )
     .then(prop("data"))
-    .then((data) => data.filter(({ caseId, isEnable }) => caseId && isEnable))
+    .then((data) =>
+      data.filter(
+        ({ caseId, userType, isEnable }) =>
+          caseId && isEnable && userType === "caseuser"
+      )
+    )
     .then((data) => data[0])
     .then(prop("caseId"));
-}
-
-function toUnPermissionUserType(
-  data: UnPermissionUserType[]
-): UnPermissionUserType[] {
-  return data;
-}
-
-interface UnPermissionUserRequest {
-  userId: string;
-  UID: string;
-}
-
-/**
- * [GET /api/Users/GetUnPermissionUserType]
- *
- * get User info by userId and UID from service
- */
-export function getUnPermissionUserType({
-  userId,
-  UID,
-  token,
-}: UnPermissionUserRequest & Token) {
-  return get<GetUnPermissionUserTypeResponse>(
-    KHH_API("Users/GetUnPermissionUserType", { userId, UID }),
-    {
-      "X-Token": token,
-    }
-  ).then((res) => {
-    return toUnPermissionUserType(res.data);
-  });
 }
 
 interface UserResponse {
