@@ -5,6 +5,7 @@ import { Control, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
 import { endOfDay, isAfter, isSameHour, parse, set, setHours } from "date-fns";
 import Rule from "functions/regexp";
+import { CarType } from "types";
 
 const content = {
   title: "行程",
@@ -55,6 +56,7 @@ const content = {
         label: "車種",
         options: [{ id: "car", label: "福祉車", value: "car" }],
       },
+
       wheelchair: {
         label: "輪椅種類",
         options: {
@@ -108,8 +110,9 @@ const content = {
 type JourneyProps = {
   control: Control<Request>;
   watch: UseFormWatch<Request>;
+  cartype: CarType[];
 };
-export function Journey({ control, watch }: JourneyProps) {
+export function Journey({ control, watch, cartype }: JourneyProps) {
   const time = watch("time") && parse(watch("time"), "HH:mm", new Date());
   const minBackTime = set(new Date(), { hours: 18, minutes: 15 });
 
@@ -292,7 +295,11 @@ export function Journey({ control, watch }: JourneyProps) {
                 name="car-type"
                 control={control}
                 label={content.form.car.type.label}
-                options={content.form.car.type.options}
+                options={cartype.map(({ value, label }) => ({
+                  id: value,
+                  value,
+                  label,
+                }))}
               />
 
               <Form.Input
@@ -300,7 +307,11 @@ export function Journey({ control, watch }: JourneyProps) {
                 name="wheelchair-type"
                 control={control}
                 label={content.form.car.wheelchair.label}
-                options={content.form.car.wheelchair.options.normal}
+                options={
+                  watch("car-type") === "SYS_CAR_WEAL"
+                    ? content.form.car.wheelchair.options.special
+                    : content.form.car.wheelchair.options.normal
+                }
               />
 
               <Form.Input

@@ -7,7 +7,7 @@ import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getCaseID, getUserProfile } from "apis";
+import { getCarType, getCaseID, getUserProfile } from "apis";
 import {
   addDays,
   addMinutes,
@@ -51,9 +51,10 @@ export async function getServerSideProps({ req }: Context) {
   }
 
   const token = session.accessToken;
-  const [user, organizations] = await Promise.all([
+  const [user, organizations, cartype] = await Promise.all([
     getUserProfile({ token }),
     getAllOrganizations({ token }),
+    getCarType(),
   ]);
 
   const caseID = await getCaseID({ ...user, token });
@@ -71,6 +72,7 @@ export async function getServerSideProps({ req }: Context) {
       ),
       address: caseUser.address,
       discount,
+      cartype,
     },
   };
 }
@@ -81,6 +83,7 @@ export default function News({
   organizations = [],
   address,
   discount,
+  cartype = [],
 }: Props) {
   const { control, watch, setValue } = useForm<Request>({
     defaultValues: {
@@ -173,7 +176,7 @@ export default function News({
                 organizations={organizations}
               />
 
-              <Journey control={control} watch={watch} />
+              <Journey control={control} watch={watch} cartype={cartype} />
 
               <RouteMap watch={watch} />
             </form>
