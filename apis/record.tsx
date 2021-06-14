@@ -4,14 +4,14 @@ import { map, pipe, prop } from "ramda";
 import {
   CancelOrderRequest,
   RecordDetail,
-  CaseOrderAmt,
-  GeoCode,
   GetRouteRequest,
   Route,
   ClientRecord,
   OrderPayOfCaseUsers,
   Despatch,
   StatueLog,
+  Order,
+  OrderAmount,
 } from "types";
 
 const formatOnlyDate = (value: string) => {
@@ -414,31 +414,17 @@ interface GetCaseOrderAmtResponse extends BaseResponse {
   result: CaseOrderAmtResponse;
 }
 
-function toCaseOrderAmt({
-  fromAddr,
-  fromAddrName,
-  toAddr,
-  toAddrName,
-  distance,
-  duration,
-  coordinates,
+function toOrderAmount({
   withAmt,
   subsidyAmt,
   selfPayAmt,
   totalAmt,
-}: CaseOrderAmtResponse): CaseOrderAmt {
+}: CaseOrderAmtResponse): OrderAmount {
   return {
-    fromAddr: fromAddr,
-    fromAddrName: fromAddrName,
-    toAddr: toAddr,
-    toAddrName: toAddrName,
-    distance: distance,
-    duration: duration,
-    coordinates: coordinates,
-    withAmt: withAmt,
-    subsidyAmt: subsidyAmt,
-    selfPayAmt: selfPayAmt,
-    totalAmt: totalAmt,
+    accompany: withAmt,
+    subsidy: subsidyAmt,
+    self: selfPayAmt,
+    total: totalAmt,
   };
 }
 
@@ -447,53 +433,28 @@ function toCaseOrderAmt({
  *
  * get Case Order Amount by orderNo from service
  */
-export function getCaseOrderAmt({
-  orderId,
+export function getOrderAmount({
   token,
-}: CaseOrderNo & Token): Promise<CaseOrderAmt | undefined> {
+  caseID,
+  from,
+  to,
+  accompanying,
+  date,
+}: Token & Order) {
   return get<GetCaseOrderAmtResponse>(
-    KHH_API("OrderOfCaseUsers/GetCaseOrderAmt", { orderId }),
+    KHH_API("OrderOfCaseUsers/GetCaseOrderAmt", {
+      CaseUserId: caseID,
+      FromAddr: from.address,
+      FromAddrId: from.id,
+      ToAddr: to.address,
+      ToAddrId: to.id,
+      FamilyWith: accompanying,
+      ReservationDate: format(date, "yyyy-MM-dd"),
+    }),
     {
       "X-Token": token,
     }
-  ).then(pipe(prop("result"), toCaseOrderAmt));
-}
-
-interface GeoCodeResponse {
-  placeId: string;
-  addrFormat: string;
-  addrName: string;
-  lon: number;
-  lat: number;
-}
-
-interface GetGeoCodeResponse extends BaseResponse {
-  result: GeoCodeResponse;
-}
-
-function toGeoCode({
-  lon,
-  lat,
-  addrName,
-  addrFormat,
-}: GeoCodeResponse): GeoCode {
-  return {
-    lon: lon,
-    lat: lat,
-    addrName: addrName,
-    addrFormat: addrFormat,
-  };
-}
-
-/**
- * [GET /api/Maps/Geocode]
- *
- * get GeoCode by addr from service
- */
-export function getGeoCode(address: string): Promise<GeoCode | undefined> {
-  return get<GetGeoCodeResponse>(KHH_API("Maps/Geocode", { address })).then(
-    pipe(prop("result"), toGeoCode)
-  );
+  ).then(pipe(prop("result"), toOrderAmount));
 }
 
 interface RouteResponse {

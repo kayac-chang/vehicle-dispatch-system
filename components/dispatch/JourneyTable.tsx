@@ -1,4 +1,6 @@
 import clsx from "clsx";
+import { OrderAmount } from "types";
+import numeral from "numeral";
 
 const heads = [
   {
@@ -34,29 +36,40 @@ const content = {
   to: "回程",
 };
 
-export function JourneyTable() {
-  const rows: Record<string, string>[] = [
+function currency(value: number) {
+  return numeral(value).format("$0,0");
+}
+
+type Props = {
+  from: OrderAmount;
+  to?: OrderAmount;
+};
+export function JourneyTable({ from, to }: Props) {
+  const rows: (Record<string, string> | undefined)[] = [
     {
       type: content.from,
-      total: "$1000",
-      subsidy: "$1000",
-      self: "$1000",
-      accompany: "$1000",
-      speical: "$1000",
+      total: currency(from.total),
+      subsidy: currency(from.subsidy),
+      self: currency(from.self),
+      accompany: currency(from.accompany),
+      speical: currency(from.self + from.accompany),
     },
-    {
+    to && {
       type: content.to,
-      total: "$1000",
-      subsidy: "$1000",
-      self: "$1000",
-      accompany: "$1000",
-      speical: "$1000",
+      total: currency(to.total),
+      subsidy: currency(to.subsidy),
+      self: currency(to.self),
+      accompany: currency(to.accompany),
+      speical: currency(to.self + to.accompany),
     },
   ];
 
   return (
     <div className="-mx-4 lg:mx-0">
-      <table className="w-full bg-white table-fixed text-center text-sm shadow-lg">
+      <table
+        className="w-full bg-white table-fixed text-center text-sm shadow-lg"
+        aria-live="polite"
+      >
         <thead>
           <tr className="bg-gold-darker text-white">
             {heads.map((head) => (
@@ -68,18 +81,21 @@ export function JourneyTable() {
         </thead>
 
         <tbody className="divide-y">
-          {rows.map((row, index) => (
-            <tr key={index}>
-              {heads.map(({ key, className }) => (
-                <td
-                  key={`${index}, ${key}`}
-                  className={clsx("py-2", className)}
-                >
-                  {row[key] || ""}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {rows.map(
+            (row, index) =>
+              row && (
+                <tr key={index}>
+                  {heads.map(({ key, className }) => (
+                    <td
+                      key={`${index}, ${key}`}
+                      className={clsx("py-2", className)}
+                    >
+                      {row[key] || ""}
+                    </td>
+                  ))}
+                </tr>
+              )
+          )}
         </tbody>
       </table>
     </div>

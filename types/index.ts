@@ -40,3 +40,10 @@ export interface CarType {
   value: string;
   label: string;
 }
+
+export interface Geocode {
+  id: string;
+  address: string;
+  lon: number;
+  lat: number;
+}

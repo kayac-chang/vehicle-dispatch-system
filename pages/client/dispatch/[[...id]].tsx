@@ -7,7 +7,7 @@ import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getCarType, getCaseID, getUserProfile } from "apis";
+import { getCarType, getCaseID, getOrderAmount, getUserProfile } from "apis";
 import {
   addDays,
   addMinutes,
@@ -18,6 +18,11 @@ import {
 } from "date-fns";
 import { getAllOrganizations } from "apis/organization";
 import { getCaseUser, getDiscount } from "apis/caseuser";
+import { useQuery } from "react-query";
+import { getGeocode } from "apis/map";
+import { useDebounce, useDebounceCallback } from "@react-hook/debounce";
+import { useEffect } from "react";
+import { Geocode, OrderAmount } from "types";
 
 const content = {
   title: "預約訂車",
@@ -65,6 +70,7 @@ export async function getServerSideProps({ req }: Context) {
 
   return {
     props: {
+      caseID,
       username: user.name,
       token,
       organizations: organizations.filter(({ id }) =>
@@ -77,15 +83,76 @@ export async function getServerSideProps({ req }: Context) {
   };
 }
 
+function useGeocode(): [Geocode | undefined, (address: string) => void] {
+  const [address, setAddress] = useDebounce("", 1000);
+
+  const { data } = useQuery({
+    queryKey: ["Geocode", address],
+    queryFn: () => getGeocode(address),
+    enabled: Boolean(address),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  return [data, setAddress];
+}
+
+type DispatchGeocode = (location?: Geocode) => void;
+function useOrderAmount(
+  token?: string,
+  caseID?: string
+): [OrderAmount, DispatchGeocode, DispatchGeocode] {
+  const [from, setFrom] = useState<Geocode | undefined>(undefined);
+  const [to, setTo] = useState<Geocode | undefined>(undefined);
+  const [amount, setAmount] = useState<OrderAmount>({
+    accompany: 0,
+    subsidy: 0,
+    self: 0,
+    total: 0,
+  });
+
+  useEffect(() => {
+    if (!token || !caseID || !from || !to) {
+      setAmount({
+        accompany: 0,
+        subsidy: 0,
+        self: 0,
+        total: 0,
+      });
+
+      return;
+    }
+
+    getOrderAmount({
+      token,
+      caseID,
+      from: {
+        id: from.id,
+        address: from.address,
+      },
+      to: {
+        id: to.id,
+        address: to.address,
+      },
+      accompanying: 0,
+      date: new Date(),
+    }).then(setAmount);
+  }, [token, caseID, from, to, setAmount]);
+
+  return [amount, setFrom, setTo];
+}
+
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function News({
+  caseID,
+  token,
   username,
   organizations = [],
   address,
   discount,
   cartype = [],
 }: Props) {
-  const { control, watch, setValue } = useForm<Request>({
+  const { control, watch, setValue, getValues } = useForm<Request>({
     defaultValues: {
       organizations: [],
       from: address && `${address.county}${address.district}${address.street}`,
@@ -100,6 +167,19 @@ export default function News({
     parse(watch("date"), "yyyy-MM-dd", new Date()),
     minDay
   );
+
+  const [fromGeo, setFromAddress] = useGeocode();
+  const from = watch("from");
+  useEffect(() => setFromAddress(from), [from]);
+
+  const [toGeo, setToAddress] = useGeocode();
+  const to = watch("to");
+  useEffect(() => setToAddress(to), [to]);
+
+  const [amount, setFrom, setTo] = useOrderAmount(token, caseID);
+
+  useEffect(() => setFrom(fromGeo), [fromGeo]);
+  useEffect(() => setTo(toGeo), [toGeo]);
 
   return (
     <>
@@ -176,7 +256,12 @@ export default function News({
                 organizations={organizations}
               />
 
-              <Journey control={control} watch={watch} cartype={cartype} />
+              <Journey
+                control={control}
+                watch={watch}
+                cartype={cartype}
+                amount={amount}
+              />
 
               <RouteMap watch={watch} />
             </form>
