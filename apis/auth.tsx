@@ -1,14 +1,6 @@
 import { prop } from "ramda";
 import { User } from "types";
-import { KHH_API, post, get } from "./base";
-
-interface BaseResponse {
-  code: 200;
-}
-
-interface Token {
-  token: string;
-}
+import { Token, KHH_API, post, get, BaseResponse } from "./base";
 
 interface Request {
   username: string;
@@ -27,8 +19,6 @@ export function login({ username, password }: Request): Promise<string> {
     account: username,
     password: password,
     appKey: process.env.API_KEY,
-    mobileDevice: "",
-    pushKey: "",
   }).then(prop("token"));
 }
 
@@ -79,14 +69,12 @@ export function getUsername({ token }: Token): Promise<string> {
   }).then(({ result }) => result);
 }
 
-interface UserProfile {
+interface UserProfileResponse {
   id: string;
   account: string;
   name: string;
   uid: string;
-
-  // TODO
-  sex: 1;
+  sex: 0 | 1;
   phone: string;
   status: number;
   type: number;
@@ -101,25 +89,29 @@ interface UserProfile {
   organizationIds: string;
 }
 
-type UserProfileResponse = BaseResponse & { result: UserProfile };
+function toUser(data: UserProfileResponse): User {
+  return {
+    id: data.id,
+    account: data.account,
+    name: data.name,
+    uid: data.uid,
+    gender: data.sex === 1 ? "male" : "female",
+    phone: data.phone,
+  };
+}
+
+type GetUserProfileResponse = BaseResponse & { result: UserProfileResponse };
 /**
  * [GET /api/Check/GetUserProfile]
  *
  * get user profile by token
  */
-export function getUserProfile({ token }: Token): Promise<User> {
-  return get<UserProfileResponse>(KHH_API("Check/GetUserProfile"), {
+export function getUserProfile({ token }: Token) {
+  return get<GetUserProfileResponse>(KHH_API("Check/GetUserProfile"), {
     "X-Token": token,
   })
-    .then(({ result }) => result)
-    .then(({ id, account, name, uid, sex, phone }) => ({
-      id,
-      account,
-      name,
-      uid,
-      gender: "male",
-      phone,
-    }));
+    .then(prop("result"))
+    .then(toUser);
 }
 
 interface GetVerificationRequest {
@@ -128,7 +120,6 @@ interface GetVerificationRequest {
 
 interface GetVerificationResponse extends BaseResponse {
   result: string;
-  message: string;
 }
 
 /**
@@ -136,9 +127,7 @@ interface GetVerificationResponse extends BaseResponse {
  *
  * get verification with username
  */
-export function getVerification({
-  username,
-}: GetVerificationRequest): Promise<string> {
+export function getVerification({ username }: GetVerificationRequest) {
   return get<GetVerificationResponse>(
     KHH_API("Users/AddClientVerification", { UserAcc: username })
   ).then(prop("result"));
@@ -147,10 +136,6 @@ export function getVerification({
 interface CheckVerificationRequest {
   username: string;
   verificationCode: string;
-}
-
-interface CheckVerificationResponse extends BaseResponse {
-  message: string;
 }
 
 /**
@@ -162,7 +147,7 @@ export function checkVerification({
   username,
   verificationCode,
 }: CheckVerificationRequest) {
-  return get<CheckVerificationResponse>(
+  return get(
     KHH_API("Users/CheckMobileVerification", {
       UserAcc: username,
       VerificationCode: verificationCode,

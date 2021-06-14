@@ -1,7 +1,7 @@
 export * from "./news";
 export * from "./user";
-export * from "./user-info"
-export * from "./record"
+export * from "./user-info";
+export * from "./record";
 
 export interface QNA {
   name: string;
@@ -25,3 +25,7 @@ export interface Path {
   to: string;
 }
 
+export interface Organization {
+  id: string;
+  name: string;
+}

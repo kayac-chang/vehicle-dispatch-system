@@ -1,4 +1,4 @@
-import { get, KHH_API } from "./base";
+import { get, KHH_API, Token, BaseResponse } from "./base";
 import { parse, format } from "date-fns";
 import { pipe, prop } from "ramda";
 import { CaseUserInfo, DiscountData } from "types";
@@ -8,14 +8,6 @@ const formatOnlyDate = (value: string) => {
   const date = parse(value, "yyyy-MM-dd HH:mm:ss", new Date());
   return format(date, "yyyy-MM-dd");
 };
-
-interface BaseResponse {
-  code: 200;
-}
-
-interface Token {
-  token: string;
-}
 
 interface CaseUserResponse {
   id: string;
@@ -133,6 +125,8 @@ export function getCaseUsers({
   id,
   token,
 }: CaseUserRequest & Token): Promise<CaseUserInfo | undefined> {
+  // TODO refactor to caseuser
+
   return get<GetCaseUserResponse>(KHH_API("CaseUsers/Get", { id }), {
     "X-Token": token,
   }).then(pipe(prop("result"), toCaseUser));

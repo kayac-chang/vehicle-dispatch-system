@@ -1,13 +1,12 @@
-
-export interface UnPermissionUserType{
-  caseId: string;
+export interface UnPermissionUserType {
   userId: string;
+  caseId: string;
   caseUserNo: string;
   userType: string;
   isEnable: boolean;
 }
 
-export interface User{
+export interface User {
   id: string;
   account: string;
   name: string;
@@ -15,10 +14,3 @@ export interface User{
   gender: "male" | "female";
   phone: string;
 }
-
-export interface ChangePasswordRequest{
-  oldPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-

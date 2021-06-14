@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Button, Form } from "components/atoms";
+import { Organization } from "types";
 
 type CarItemProps = {
   label: string;
@@ -45,7 +46,10 @@ const content = {
   reorder: "重新排序",
 };
 
-export function CarSelection() {
+type Props = {
+  organizations: Organization[];
+};
+export function CarSelection({ organizations }: Props) {
   return (
     <Form.FieldSet
       label={content.title}
@@ -66,17 +70,9 @@ export function CarSelection() {
       </div>
 
       <div className="flex flex-col lg:flex-row space-y-2 lg:space-y-0 lg:space-x-4">
-        <CarItem
-          label="新北市私立匯安老人長期照顧中心(養護型)照顧中心(養護型)"
-          order={2}
-        />
-
-        <CarItem label="交通單位" />
-
-        <CarItem
-          label="新北市私立匯安老人長期照顧中心(養護型)照顧中心(養護型)"
-          order={1}
-        />
+        {organizations.map(({ id, name }) => (
+          <CarItem key={id} label={name} />
+        ))}
       </div>
     </Form.FieldSet>
   );
