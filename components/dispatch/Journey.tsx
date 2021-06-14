@@ -1,8 +1,10 @@
 import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
-import { Control } from "react-hook-form";
+import { Control, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
+import { endOfDay, isAfter, isSameHour, parse, set, setHours } from "date-fns";
+import Rule from "functions/regexp";
 
 const content = {
   title: "行程",
@@ -15,7 +17,13 @@ const content = {
       address: "地址",
       noteType: {
         label: "起點備註",
-        options: [{ id: "other", label: "其他", value: "other" }],
+        options: [
+          { id: "home", label: "住家", value: "home" },
+          { id: "hospital", label: "醫療院所", value: "hospital" },
+          { id: "hemodialysis", label: "洗腎中心", value: "hemodialysis" },
+          { id: "physiatry", label: "復健診所", value: "physiatry" },
+          { id: "other", label: "其他", value: "other" },
+        ],
       },
       note: "請輸入其他備註",
     },
@@ -25,7 +33,13 @@ const content = {
       address: "地址",
       noteType: {
         label: "迄點備註",
-        options: [{ id: "other", label: "其他", value: "other" }],
+        options: [
+          { id: "home", label: "住家", value: "home" },
+          { id: "hospital", label: "醫療院所", value: "hospital" },
+          { id: "hemodialysis", label: "洗腎中心", value: "hemodialysis" },
+          { id: "physiatry", label: "復健診所", value: "physiatry" },
+          { id: "other", label: "其他", value: "other" },
+        ],
       },
       note: "請輸入其他備註",
     },
@@ -43,11 +57,38 @@ const content = {
       },
       wheelchair: {
         label: "輪椅種類",
-        options: [{ id: "normal", label: "普通輪椅(可收折)", value: "normal" }],
+        options: {
+          normal: [
+            { id: "default", label: "請選擇", value: "" },
+            { id: "none", label: "無", value: "none" },
+            { id: "normal", label: "普通輪椅(可收折)", value: "normal" },
+          ],
+
+          special: [
+            { id: "default", label: "請選擇", value: "" },
+            { id: "normal", label: "普通輪椅", value: "normal" },
+            { id: "highback", label: "高背輪椅", value: "highback" },
+            { id: "electric", label: "電動輪椅", value: "electric" },
+            {
+              id: "electrichighback",
+              label: "電動高被輪椅",
+              value: "electrichighback",
+            },
+          ],
+        },
       },
       accompanying: {
         label: "陪同人數",
-        options: [{ id: "0", label: "0人", value: "0" }],
+        options: [
+          { id: "0", label: "0人", value: "0" },
+          { id: "1", label: "1人", value: "1" },
+          { id: "2", label: "2人", value: "2" },
+          { id: "3", label: "3人", value: "3" },
+          { id: "4", label: "4人", value: "4" },
+          { id: "5", label: "5人", value: "5" },
+          { id: "6", label: "6人", value: "6" },
+          { id: "7", label: "7人", value: "7" },
+        ],
       },
     },
 
@@ -66,8 +107,12 @@ const content = {
 
 type JourneyProps = {
   control: Control<Request>;
+  watch: UseFormWatch<Request>;
 };
-export function Journey({ control }: JourneyProps) {
+export function Journey({ control, watch }: JourneyProps) {
+  const time = watch("time") && parse(watch("time"), "HH:mm", new Date());
+  const minBackTime = set(new Date(), { hours: 18, minutes: 15 });
+
   return (
     <Form.FieldSet
       label={content.title}
@@ -114,6 +159,7 @@ export function Journey({ control }: JourneyProps) {
               name="from"
               label={content.form.from.address}
               control={control}
+              required
             />
 
             <Form.Input
@@ -124,12 +170,15 @@ export function Journey({ control }: JourneyProps) {
               options={content.form.from.noteType.options}
             />
 
-            <Form.Input
-              type="text"
-              name="from-note"
-              label={content.form.from.note}
-              control={control}
-            />
+            {watch("from-note-type") === "other" && (
+              <Form.Input
+                type="text"
+                name="from-note"
+                label={content.form.from.note}
+                control={control}
+                required
+              />
+            )}
           </Card.Paper>
 
           <div className="flex justify-end lg:hidden">
@@ -160,6 +209,7 @@ export function Journey({ control }: JourneyProps) {
               name="to"
               label={content.form.to.address}
               control={control}
+              required
             />
 
             <Form.Input
@@ -170,12 +220,15 @@ export function Journey({ control }: JourneyProps) {
               options={content.form.to.noteType.options}
             />
 
-            <Form.Input
-              type="text"
-              name="to-note"
-              label={content.form.to.note}
-              control={control}
-            />
+            {watch("to-note-type") === "other" && (
+              <Form.Input
+                type="text"
+                name="to-note"
+                label={content.form.to.note}
+                control={control}
+                required
+              />
+            )}
           </Card.Paper>
 
           <div className="flex justify-end lg:hidden">
@@ -208,16 +261,28 @@ export function Journey({ control }: JourneyProps) {
                   name="is-round-trip"
                   control={control}
                   label={content.form.check.isRoundTrip}
+                  disabled={
+                    time
+                      ? isSameHour(time, setHours(new Date(), 23))
+                      : Boolean(time)
+                  }
                 />
               </div>
 
               <div className="lg:w-1/3">
-                <Form.Input
-                  type="date"
-                  name="round-trip-time"
-                  control={control}
-                  label={content.form.check.time}
-                />
+                {watch("is-round-trip") && (
+                  <Form.Input
+                    type="time"
+                    name="round-trip-time"
+                    control={control}
+                    label={content.form.check.time}
+                    required
+                    min={
+                      time && isAfter(time, minBackTime) ? time : minBackTime
+                    }
+                    max={endOfDay(new Date())}
+                  />
+                )}
               </div>
             </div>
 
@@ -235,7 +300,7 @@ export function Journey({ control }: JourneyProps) {
                 name="wheelchair-type"
                 control={control}
                 label={content.form.car.wheelchair.label}
-                options={content.form.car.wheelchair.options}
+                options={content.form.car.wheelchair.options.normal}
               />
 
               <Form.Input
@@ -244,6 +309,7 @@ export function Journey({ control }: JourneyProps) {
                 control={control}
                 label={content.form.car.accompanying.label}
                 options={content.form.car.accompanying.options}
+                required
               />
             </div>
 
@@ -255,6 +321,8 @@ export function Journey({ control }: JourneyProps) {
                 name="sms-code"
                 control={control}
                 label={content.form.sms.label}
+                pattern={Rule.Phone}
+                required
               />
             </div>
 

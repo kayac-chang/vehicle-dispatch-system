@@ -76,27 +76,47 @@ export function MonthPicker<T>({ type, ...props }: MonthPickerProps<T>) {
 
 export type TimeProps<T> = CommonProps<T> & {
   type: "time";
+  step?: number;
   min?: Date;
   max?: Date;
 };
-export function Time<T>({ name, label, className, min, max }: TimeProps<T>) {
+export function Time<T>({
+  name,
+  label,
+  className,
+  step,
+  min,
+  max,
+  control,
+  required,
+}: TimeProps<T>) {
   return (
-    <div className={className}>
-      <TextField
-        type="time"
-        id={name}
-        name={name}
-        label={label}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        inputProps={{
-          step: 15 * 60,
-          min: min && format(min, "HH:mm"),
-          max: max && format(max, "HH:mm"),
-        }}
-        className="w-full"
-      />
-    </div>
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required }}
+      render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
+        <div className={className}>
+          <TextField
+            type="time"
+            id={name}
+            name={name}
+            label={label}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              step: step || 15 * 60,
+              min: min && format(min, "HH:mm"),
+              max: max && format(max, "HH:mm"),
+            }}
+            onChange={onChange}
+            inputRef={ref}
+            error={Boolean(error)}
+            className="w-full"
+          />
+        </div>
+      )}
+    />
   );
 }

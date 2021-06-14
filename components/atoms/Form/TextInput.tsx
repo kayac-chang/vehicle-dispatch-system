@@ -15,6 +15,7 @@ export function TextInput<T>({
   icon,
   control,
   required,
+  disabled,
   ...props
 }: TextInputProps<T>) {
   return (
@@ -37,6 +38,7 @@ export function TextInput<T>({
           inputRef={ref}
           onChange={onChange}
           required={required}
+          disabled={disabled}
         />
       )}
     />
