@@ -113,13 +113,15 @@ export function CarSelection({
           <span className="text-red-light">{content.describe.sub}</span>
         </p>
 
-        <Button.Base
-          type="button"
-          className="bg-gold-darker text-white text-sm px-2 py-1 rounded"
-          onClick={() => setValue("organizations", [])}
-        >
-          {content.reorder}
-        </Button.Base>
+        {organizations.length > 1 && (
+          <Button.Base
+            type="button"
+            className="bg-gold-darker text-white text-sm px-2 py-1 rounded"
+            onClick={() => setValue("organizations", [])}
+          >
+            {content.reorder}
+          </Button.Base>
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row space-y-2 lg:space-y-0 lg:space-x-4">

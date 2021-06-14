@@ -35,3 +35,8 @@ export interface Discount {
   remain: number;
   total: number;
 }
+
+export interface CarType {
+  value: string;
+  label: string;
+}
