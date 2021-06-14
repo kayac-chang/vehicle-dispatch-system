@@ -122,6 +122,7 @@ export default function News({ username, organizations = [], address }: Props) {
                 label={content.form.date}
                 className="flex-1"
                 min={minDay}
+                required
               />
 
               <Form.Input
@@ -138,6 +139,7 @@ export default function News({ username, organizations = [], address }: Props) {
                     : undefined
                 }
                 max={isMinDay ? endOfDay(new Date()) : undefined}
+                required
               />
 
               <Form.Input
@@ -152,9 +154,9 @@ export default function News({ username, organizations = [], address }: Props) {
 
             <CarSelection organizations={organizations} />
 
-            <Journey control={control} />
+            <Journey control={control} watch={watch} />
 
-            <RouteMap />
+            <RouteMap watch={watch} />
           </form>
         </Card.Panel>
       </div>

@@ -7,6 +7,7 @@ export type CommonProps<T> = {
   label?: string;
   icon?: ReactNode;
   required?: boolean;
+  disabled?: boolean;
   "aria-describedby"?: string;
   className?: string;
   minLength?: number;
