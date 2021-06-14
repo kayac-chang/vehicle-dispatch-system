@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
-import { Card } from "components/molecules";
+import { Card, Modal } from "components/molecules";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
@@ -17,7 +17,7 @@ import {
   roundToNearestMinutes,
 } from "date-fns";
 import { getAllOrganizations } from "apis/organization";
-import { getCaseUser } from "apis/caseuser";
+import { getCaseUser, getDiscount } from "apis/caseuser";
 
 const content = {
   title: "預約訂車",
@@ -55,8 +55,12 @@ export async function getServerSideProps({ req }: Context) {
     getUserProfile({ token }),
     getAllOrganizations({ token }),
   ]);
+
   const caseID = await getCaseID({ ...user, token });
-  const caseUser = await getCaseUser({ token, caseID });
+  const [caseUser, discount] = await Promise.all([
+    getCaseUser({ token, caseID }),
+    getDiscount({ token, caseID }),
+  ]);
 
   return {
     props: {
@@ -66,19 +70,27 @@ export async function getServerSideProps({ req }: Context) {
         caseUser.organizationIDs.includes(id)
       ),
       address: caseUser.address,
+      discount,
     },
   };
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function News({ username, organizations = [], address }: Props) {
-  const { control, watch } = useForm<Request>({
+export default function News({
+  username,
+  organizations = [],
+  address,
+  discount,
+}: Props) {
+  const { control, watch, setValue } = useForm<Request>({
     defaultValues: {
+      organizations: [],
       from: address && `${address.county}${address.district}${address.street}`,
     },
   });
 
   const [expanded, setExpanded] = useState("car-selection");
+  const [modal, setModal] = useState<"balance" | undefined>(undefined);
 
   const minDay = addDays(new Date(), 5);
   const isMinDay = isSameDay(
@@ -87,79 +99,95 @@ export default function News({ username, organizations = [], address }: Props) {
   );
 
   return (
-    <Layout.Normal title={content.title}>
-      <div className="-mx-6 sm:m-0">
-        <Card.Panel
-          title={
-            <>
-              <h2 className="flex-1 text-white  text-2xl font-semibold">
-                {username}
-              </h2>
+    <>
+      <Layout.Normal title={content.title}>
+        <div className="-mx-6 sm:m-0">
+          <Card.Panel
+            title={
+              <>
+                <h2 className="flex-1 text-white  text-2xl font-semibold">
+                  {username}
+                </h2>
 
-              <div className="flex-1 sm:flex-none text-black">
-                <Button.Icon
-                  type="button"
-                  icon={<Icon.Search />}
-                  className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center"
-                >
-                  {content.search}
-                </Button.Icon>
+                <div className="flex-1 sm:flex-none text-black">
+                  <Button.Icon
+                    type="button"
+                    icon={<Icon.Search />}
+                    className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center"
+                    onClick={() => setModal("balance")}
+                  >
+                    {content.search}
+                  </Button.Icon>
+                </div>
+              </>
+            }
+          >
+            <form className="flex flex-col space-y-4">
+              <div
+                className={clsx(
+                  "flex flex-col space-y-6",
+                  "lg:flex-row lg:space-y-0 lg:space-x-4 lg:w-1/2"
+                )}
+              >
+                <Form.Input
+                  type="date"
+                  name="date"
+                  control={control}
+                  label={content.form.date}
+                  className="flex-1"
+                  min={minDay}
+                  required
+                />
+
+                <Form.Input
+                  type="time"
+                  name="time"
+                  control={control}
+                  label={content.form.time}
+                  className="flex-1"
+                  min={
+                    isMinDay
+                      ? roundToNearestMinutes(addMinutes(new Date(), 15), {
+                          nearestTo: 15,
+                        })
+                      : undefined
+                  }
+                  max={isMinDay ? endOfDay(new Date()) : undefined}
+                  required
+                />
+
+                <Form.Input
+                  type="select"
+                  name="case"
+                  control={control}
+                  label={content.form.case.label}
+                  options={content.form.case.options}
+                  className="flex-1"
+                />
               </div>
-            </>
-          }
-        >
-          <form className="flex flex-col space-y-4">
-            <div
-              className={clsx(
-                "flex flex-col space-y-6",
-                "lg:flex-row lg:space-y-0 lg:space-x-4 lg:w-1/2"
-              )}
-            >
-              <Form.Input
-                type="date"
-                name="date"
+
+              <CarSelection
                 control={control}
-                label={content.form.date}
-                className="flex-1"
-                min={minDay}
-                required
+                watch={watch}
+                setValue={setValue}
+                organizations={organizations}
               />
 
-              <Form.Input
-                type="time"
-                name="time"
-                control={control}
-                label={content.form.time}
-                className="flex-1"
-                min={
-                  isMinDay
-                    ? roundToNearestMinutes(addMinutes(new Date(), 15), {
-                        nearestTo: 15,
-                      })
-                    : undefined
-                }
-                max={isMinDay ? endOfDay(new Date()) : undefined}
-                required
-              />
+              <Journey control={control} watch={watch} />
 
-              <Form.Input
-                type="select"
-                name="case"
-                control={control}
-                label={content.form.case.label}
-                options={content.form.case.options}
-                className="flex-1"
-              />
-            </div>
+              <RouteMap watch={watch} />
+            </form>
+          </Card.Panel>
+        </div>
+      </Layout.Normal>
 
-            <CarSelection organizations={organizations} />
-
-            <Journey control={control} watch={watch} />
-
-            <RouteMap watch={watch} />
-          </form>
-        </Card.Panel>
-      </div>
-    </Layout.Normal>
+      {modal === "balance" && discount && (
+        <Modal.Balance
+          name="balance"
+          data={discount}
+          onClose={() => setModal(undefined)}
+        />
+      )}
+    </>
   );
 }

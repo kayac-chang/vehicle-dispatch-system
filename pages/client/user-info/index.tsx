@@ -4,11 +4,11 @@ import { getSession } from "next-auth/client";
 import Layout from "components/templates";
 import {
   PasswordModal,
-  BalanceModal,
   PhoneModal,
   CaseSection,
   PersonalInfo,
 } from "components/userInfo";
+import { Modal } from "components/molecules";
 import { getCaseID, getUserProfile } from "apis";
 import { getCaseUser, getDiscount } from "apis";
 
@@ -88,8 +88,9 @@ export default function UserInfo({
           token={token as string}
         />
       )}
+
       {modal === "balance" && discount && (
-        <BalanceModal data={discount} onClose={close} />
+        <Modal.Balance name="balance" data={discount} onClose={close} />
       )}
 
       {modal === "phone" && (
