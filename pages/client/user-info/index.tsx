@@ -9,10 +9,8 @@ import {
   CaseSection,
   PersonalInfo,
 } from "components/userInfo";
-import { getUsername } from "apis";
-import { getUnPermissionUserType, getUser } from "apis";
-import { getCaseUsers, getDiscount } from "apis";
-import { CaseUserInfo, User } from "types";
+import { getCaseID, getUserProfile } from "apis";
+import { getCaseUser, getDiscount } from "apis";
 
 const content = {
   title: "用戶資料",
@@ -33,33 +31,19 @@ export async function getServerSideProps({ req }: Context) {
     };
   }
 
-  const username = await getUsername({ token: session.accessToken });
+  const token = session.accessToken;
+  const user = await getUserProfile({ token });
+  const caseID = await getCaseID({ ...user, token });
 
-  const caseUserData = await getUnPermissionUserType({
-    userId: username,
-    UID: username,
-    token: session.accessToken,
-  }).then((res) => res?.find((item) => item.caseId !== "" && item.isEnable));
-
-  const user = await getUser({
-    id: caseUserData?.userId,
-    token: session.accessToken,
-  });
-
-  const caseUser = await getCaseUsers({
-    id: caseUserData?.caseId,
-    token: session.accessToken,
-  });
-
-  const discount = await getDiscount({
-    caseuserId: caseUser ? caseUser.caseUserId : "",
-    token: session.accessToken,
-  });
+  const [caseUser, discount] = await Promise.all([
+    getCaseUser({ caseID, token }),
+    getDiscount({ caseID, token }),
+  ]);
 
   return {
     props: {
-      username: username,
-      token: session.accessToken,
+      username: user.name,
+      token,
       userInfo: { ...user, ...caseUser },
       discount: discount,
     },
@@ -86,13 +70,13 @@ export default function UserInfo({
     <Layout.Normal title={content.title}>
       <div className="-mx-6 sm:mx-auto">
         <PersonalInfo
-          data={userInfo as User & CaseUserInfo}
+          data={userInfo}
           onPasswordClick={() => setModal("password")}
           onChangePhoneClick={() => setModal("phone")}
         />
 
         <CaseSection
-          data={userInfo as User & CaseUserInfo}
+          data={userInfo}
           onBalanceClick={() => setModal("balance")}
         />
       </div>

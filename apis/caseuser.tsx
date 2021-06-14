@@ -93,21 +93,14 @@ function toDiscount({
   };
 }
 
-interface GetDiscountDataRequest {
-  caseuserId: string;
-}
-
 /**
  * [GET /api/CaseUserDiscounts/GetDiscountData]
  *
  * get Discount Data by caseuserId from service
  */
-export function getDiscount({
-  caseuserId,
-  token,
-}: GetDiscountDataRequest & Token): Promise<Discount | undefined> {
+export function getDiscount({ caseID, token }: Token & { caseID: string }) {
   return get<GetUserResponse>(
-    KHH_API("CaseUserDiscounts/GetDiscountData", { caseuserId }),
+    KHH_API("CaseUserDiscounts/GetDiscountData", { caseuserId: caseID }),
     {
       "X-Token": token,
     }

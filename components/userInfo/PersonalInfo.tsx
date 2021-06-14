@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { User } from "types";
-import { CaseUserInfo } from "types";
 import { Button } from "components/atoms";
 import { InfoField } from "components/userInfo";
 
@@ -26,7 +25,7 @@ const content = {
 };
 
 type PersonalInfoProps = {
-  data: User & CaseUserInfo;
+  data: User;
   onPasswordClick: () => void;
   onChangePhoneClick: () => void;
 };
@@ -70,9 +69,9 @@ export function PersonalInfo({
       >
         <InfoField title={content.personal.name} content={data.name} />
 
-        <InfoField title={content.personal.birthday} content={data.birthday} />
+        {/* <InfoField title={content.personal.birthday} content={data.birthday} /> */}
 
-        <InfoField
+        {/* <InfoField
           title={content.personal.gender.title}
           content={
             {
@@ -81,7 +80,7 @@ export function PersonalInfo({
               female: content.personal.gender.woman,
             }[data.gender] || content.personal.gender.none
           }
-        />
+        /> */}
 
         <InfoField title={content.personal.identity} content={data.uid} />
 
