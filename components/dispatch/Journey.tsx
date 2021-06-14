@@ -5,7 +5,7 @@ import { Control, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
 import { endOfDay, isAfter, isSameHour, parse, set, setHours } from "date-fns";
 import Rule from "functions/regexp";
-import { CarType } from "types";
+import { CarType, OrderAmount } from "types";
 
 const content = {
   title: "行程",
@@ -111,8 +111,9 @@ type JourneyProps = {
   control: Control<Request>;
   watch: UseFormWatch<Request>;
   cartype: CarType[];
+  amount: OrderAmount;
 };
-export function Journey({ control, watch, cartype }: JourneyProps) {
+export function Journey({ control, watch, cartype, amount }: JourneyProps) {
   const time = watch("time") && parse(watch("time"), "HH:mm", new Date());
   const minBackTime = set(new Date(), { hours: 18, minutes: 15 });
 
@@ -344,7 +345,10 @@ export function Journey({ control, watch, cartype }: JourneyProps) {
           </div>
 
           <div className="flex-1">
-            <JourneyTable />
+            <JourneyTable
+              from={amount}
+              to={watch("is-round-trip") ? amount : undefined}
+            />
           </div>
         </div>
       </Card.Paper>

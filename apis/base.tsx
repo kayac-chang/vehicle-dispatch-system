@@ -45,7 +45,7 @@ function json(response: Response) {
 function error(err: Error) {
   console.error(err);
 
-  return err;
+  return Promise.reject(err);
 }
 
 export function get<T>(req: RequestInfo, headers = {}): Promise<T> {

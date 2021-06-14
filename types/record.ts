@@ -1,4 +1,4 @@
-export interface ClientRecord{
+export interface ClientRecord {
   caseUserNo: string;
   orderNo: string;
   id: string;
@@ -6,7 +6,7 @@ export interface ClientRecord{
   caseUserId: string;
   cancelRemark: string;
   status: number;
-  reserveDate:string;
+  reserveDate: string;
   fromAddr: string;
   toAddr: string;
   canShared: boolean;
@@ -30,7 +30,7 @@ export interface RecordDetail {
   userPhone: string;
   orderNo: string;
   caseUserNo: string;
-  reserveDate: string,
+  reserveDate: string;
   status: number;
   fromAddr: string;
   fromAddrRemark: string;
@@ -58,26 +58,25 @@ export interface RecordDetail {
   isBack: boolean;
 }
 
-export interface CaseOrderAmt {
-  fromAddr: string;
-  fromAddrName: string;
-  toAddr: string;
-  toAddrName: string;
-  distance: number;
-  duration: number;
-  coordinates: number[][];
-  withAmt: number;
-  subsidyAmt: number;
-  selfPayAmt: number;
-  totalAmt: number;
+export interface Order {
+  caseID: string;
+  from: {
+    id: string;
+    address: string;
+  };
+  to: {
+    id: string;
+    address: string;
+  };
+  accompanying: number;
+  date: Date;
 }
 
-export interface GeoCode {
-  // placeId: string;
-  addrFormat: string;
-  addrName: string;
-  lon: number;
-  lat: number;
+export interface OrderAmount {
+  accompany: number;
+  subsidy: number;
+  self: number;
+  total: number;
 }
 
 export interface GetRouteRequest {
@@ -106,7 +105,7 @@ export interface Route {
 
 export interface CancelOrderRequest {
   id: string;
-  cancelRemark: "CLIENT" |"CLIENT_NOTARRIVED";
+  cancelRemark: "CLIENT" | "CLIENT_NOTARRIVED";
   hasVilation: boolean;
   point: number;
   remark: string;
@@ -114,31 +113,31 @@ export interface CancelOrderRequest {
 
 export interface Despatch {
   driverName: string;
-  carNo:      string;
-  orderNos:   string[];
+  carNo: string;
+  orderNos: string[];
 }
 
 export interface OrderPayOfCaseUsers {
-  id:              string;
-  realFamilyWith:  number;
-  realMaidWith:    number;
-  realWithAmt:     number;
+  id: string;
+  realFamilyWith: number;
+  realMaidWith: number;
+  realWithAmt: number;
   realDiscountAmt: number;
-  realSelfPay:     number;
-  receivePay:      number;
-  signPic:         string;
-  remark:          string;
-  useDiscount:     number;
+  realSelfPay: number;
+  receivePay: number;
+  signPic: string;
+  remark: string;
+  useDiscount: number;
 }
 
-export interface StatueLog{
-  status:         number;
-  createDate:     string;
+export interface StatueLog {
+  status: number;
+  createDate: string;
   createUserName: string;
 }
 
-export interface History{
-  status:   string;
+export interface History {
+  status: string;
   editDate: string;
-  editor:   string;
+  editor: string;
 }
