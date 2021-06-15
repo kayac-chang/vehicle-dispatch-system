@@ -159,7 +159,6 @@ export default function News({
     },
   });
 
-  const [expanded, setExpanded] = useState("car-selection");
   const [modal, setModal] = useState<"balance" | undefined>(undefined);
 
   const minDay = addDays(new Date(), 5);

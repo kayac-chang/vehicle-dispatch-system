@@ -4,130 +4,12 @@ import { Form, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { RecordCard } from "components/record";
 import { useState } from "react";
-import { ClientRecord } from "types/record";
-
-const mockData: ClientRecord[] = [
-  {
-    caseUserNo: "2",
-    orderNo: "CN6800049758840336384",
-    id: "6800049758777417728",
-    userId: "6789314826878885888",
-    caseUserId: "6789568027834228736",
-    cancelRemark: "",
-    status: 1,
-    reserveDate: "2021-06-18 15:15:00",
-    fromAddr: "高雄市苓雅區三多四路3巷12號",
-    toAddr: "807高雄市三民區明吉路13號",
-    canShared: false,
-    carCategoryId: "一般車",
-    carCategoryName: "一般車",
-    familyWith: 2,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-  {
-    caseUserNo: "2",
-    orderNo: "CN6800048979379269649",
-    id: "6800048979324739584",
-    userId: "6789314826878885888",
-    caseUserId: "6789568027834228736",
-    cancelRemark: "",
-    status: 2,
-    reserveDate: "2021-06-30 09:00:00",
-    fromAddr: "高雄市苓雅區三多四路3巷12號",
-    toAddr: "高雄市三民區明吉路13號",
-    canShared: true,
-    carCategoryId: "一般車",
-    carCategoryName: "一般車",
-    familyWith: 2,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-  {
-    caseUserNo: "2",
-    orderNo: "CN6800048979379269648",
-    id: "6800048979307962368",
-    userId: "6789314826878885888",
-    caseUserId: "6789568027834228736",
-    cancelRemark: "",
-    status: 3,
-    reserveDate: "2021-06-30 21:20:00",
-    fromAddr: "高雄市三民區明吉路13號",
-    toAddr: "高雄市苓雅區武慶三路86號",
-    canShared: false,
-    carCategoryId: "一般車",
-    carCategoryName: "一般車",
-    familyWith: 2,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-  {
-    caseUserNo: "3",
-    orderNo: "CN6799760026935799824",
-    id: "6799760026906435587",
-    userId: "6789314826878885888",
-    caseUserId: "6789611603716775936",
-    cancelRemark: "",
-    status: 4,
-    reserveDate: "2021-06-04 14:45:00",
-    fromAddr: "高雄市苓雅區三多四路高雄大遠百",
-    toAddr: "高雄市苓雅區高雄市苓雅區自強三路171號",
-    canShared: true,
-    carCategoryId: "SYS_CAR_GENERAL",
-    carCategoryName: "一般車",
-    familyWith: 1,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-  {
-    caseUserNo: "3",
-    orderNo: "CN6799760026935799825",
-    id: "6799760026889658368",
-    userId: "6789314826878885888",
-    caseUserId: "6789611603716775936",
-    cancelRemark: "",
-    status: 5,
-    reserveDate: "2021-06-04 14:15:00",
-    fromAddr: "高雄市苓雅區高雄市苓雅區自強三路171號",
-    toAddr: "高雄市苓雅區三多四路高雄大遠百",
-    canShared: false,
-    carCategoryId: "SYS_CAR_GENERAL",
-    carCategoryName: "一般車",
-    familyWith: 1,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-  {
-    caseUserNo: "2",
-    orderNo: "CN6799064577723641856",
-    id: "6799064577270652928",
-    userId: "6789314826878885888",
-    caseUserId: "6789568027834228736",
-    cancelRemark: "",
-    status: 9,
-    reserveDate: "2021-06-07 17:30:00",
-    fromAddr: "高雄市仁武區八德中路49號",
-    toAddr: "高雄市前鎮區鎮中路148號",
-    canShared: false,
-    carCategoryId: "SYS_CAR_GENERAL",
-    carCategoryName: "一般車",
-    familyWith: 0,
-    hasViolation: true,
-    name: "阿華",
-    phone: "0987654321",
-    uid: "G122112739",
-  },
-];
+import { addMonths, format, subMonths } from "date-fns";
+import { useQuery } from "react-query";
+import { deleteOrder, getRecord } from "apis";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/client";
+import { Record as IRecord } from "types";
 
 const content = {
   title: "訂單檢視",
@@ -164,25 +46,78 @@ const content = {
 };
 
 const INIT_PAGE = 1;
-const LIMIT = 9;
+const LIMIT = 10;
+
+type Context = GetServerSidePropsContext<{ id: string }>;
+export async function getServerSideProps({ req }: Context) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/client/login",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
+
+  return {
+    props: {
+      token: session.accessToken,
+    },
+  };
+}
 
 interface Request {
   topic: string;
   from: Date;
   end: Date;
 }
-export default function Record() {
-  const [modal, setModal] = useState<"absence" | "cancel" | undefined>();
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function Record({ token }: Props) {
+  const [modal, setModal] = useState<
+    { type: "cancel" | "absence"; item: IRecord } | undefined
+  >();
 
   const [page, setPage] = useState(() => INIT_PAGE);
 
-  const { control, handleSubmit } = useForm<Request>();
+  const { control, handleSubmit, watch } = useForm<Request>({
+    defaultValues: {
+      topic: content.form.topic.options[0].value,
+    },
+  });
 
   function onSubmit(data: Request) {
     console.log(data);
   }
 
-  const data = mockData;
+  const filter =
+    watch("topic") !== "future"
+      ? { from: subMonths(new Date(), 1), end: new Date() }
+      : { from: new Date(), end: addMonths(new Date(), 1) };
+
+  const { data, refetch } = useQuery({
+    queryKey: [
+      "Record",
+      format(filter.from, "yyyy-MM-dd"),
+      format(filter.end, "yyyy-MM-dd"),
+      page,
+    ],
+    queryFn: () =>
+      getRecord({
+        token: token!,
+        limit: LIMIT,
+        page,
+        from: filter.from,
+        end: filter.end,
+      }),
+    enabled: Boolean(token),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  const { total, records } = data || { total: 0, records: [] };
 
   return (
     <Layout.Normal title={content.title}>
@@ -212,6 +147,8 @@ export default function Record() {
                   control,
                   label: content.form.range.from,
                   className: "bg-white",
+                  value: filter.from,
+                  min: filter.from,
                 }}
                 end={{
                   type: "date",
@@ -219,6 +156,8 @@ export default function Record() {
                   control,
                   label: content.form.range.end,
                   className: "bg-white",
+                  value: filter.end,
+                  max: filter.end,
                 }}
               />
             </div>
@@ -226,27 +165,32 @@ export default function Record() {
         </form>
 
         <div className="space-y-4 pb-8">
-          {data.length ? (
-            data.map((item) => (
-              <RecordCard
-                item={item}
-                key={item.orderNo}
-                onAbsenceClick={() => setModal("absence")}
-                onCancelClick={() => setModal("cancel")}
-              />
-            ))
+          {records.length ? (
+            <ul aria-live="polite">
+              {records
+                .sort((a, b) => Number(a.date) - Number(b.date))
+                .map((item) => (
+                  <li key={item.order}>
+                    <RecordCard
+                      item={item}
+                      onAbsenceClick={() => setModal({ type: "absence", item })}
+                      onCancelClick={() => setModal({ type: "cancel", item })}
+                    />
+                  </li>
+                ))}
+            </ul>
           ) : (
             <NoData />
           )}
 
-          {data.length && (
+          {records.length && (
             <div className="flex justify-end pt-2">
-              <Pagination total={10} page={0} />
+              <Pagination total={total} page={page} onChange={setPage} />
             </div>
           )}
         </div>
 
-        {modal === "cancel" && (
+        {modal?.type === "cancel" && (
           <Modal.Alert
             name="cancel"
             title={content.cancel.title}
@@ -255,13 +199,19 @@ export default function Record() {
               submit: content.button.submit,
             }}
             onClose={() => setModal(undefined)}
-            onSubmit={() => setModal(undefined)}
+            onSubmit={() => {
+              if (!token) return;
+
+              deleteOrder({ token, ...modal.item })
+                .then(() => refetch())
+                .then(() => setModal(undefined));
+            }}
           >
             <p>{content.cancel.content}</p>
           </Modal.Alert>
         )}
 
-        {modal === "absence" && (
+        {modal?.type === "absence" && (
           <Modal.Alert
             name="absence"
             title={content.absence.title}
@@ -270,7 +220,13 @@ export default function Record() {
               submit: content.button.submit,
             }}
             onClose={() => setModal(undefined)}
-            onSubmit={() => setModal(undefined)}
+            onSubmit={() => {
+              if (!token) return;
+
+              deleteOrder({ token, ...modal.item })
+                .then(() => refetch())
+                .then(() => setModal(undefined));
+            }}
           >
             <p>{content.absence.content}</p>
           </Modal.Alert>

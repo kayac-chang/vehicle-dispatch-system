@@ -9,6 +9,8 @@ type DateType = "year" | "month" | "date";
 type Props<T> = CommonProps<T> & {
   type: DateType;
   min?: Date;
+  max?: Date;
+  value?: Date;
 };
 function Base<T>({
   type,
@@ -17,7 +19,9 @@ function Base<T>({
   required,
   control,
   className,
+  value,
   min,
+  max,
 }: Props<T>) {
   return (
     <Controller
@@ -36,10 +40,14 @@ function Base<T>({
           }}
           error={Boolean(error)}
           inputRef={ref}
+          value={value && format(value, "yyyy-MM-dd")}
           onChange={onChange}
           required={required}
           className={clsx("w-full", className)}
-          inputProps={{ min: min && format(min, "yyyy-MM-dd") }}
+          inputProps={{
+            min: min && format(min, "yyyy-MM-dd"),
+            max: max && format(max, "yyyy-MM-dd"),
+          }}
         />
       )}
     />

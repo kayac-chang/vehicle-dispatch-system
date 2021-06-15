@@ -6,7 +6,7 @@ import {
   RecordDetail,
   GetRouteRequest,
   Route,
-  ClientRecord,
+  Record,
   OrderPayOfCaseUsers,
   Despatch,
   StatueLog,
@@ -24,7 +24,7 @@ interface CaseOrderNo {
   orderId: string;
 }
 
-interface ClientRecordResponse {
+interface RecordResponse {
   caseUserNo: string;
   orderNo: string;
   id: string;
@@ -45,17 +45,14 @@ interface ClientRecordResponse {
   uid: string;
 }
 
-interface GetClientRecordResponse extends BaseResponse {
-  data: ClientRecordResponse[];
+interface GetRecordResponse extends BaseResponse {
+  data: RecordResponse[];
   count: number;
 }
 
-function toClientRecord({
-  caseUserNo,
+function toRecord({
   orderNo,
   id,
-  userId,
-  caseUserId,
   cancelReamrk,
   status,
   reserveDate,
@@ -68,41 +65,32 @@ function toClientRecord({
   hasViolation,
   name,
   phone,
-  uid,
-}: ClientRecordResponse): ClientRecord {
+}: RecordResponse): Record {
   return {
-    caseUserNo: caseUserNo,
-    orderNo: orderNo,
-    id: id,
-    userId: userId,
-    caseUserId: caseUserId,
-    cancelRemark: cancelReamrk,
-    status: status,
-    reserveDate: formatOnlyDate(reserveDate),
-    fromAddr: fromAddr,
-    toAddr: toAddr,
-    canShared: canShared,
-    carCategoryId: carCategoryId,
-    carCategoryName: carCategoryName,
-    familyWith: familyWith,
-    hasViolation: hasViolation,
-    name: name,
-    phone: phone,
-    uid: uid,
+    id,
+    order: orderNo,
+    from: fromAddr,
+    to: toAddr,
+    name,
+    phone,
+    accompanying: Number(familyWith),
+    violation: Boolean(hasViolation),
+    share: Boolean(canShared),
+    carCategory: {
+      id: carCategoryId,
+      name: carCategoryName,
+    },
+    date: parse(reserveDate, "yyyy-MM-dd HH:mm:ss", new Date()),
+    status,
+    cancel: cancelReamrk ? cancelReamrk : undefined,
   };
 }
 
 interface GetClientRecordQuery {
   limit: number;
   page: number;
-  startDate: string;
-  endDate: string;
-  orderby: string;
-  status: string;
-}
-
-interface ClientRecordRequest {
-  props: Partial<GetClientRecordQuery> | undefined;
+  from: Date;
+  end: Date;
 }
 
 /**
@@ -110,27 +98,29 @@ interface ClientRecordRequest {
  *
  * get Client Record from service
  */
-export function getClientRecord({
-  props,
+export function getRecord({
   token,
-}: ClientRecordRequest & Token): Promise<
-  { total: number; record: ClientRecord[] } | undefined
-> {
-  return get<GetClientRecordResponse>(
+  limit,
+  page,
+  from,
+  end,
+}: Partial<GetClientRecordQuery> & Token): Promise<{
+  total: number;
+  records: Record[];
+}> {
+  return get<GetRecordResponse>(
     KHH_API("OrderOfCaseUsers/LoadClient", {
-      limit: props?.limit,
-      page: props?.page,
-      StartDate: props?.startDate,
-      EndDate: props?.endDate,
-      orderby: props?.orderby,
-      Status: props?.status,
+      limit,
+      page,
+      StartDate: from && format(from, "yyyy-MM-dd"),
+      EndDate: end && format(end, "yyyy-MM-dd"),
     }),
     {
       "X-Token": token,
     }
   ).then(({ data, count }) => ({
     total: Number(count),
-    record: map(toClientRecord, data),
+    records: map(toRecord, data),
   }));
 }
 

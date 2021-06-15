@@ -1,6 +1,7 @@
 export * from "./news";
 export * from "./user";
 export * from "./record";
+export * from "./order";
 
 export interface QNA {
   name: string;
