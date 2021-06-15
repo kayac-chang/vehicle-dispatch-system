@@ -159,10 +159,8 @@ export function deleteOrder({ token, id, cancel, violation }: Token & Record) {
     KHH_API("OrderOfCaseUsers/CancelOrder"),
     {
       id,
-      cancelRemark: cancel,
+      cancelRemark: "SYS_ORDERCANCEL_REMARK_CLIENT",
       hasVilation: violation,
-      point: 0,
-      remark: "",
     },
     {
       "X-Token": token,
