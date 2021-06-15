@@ -22,7 +22,7 @@ function CarItem({ label, value, control, seleted }: CarItemProps) {
   const content = (
     <span
       className={clsx(
-        "text-sm text-left py-2 px-8",
+        "text-sm text-left py-2 px-8 w-full",
         order !== -1 ? "text-white" : "text-black"
       )}
     >
@@ -58,6 +58,7 @@ function CarItem({ label, value, control, seleted }: CarItemProps) {
             }
             inputRef={ref}
             value={value}
+            className="w-full"
           />
 
           {order !== -1 && (
