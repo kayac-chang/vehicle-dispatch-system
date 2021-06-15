@@ -1,22 +1,25 @@
-export interface ClientRecord {
-  caseUserNo: string;
-  orderNo: string;
+import { OrderDetail } from "./order";
+
+export interface Record extends
+  Omit<
+    OrderDetail,
+    | "organizations"
+    | "identity"
+    | "wheelchair"
+    | "isRoundTrip"
+    | "userID"
+    | "caseID"
+    | "from"
+    | "to"
+  > {
   id: string;
-  userId: string;
-  caseUserId: string;
-  cancelRemark: string;
+  order: string;
+  date: Date;
   status: number;
-  reserveDate: string;
-  fromAddr: string;
-  toAddr: string;
-  canShared: boolean;
-  carCategoryId: string;
-  carCategoryName: string;
-  familyWith: number;
-  hasViolation: boolean;
   name: string;
-  phone: string;
-  uid: string;
+  violation: boolean;
+  from: string;
+  to: string;
 }
 
 export interface RecordDetail {
@@ -56,47 +59,6 @@ export interface RecordDetail {
   expectedMinute: number;
   totalMileage: number;
   isBack: boolean;
-}
-
-interface OrderAddress {
-  id: string;
-  address: string;
-}
-
-export interface Order {
-  caseID: string;
-  from: OrderAddress;
-  to: OrderAddress;
-  accompanying: number;
-  date: Date;
-}
-
-export interface OrderDetail extends Order {
-  userID: string;
-  identity: string;
-  organizations: string[];
-  from: OrderAddress & {
-    note: string;
-  };
-  to: OrderAddress & {
-    note: string;
-  };
-  note: string;
-  isRoundTrip: boolean;
-  share: boolean;
-  carCategory: {
-    id: string;
-    name: string;
-  };
-  wheelchair: string;
-  phone: string;
-}
-
-export interface OrderAmount {
-  accompany: number;
-  subsidy: number;
-  self: number;
-  total: number;
 }
 
 export interface GetRouteRequest {

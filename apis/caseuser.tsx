@@ -1,5 +1,5 @@
 import { prop } from "ramda";
-import { Discount, OrderDetail } from "types";
+import { Discount, Record, OrderDetail } from "types";
 import { BaseResponse, get, KHH_API, post, Token } from "./base";
 
 interface Address {
@@ -147,6 +147,22 @@ export function addOrder({
       wheelchairType: wheelchair,
       familyWith: Number(accompanying),
       noticePhone: phone,
+    },
+    {
+      "X-Token": token,
+    }
+  ).then(() => true);
+}
+
+export function deleteOrder({ token, id, cancel, violation }: Token & Record) {
+  return post(
+    KHH_API("OrderOfCaseUsers/CancelOrder"),
+    {
+      id,
+      cancelRemark: cancel,
+      hasVilation: violation,
+      point: 0,
+      remark: "",
     },
     {
       "X-Token": token,

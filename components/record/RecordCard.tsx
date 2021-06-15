@@ -3,7 +3,8 @@ import { Tag, CanShared, InfoSet, DecorationTag } from "components/record";
 import { Button, Icon } from "components/atoms";
 import clsx from "clsx";
 import { ReactNode } from "react";
-import { ClientRecord } from "types/record";
+import { Record } from "types/record";
+import { format, isAfter, isBefore, subHours } from "date-fns";
 
 const content = {
   title: "長照",
@@ -48,19 +49,28 @@ const content = {
   },
 };
 
-function statusDecoder(status: number): string {
+enum OrderStatus {
+  NewOrder = 1,
+  Booked = 2,
+  Arrived = 3,
+  Driving = 4,
+  Done = 5,
+  Canceled = 9,
+}
+
+function statusDecoder(status: OrderStatus): string {
   switch (status) {
-    case 1:
+    case OrderStatus.NewOrder:
       return content.status.newOrder;
-    case 2:
+    case OrderStatus.Booked:
       return content.status.booked;
-    case 3:
+    case OrderStatus.Arrived:
       return content.status.arrived;
-    case 4:
+    case OrderStatus.Driving:
       return content.status.driving;
-    case 5:
+    case OrderStatus.Done:
       return content.status.done;
-    case 9:
+    case OrderStatus.Canceled:
       return content.status.canceled;
     default:
       return "";
@@ -112,7 +122,7 @@ function RecordButton({ className, onClick, children }: RecordButtonProps) {
 }
 
 type RecordCardProps = {
-  item: ClientRecord;
+  item: Record;
 
   onAbsenceClick: () => void;
   onCancelClick: () => void;
@@ -122,6 +132,18 @@ export function RecordCard({
   onAbsenceClick,
   onCancelClick,
 }: RecordCardProps) {
+  const status = statusDecoder(item.status);
+
+  const cancelable =
+    (item.status === OrderStatus.NewOrder ||
+      item.status === OrderStatus.Booked) &&
+    isBefore(new Date(), subHours(item.date, 48));
+
+  const isAbsence =
+    item.status === OrderStatus.Booked && isAfter(new Date(), item.date);
+
+  const isDone = item.status === OrderStatus.Done;
+
   return (
     <article className="w-full bg-white rounded-lg shadow-md py-4 lg:p-8 relative">
       <DecorationTag label={content.title} className="absolute left-0" />
@@ -134,27 +156,27 @@ export function RecordCard({
             </h2>
 
             <div className="block lg:flex lg:ㄒspace-x-2">
-              <Tag status={item.status} label={statusDecoder(item.status)} />
+              <Tag status={item.status} label={status} />
 
-              {item.canShared && (
+              {item.share && (
                 <CanShared className="mt-1" label={content.canShared} />
               )}
             </div>
           </div>
 
           <div className="flex-1 flex flex-col space-y-3 text-sm mr-4 lg:mx:0 pt-12 lg:pt-0 pb-4">
-            <InfoSet title={content.order.no} content={item.orderNo} />
+            <InfoSet title={content.order.no} content={item.order} />
 
             <InfoSet
               title={content.order.reserveDate}
-              content={item.reserveDate}
+              content={format(item.date, "yyyy-MM-dd")}
             />
 
             <div className="flex space-x-4">
               <InfoSet
                 title={content.order.canShared.label}
                 content={
-                  item.canShared
+                  item.share
                     ? content.order.canShared.yes
                     : content.order.canShared.no
                 }
@@ -162,13 +184,13 @@ export function RecordCard({
 
               <InfoSet
                 title={content.order.familyWith.label}
-                content={`${item.familyWith}${content.order.familyWith.unit}`}
+                content={`${item.accompanying}${content.order.familyWith.unit}`}
               />
             </div>
 
             <InfoSet
               title={content.order.carCategoryName}
-              content={item.carCategoryName}
+              content={item.carCategory.name}
             />
           </div>
         </div>
@@ -188,7 +210,7 @@ export function RecordCard({
                 <FromTitle />
               </span>
 
-              <p className="text-black font-semibold flex-1">{item.fromAddr}</p>
+              <p className="text-black font-semibold flex-1">{item.from}</p>
             </div>
 
             <div className="flex flex-col lg:flex-row">
@@ -196,7 +218,7 @@ export function RecordCard({
                 <ToTitle />
               </span>
 
-              <p className="text-black font-semibold flex-1">{item.toAddr}</p>
+              <p className="text-black font-semibold flex-1">{item.to}</p>
             </div>
           </div>
 
@@ -206,7 +228,7 @@ export function RecordCard({
               "flex flex-row justify-center space-x-1 text-sm mt-6"
             )}
           >
-            <Link href={`/client/record/${item.orderNo}`}>
+            <Link href={`/client/record/${item.id}`}>
               <a>
                 <RecordButton className="bg-blue-bright">
                   {content.button.detail}
@@ -218,20 +240,19 @@ export function RecordCard({
               {content.button.order}
             </RecordButton>
 
-            {(statusDecoder(item.status) === content.status.newOrder ||
-              statusDecoder(item.status) === content.status.booked) && (
+            {cancelable && (
               <RecordButton className="bg-red-bright" onClick={onCancelClick}>
                 {content.button.cancel}
               </RecordButton>
             )}
 
-            {statusDecoder(item.status) === content.status.booked && (
+            {isAbsence && (
               <RecordButton className="bg-red-bright" onClick={onAbsenceClick}>
                 {content.button.absence}
               </RecordButton>
             )}
 
-            {statusDecoder(item.status) === content.status.done && (
+            {isDone && (
               <RecordButton className="bg-blue-bright">
                 {content.button.question}
               </RecordButton>
