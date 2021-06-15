@@ -1,6 +1,6 @@
 import { prop } from "ramda";
-import { Discount } from "types";
-import { BaseResponse, get, KHH_API, Token } from "./base";
+import { Discount, OrderDetail } from "types";
+import { BaseResponse, get, KHH_API, post, Token } from "./base";
 
 interface Address {
   county: string;
@@ -107,4 +107,49 @@ export function getDiscount({ caseID, token }: Token & { caseID: string }) {
   )
     .then(prop("result"))
     .then(toDiscount);
+}
+
+export function addOrder({
+  token,
+  caseID,
+  userID,
+  identity,
+  organizations,
+  from,
+  to,
+  note,
+  isRoundTrip,
+  share,
+  carCategory,
+  wheelchair,
+  accompanying,
+  phone,
+  date,
+}: Token & OrderDetail) {
+  return post(
+    KHH_API("OrderOfCaseUsers/Add"),
+    {
+      userId: userID,
+      caseUserId: caseID,
+      createdIdentity: identity,
+      orgId: "",
+      reserveDate: date.toISOString(),
+      transOrgs: organizations,
+      fromAddr: from.address,
+      fromAddrRemark: from.note,
+      toAddr: to.address,
+      toAddrRemark: to.note,
+      remark: note,
+      isBack: Boolean(isRoundTrip),
+      canShared: Boolean(share),
+      carCategoryId: carCategory.id,
+      carCategoryName: carCategory.name,
+      wheelchairType: wheelchair,
+      familyWith: Number(accompanying),
+      noticePhone: phone,
+    },
+    {
+      "X-Token": token,
+    }
+  ).then(() => true);
 }
