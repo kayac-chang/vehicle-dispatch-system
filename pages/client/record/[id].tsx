@@ -5,13 +5,12 @@ import {
   BasicTitle,
   BasicInfo,
   CaseInfo,
-  PaymentInfo,
   HistoryList,
 } from "components/record/detail";
 import {
   getCaseDetail,
   getDespatchByOrderId,
-  getOrderPayOfCaseUsers,
+  getOrder,
   getStatusLog,
 } from "apis";
 
@@ -28,7 +27,7 @@ type Context = GetServerSidePropsContext<{ id: string }>;
 export async function getServerSideProps({ params, req }: Context) {
   const session = await getSession({ req });
 
-  if (!session || !params) {
+  if (!session || !params?.id) {
     return {
       redirect: {
         destination: "/client/record",
@@ -38,23 +37,22 @@ export async function getServerSideProps({ params, req }: Context) {
     };
   }
 
+  const id = params.id;
+  const token = session.accessToken;
+
   return {
     props: {
       detail: await getCaseDetail({
-        orderId: params.id,
-        token: session.accessToken,
+        orderId: id,
+        token,
       }),
       status: await getStatusLog({
-        orderId: params.id,
-        token: session.accessToken,
+        orderId: id,
+        token,
       }),
       despatches: await getDespatchByOrderId({
-        orderId: params.id,
-        token: session.accessToken,
-      }),
-      payment: await getOrderPayOfCaseUsers({
-        orderId: params.id,
-        token: session.accessToken,
+        orderId: id,
+        token,
       }),
       // TODO: History尚未接
       history: mockHistory,
@@ -67,7 +65,6 @@ export default function RecordDetailPage({
   detail,
   status,
   despatches,
-  payment,
   history,
 }: Props) {
   return (
@@ -83,7 +80,7 @@ export default function RecordDetailPage({
 
         <CaseInfo journey={detail} despatches={despatches} />
 
-        <PaymentInfo payment={payment} />
+        {/* <PaymentInfo payment={payment} /> */}
 
         <HistoryList history={history} />
       </div>

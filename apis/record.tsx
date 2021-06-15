@@ -2,16 +2,12 @@ import { get, KHH_API, post, BaseResponse, Token } from "./base";
 import { parse, format } from "date-fns";
 import { map, pipe, prop } from "ramda";
 import {
-  CancelOrderRequest,
   RecordDetail,
   GetRouteRequest,
   Route,
   Record,
-  OrderPayOfCaseUsers,
   Despatch,
   StatueLog,
-  Order,
-  OrderAmount,
 } from "types";
 
 const formatOnlyDate = (value: string) => {
@@ -74,7 +70,6 @@ function toRecord({
     name,
     phone,
     accompanying: Number(familyWith),
-    violation: Boolean(hasViolation),
     share: Boolean(canShared),
     carCategory: {
       id: carCategoryId,
@@ -86,7 +81,7 @@ function toRecord({
   };
 }
 
-interface GetClientRecordQuery {
+interface GetRecordQuery {
   limit: number;
   page: number;
   from: Date;
@@ -104,7 +99,7 @@ export function getRecord({
   page,
   from,
   end,
-}: Partial<GetClientRecordQuery> & Token): Promise<{
+}: Partial<GetRecordQuery> & Token): Promise<{
   total: number;
   records: Record[];
 }> {
@@ -314,137 +309,15 @@ function toDespatch({
  *
  * get Case Despatch info by orderId from service
  */
-export function getDespatchByOrderId({
-  orderId,
-  token,
-}: CaseOrderNo & Token): Promise<Despatch | undefined> {
+export function getDespatchByOrderId({ orderId, token }: CaseOrderNo & Token) {
   return get<GetDespatchResponse>(
     KHH_API("Despatchs/GetByOrderId", { orderId }),
     {
       "X-Token": token,
     }
-  ).then(pipe(prop("result"), toDespatch));
-}
-
-interface OrderPayOfCaseUsersResponse {
-  id: string;
-  realFamilyWith: number;
-  realMaidWith: number;
-  realWithAmt: number;
-  realDiscountAmt: number;
-  realSelfPay: number;
-  receivePay: number;
-  signPic: string;
-  remark: string;
-  useDiscount: number;
-}
-
-interface GetOrderPayOfCaseUsersResponse extends BaseResponse {
-  result: OrderPayOfCaseUsersResponse;
-}
-
-function toOrderPayOfCaseUsers({
-  id,
-  realFamilyWith,
-  realMaidWith,
-  realWithAmt,
-  realDiscountAmt,
-  realSelfPay,
-  receivePay,
-  signPic,
-  remark,
-  useDiscount,
-}: OrderPayOfCaseUsersResponse): OrderPayOfCaseUsers {
-  return {
-    id: id,
-    realFamilyWith: realFamilyWith,
-    realMaidWith: realMaidWith,
-    realWithAmt: realWithAmt,
-    realDiscountAmt: realDiscountAmt,
-    realSelfPay: realSelfPay,
-    receivePay: receivePay,
-    signPic: signPic,
-    remark: remark,
-    useDiscount: useDiscount,
-  };
-}
-
-/**
- * [GET /api/OrderPayOfCaseUsers/GetDetail]
- *
- * get Case payment detail by orderNo from service
- */
-export function getOrderPayOfCaseUsers({
-  orderId,
-  token,
-}: CaseOrderNo & Token): Promise<OrderPayOfCaseUsers | undefined> {
-  return get<GetOrderPayOfCaseUsersResponse>(
-    KHH_API("OrderPayOfCaseUsers/GetDetail", { orderId }),
-    {
-      "X-Token": token,
-    }
-  ).then(pipe(prop("result"), toOrderPayOfCaseUsers));
-}
-
-interface CaseOrderAmtResponse {
-  fromAddr: string;
-  fromAddrName: string;
-  toAddr: string;
-  toAddrName: string;
-  distance: number;
-  duration: number;
-  coordinates: number[][];
-  withAmt: number;
-  subsidyAmt: number;
-  selfPayAmt: number;
-  totalAmt: number;
-}
-
-interface GetCaseOrderAmtResponse extends BaseResponse {
-  result: CaseOrderAmtResponse;
-}
-
-function toOrderAmount({
-  withAmt,
-  subsidyAmt,
-  selfPayAmt,
-  totalAmt,
-}: CaseOrderAmtResponse): OrderAmount {
-  return {
-    accompany: withAmt,
-    subsidy: subsidyAmt,
-    self: selfPayAmt,
-    total: totalAmt,
-  };
-}
-
-/**
- * [GET /api/OrderOfCaseUsers/GetCaseOrderAmt]
- *
- * get Case Order Amount by orderNo from service
- */
-export function getOrderAmount({
-  token,
-  caseID,
-  from,
-  to,
-  accompanying,
-  date,
-}: Token & Order) {
-  return get<GetCaseOrderAmtResponse>(
-    KHH_API("OrderOfCaseUsers/GetCaseOrderAmt", {
-      CaseUserId: caseID,
-      FromAddr: from.address,
-      FromAddrId: from.id,
-      ToAddr: to.address,
-      ToAddrId: to.id,
-      FamilyWith: accompanying,
-      ReservationDate: format(date, "yyyy-MM-dd"),
-    }),
-    {
-      "X-Token": token,
-    }
-  ).then(pipe(prop("result"), toOrderAmount));
+  )
+    .then(prop("result"))
+    .then(toDespatch);
 }
 
 interface RouteResponse {
@@ -517,24 +390,4 @@ export function getRoute(payload: GetRouteRequest): Promise<Route | undefined> {
   return post<GetRouteResponse>(KHH_API("Maps/Route").url, payload).then(
     pipe(prop("result"), toRoute)
   );
-}
-
-function toCancelOrder({ code }: BaseResponse): BaseResponse {
-  return {
-    code: code,
-  };
-}
-
-/**
- * [POST /api/OrderOfCaseUsers/CancelOrder]
- *
- * cancel Order from service
- */
-export function cancelOrder(
-  payload: CancelOrderRequest
-): Promise<BaseResponse | undefined> {
-  return post<BaseResponse>(
-    KHH_API("OrderOfCaseUsers/CancelOrder"),
-    payload
-  ).then(toCancelOrder);
 }

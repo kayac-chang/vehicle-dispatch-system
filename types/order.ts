@@ -1,12 +1,7 @@
-export interface OrderAddress {
-  id: string;
-  address: string;
-}
+import { Geocode } from "types";
 
 export interface Order {
   caseID: string;
-  from: OrderAddress;
-  to: OrderAddress;
   accompanying: number;
   date: Date;
   cancel?: string;
@@ -16,10 +11,10 @@ export interface OrderDetail extends Order {
   userID: string;
   identity: string;
   organizations: string[];
-  from: OrderAddress & {
+  from: Geocode & {
     note?: string;
   };
-  to: OrderAddress & {
+  to: Geocode & {
     note?: string;
   };
   note?: string;
@@ -31,6 +26,13 @@ export interface OrderDetail extends Order {
   };
   wheelchair: string;
   phone: string;
+}
+
+export interface OrderDetailRecord extends OrderDetail {
+  id: string;
+  order: string;
+  status: number;
+  name: string;
 }
 
 export interface OrderAmount {

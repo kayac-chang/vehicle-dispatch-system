@@ -1,25 +1,19 @@
-import { OrderDetail } from "./order";
-
-export interface Record extends
-  Omit<
-    OrderDetail,
-    | "organizations"
-    | "identity"
-    | "wheelchair"
-    | "isRoundTrip"
-    | "userID"
-    | "caseID"
-    | "from"
-    | "to"
-  > {
+export interface Record {
   id: string;
   order: string;
   date: Date;
   status: number;
+  accompanying: number;
   name: string;
-  violation: boolean;
   from: string;
   to: string;
+  phone: string;
+  share: boolean;
+  carCategory: {
+    id: string;
+    name: string;
+  };
+  cancel?: string;
 }
 
 export interface RecordDetail {
