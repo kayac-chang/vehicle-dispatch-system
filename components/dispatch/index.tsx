@@ -6,7 +6,7 @@ export * from "./Journey";
 export interface Request {
   date: string;
   time: string;
-  case: "options" | "default";
+  case: string;
   organizations: string[];
   from: string;
   "from-note-type": string;

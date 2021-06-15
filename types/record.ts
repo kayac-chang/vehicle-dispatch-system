@@ -58,18 +58,38 @@ export interface RecordDetail {
   isBack: boolean;
 }
 
+interface OrderAddress {
+  id: string;
+  address: string;
+}
+
 export interface Order {
   caseID: string;
-  from: {
-    id: string;
-    address: string;
-  };
-  to: {
-    id: string;
-    address: string;
-  };
+  from: OrderAddress;
+  to: OrderAddress;
   accompanying: number;
   date: Date;
+}
+
+export interface OrderDetail extends Order {
+  userID: string;
+  identity: string;
+  organizations: string[];
+  from: OrderAddress & {
+    note: string;
+  };
+  to: OrderAddress & {
+    note: string;
+  };
+  note: string;
+  isRoundTrip: boolean;
+  share: boolean;
+  carCategory: {
+    id: string;
+    name: string;
+  };
+  wheelchair: string;
+  phone: string;
 }
 
 export interface OrderAmount {

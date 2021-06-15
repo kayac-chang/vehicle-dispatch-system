@@ -17,10 +17,10 @@ import {
   roundToNearestMinutes,
 } from "date-fns";
 import { getAllOrganizations } from "apis/organization";
-import { getCaseUser, getDiscount } from "apis/caseuser";
+import { addOrder, getCaseUser, getDiscount } from "apis/caseuser";
 import { useQuery } from "react-query";
 import { getGeocode } from "apis/map";
-import { useDebounce, useDebounceCallback } from "@react-hook/debounce";
+import { useDebounce } from "@react-hook/debounce";
 import { useEffect } from "react";
 import { Geocode, OrderAmount } from "types";
 
@@ -34,8 +34,8 @@ const content = {
     case: {
       label: "訂車人身份",
       options: [
-        { id: "default", label: "本人", value: "default" },
-        { id: "options", label: "本人,家屬", value: "options" },
+        { id: "self", label: "本人", value: "本人" },
+        { id: "relative", label: "家屬", value: "家屬" },
       ],
     },
   },
@@ -71,7 +71,7 @@ export async function getServerSideProps({ req }: Context) {
   return {
     props: {
       caseID,
-      username: user.name,
+      user: user,
       token,
       organizations: organizations.filter(({ id }) =>
         caseUser.organizationIDs.includes(id)
@@ -146,13 +146,13 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function News({
   caseID,
   token,
-  username,
+  user,
   organizations = [],
   address,
   discount,
   cartype = [],
 }: Props) {
-  const { control, watch, setValue, getValues } = useForm<Request>({
+  const { control, watch, setValue, handleSubmit } = useForm<Request>({
     defaultValues: {
       organizations: [],
       from: address && `${address.county}${address.district}${address.street}`,
@@ -181,6 +181,44 @@ export default function News({
   useEffect(() => setFrom(fromGeo), [fromGeo]);
   useEffect(() => setTo(toGeo), [toGeo]);
 
+  function onSubmit(data: Request) {
+    if (!token || !caseID || !user) return;
+
+    const car = cartype.find(({ value }) => data["car-type"] === value);
+    if (!car) return;
+
+    // TODO form submit check...
+
+    addOrder({
+      token,
+      caseID,
+      userID: user.id,
+      identity: data.case,
+      organizations: data.organizations,
+      from: {
+        id: data["from-note-type"],
+        address: data.from,
+        note: data["from-note"],
+      },
+      to: {
+        id: data["to-note-type"],
+        address: data.to,
+        note: data["to-note"],
+      },
+      note: "",
+      isRoundTrip: Boolean(data["is-round-trip"]),
+      share: Boolean(data.share),
+      carCategory: {
+        id: car.value,
+        name: car.label,
+      },
+      wheelchair: data["wheelchair-type"],
+      accompanying: Number(data["accompanying-number"]),
+      phone: data["sms-code"],
+      date: parse(`${data.date} ${data.time}`, "yyyy-MM-dd HH:mm", new Date()),
+    }).then(() => console.log("success"));
+  }
+
   return (
     <>
       <Layout.Normal title={content.title}>
@@ -189,7 +227,7 @@ export default function News({
             title={
               <>
                 <h2 className="flex-1 text-white  text-2xl font-semibold">
-                  {username}
+                  {user?.name}
                 </h2>
 
                 <div className="flex-1 sm:flex-none text-black">
@@ -205,7 +243,10 @@ export default function News({
               </>
             }
           >
-            <form className="flex flex-col space-y-4">
+            <form
+              className="flex flex-col space-y-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div
                 className={clsx(
                   "flex flex-col space-y-6",

@@ -54,7 +54,6 @@ const content = {
     car: {
       type: {
         label: "車種",
-        options: [{ id: "car", label: "福祉車", value: "car" }],
       },
 
       wheelchair: {
@@ -62,19 +61,23 @@ const content = {
         options: {
           normal: [
             { id: "default", label: "請選擇", value: "" },
-            { id: "none", label: "無", value: "none" },
-            { id: "normal", label: "普通輪椅(可收折)", value: "normal" },
+            { id: "none", label: "無", value: "無" },
+            {
+              id: "normal",
+              label: "普通輪椅(可收折)",
+              value: "普通輪椅(可收折)",
+            },
           ],
 
           special: [
             { id: "default", label: "請選擇", value: "" },
-            { id: "normal", label: "普通輪椅", value: "normal" },
-            { id: "highback", label: "高背輪椅", value: "highback" },
-            { id: "electric", label: "電動輪椅", value: "electric" },
+            { id: "normal", label: "普通輪椅", value: "普通輪椅" },
+            { id: "highback", label: "高背輪椅", value: "高背輪椅" },
+            { id: "electric", label: "電動輪椅", value: "電動輪椅" },
             {
               id: "electrichighback",
               label: "電動高被輪椅",
-              value: "electrichighback",
+              value: "電動高被輪椅",
             },
           ],
         },
