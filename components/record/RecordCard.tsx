@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Tag, CanShared, InfoSet, DecorationTag } from "components/record";
 import { Button, Icon } from "components/atoms";
 import clsx from "clsx";
@@ -65,19 +64,28 @@ export function ToTitle() {
 }
 
 type RecordButtonProps = {
+  type?: "button" | "anchor";
   className: string;
   onClick?: () => void;
   children: ReactNode;
+  href?: string;
 };
-function RecordButton({ className, onClick, children }: RecordButtonProps) {
+function RecordButton({
+  type = "button",
+  className,
+  onClick,
+  href,
+  children,
+}: RecordButtonProps) {
   return (
     <Button.Base
-      type="button"
+      type={type}
       className={clsx(
         "py-px px-3 lg:px-4 rounded-sm text-white whitespace-no-wrap",
         className
       )}
       onClick={onClick}
+      href={href || ""}
     >
       {children}
     </Button.Base>
@@ -191,15 +199,19 @@ export function RecordCard({
               "flex flex-row justify-center space-x-1 text-sm mt-6"
             )}
           >
-            <Link href={`/client/record/${item.id}`}>
-              <a>
-                <RecordButton className="bg-blue-bright">
-                  {content.button.detail}
-                </RecordButton>
-              </a>
-            </Link>
+            <RecordButton
+              type="anchor"
+              href={`/client/record/${item.id}`}
+              className="bg-blue-bright"
+            >
+              {content.button.detail}
+            </RecordButton>
 
-            <RecordButton className="bg-green-bright">
+            <RecordButton
+              type="anchor"
+              href={`/client/dispatch/${item.id}`}
+              className="bg-green-bright"
+            >
               {content.button.order}
             </RecordButton>
 

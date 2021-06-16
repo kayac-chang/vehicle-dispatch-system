@@ -28,7 +28,7 @@ export function Table({ id, name, from, to, onDeleteClick }: Props) {
           type="anchor"
           className="text-orange-dark"
           icon={<Icon.Car />}
-          href="/client/call-car"
+          href={`/client/dispatch?favorite=${id}`}
         >
           {content.order}
         </Button.Icon>
