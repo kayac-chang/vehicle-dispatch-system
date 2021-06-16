@@ -1,7 +1,8 @@
 import clsx from "clsx";
-import { Despatch, RecordDetail } from "types/record";
+import { Dispatch } from "types/record";
 import { InfoSet } from "components/record";
 import { RouteMap } from "components/atoms";
+import { OrderDetailRecord } from "types";
 
 const content = {
   title: "行程一覽",
@@ -38,30 +39,28 @@ const content = {
 };
 
 type Props = {
-  journey: RecordDetail | undefined;
-  despatches: Despatch | undefined;
+  detail: OrderDetailRecord & Dispatch;
 };
-export function CaseInfo({ journey, despatches }: Props) {
-  if (!journey || !despatches) return <></>;
-
+export function CaseInfo({ detail }: Props) {
   const despatchData = [
     {
       title: content.label.driverName,
-      content: despatches.driverName || content.label.unbooked,
+      content: detail.driver || content.label.unbooked,
     },
     {
       title: content.label.carNo,
-      content: despatches.carNo || content.label.unbooked,
+      content: detail.carNo || content.label.unbooked,
     },
     {
       title: content.label.carCategoryName,
-      content: journey.carCategoryName || content.label.none,
+      content: detail.carCategory.name || content.label.none,
     },
     {
       title: content.label.wheelchairType,
-      content: journey.wheelchairType || content.label.none,
+      content: detail.wheelchair || content.label.none,
     },
   ];
+
   return (
     <div className="p-6 py-3 bg-white flex flex-col space-y-3">
       <div className="flex items-center border-b space-x-6">
@@ -69,25 +68,25 @@ export function CaseInfo({ journey, despatches }: Props) {
           {content.title}
         </strong>
 
-        <div className="flex items-center space-x-1">
-          <div className="w-2 h-2 rounded-sm bg-red-alert" />
+        <p className="flex items-center space-x-1">
+          <span className="w-2 h-2 rounded-sm bg-red-alert" aria-hidden />
 
           <span className="text-orange-darker font-semibold">
             {content.journey.title}
           </span>
-        </div>
+        </p>
 
         <div className="hidden lg:flex space-x-6">
           <InfoSet
             title={content.journey.totalMileage.title}
-            content={`${journey.totalMileage}${content.journey.totalMileage.unit}`}
+            content={`${detail.mileage}${content.journey.totalMileage.unit}`}
             titleSize="sm"
             contentClass="text-sm text-blue-bright font-normal"
           />
 
           <InfoSet
             title={content.journey.expectedMinute.title}
-            content={`${journey.expectedMinute}${content.journey.expectedMinute.unit}`}
+            content={`${detail.timeCost}${content.journey.expectedMinute.unit}`}
             titleSize="sm"
             contentClass="text-sm text-blue-bright font-normal"
           />
@@ -103,7 +102,7 @@ export function CaseInfo({ journey, despatches }: Props) {
         <InfoSet
           className="lg:hidden"
           title={content.journey.totalMileage.title}
-          content={`${journey.totalMileage}${content.journey.totalMileage.unit}`}
+          content={`${detail.mileage}${content.journey.totalMileage.unit}`}
           titleSize="sm"
           contentClass="text-sm text-blue-bright font-normal"
           align="h"
@@ -112,7 +111,7 @@ export function CaseInfo({ journey, despatches }: Props) {
         <InfoSet
           className="lg:hidden"
           title={content.journey.expectedMinute.title}
-          content={`${journey.expectedMinute}${content.journey.expectedMinute.unit}`}
+          content={`${detail.timeCost}${content.journey.expectedMinute.unit}`}
           titleSize="sm"
           contentClass="text-sm text-blue-bright font-normal"
           align="h"
@@ -131,9 +130,7 @@ export function CaseInfo({ journey, despatches }: Props) {
       <InfoSet
         title={content.journey.canShared.no}
         content={
-          despatches.orderNos
-            ? despatches.orderNos.join(", ")
-            : content.label.unbooked
+          detail.orderNos ? detail.orderNos.join(", ") : content.label.unbooked
         }
         titleSize="xs"
         align="v"
@@ -142,14 +139,14 @@ export function CaseInfo({ journey, despatches }: Props) {
       <div className="flex space-x-4">
         <InfoSet
           title={content.lon}
-          content={String(journey.fromLon)}
+          content={String(detail.from.lon)}
           titleSize="sm"
           align="h"
         />
 
         <InfoSet
           title={content.lat}
-          content={String(journey.fromLat)}
+          content={String(detail.from.lat)}
           titleSize="sm"
           align="h"
         />
@@ -159,49 +156,66 @@ export function CaseInfo({ journey, despatches }: Props) {
         <div className="flex items-center">
           <div className="flex items-center text-orange-rich font-semibold min-w-20 mr-2">
             <strong className="text-sm">{content.journey.address.from}</strong>
-            <span className="text-xs ml-1">{`(${journey.fromAddrRemark})`}</span>
+
+            {detail.from.note && (
+              <span className="text-xs ml-1">({detail.from.note})</span>
+            )}
           </div>
 
           <p className="flex-1 px-4 py-2 rounded-xl bg-gray-extralight">
-            {journey.fromAddr}
+            {detail.from.address}
           </p>
         </div>
 
-        <p className="text-xs text-red-alert font-medium">{`${content.note}???`}</p>
+        {detail.from.note && (
+          <p className="text-xs text-red-alert font-medium">
+            <span>備註：</span>
+            <span>{detail.from.note}</span>
+          </p>
+        )}
       </div>
 
       <div className="flex space-x-4">
         <InfoSet
           title={content.lon}
-          content={String(journey.toLon)}
+          content={String(detail.to.lon)}
           titleSize="sm"
           align="h"
         />
 
         <InfoSet
           title={content.lat}
-          content={String(journey.toLat)}
+          content={String(detail.to.lat)}
           titleSize="sm"
           align="h"
         />
       </div>
 
-      <div>
+      <div className="mb-4">
         <div className="flex items-center">
           <div className="flex items-center text-orange-rich font-semibold min-w-20 mr-2">
             <strong className="text-sm">{content.journey.address.to}</strong>
-            <span className="text-xs ml-1">{`(${journey.toAddrRemark})`}</span>
+
+            {detail.to.note && (
+              <span className="text-xs ml-1">({detail.to.note})</span>
+            )}
           </div>
+
           <p className="flex-1 px-4 py-2 rounded-xl bg-gray-extralight">
-            {journey.toAddr}
+            {detail.to.address}
           </p>
         </div>
 
-        <p className="text-xs text-red-alert font-medium mb-4">{`${content.note}???`}</p>
+        {detail.to.note && (
+          <p className="text-xs text-red-alert font-medium">
+            <span>備註：</span>
+            <span>{detail.to.note}</span>
+          </p>
+        )}
       </div>
 
       <div className="h-64 -mx-6 lg:mx-0 bg-gray-extralight flex items-center justify-center">
-        <RouteMap center={{ lng: journey.fromLon, lat: journey.fromLat }} />
+        <RouteMap center={{ lng: detail.from.lon, lat: detail.from.lat }} />
       </div>
     </div>
   );

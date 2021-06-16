@@ -5,19 +5,11 @@ import {
   BasicTitle,
   BasicInfo,
   CaseInfo,
+  PaymentInfo,
   HistoryList,
 } from "components/record/detail";
-import {
-  getCaseDetail,
-  getDespatchByOrderId,
-  getOrder,
-  getStatusLog,
-} from "apis";
-
-const mockHistory = [
-  { status: "新訂單", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-  { status: "已取消", editDate: "2021-05-17 10:06:21", editor: "林園元" },
-];
+import { getDispatch, getOrder, getOrderHistory } from "apis";
+import { useQueriesTyped } from "functions/async";
 
 const content = {
   title: "乘車明細",
@@ -42,47 +34,50 @@ export async function getServerSideProps({ params, req }: Context) {
 
   return {
     props: {
-      detail: await getCaseDetail({
-        orderId: id,
-        token,
-      }),
-      status: await getStatusLog({
-        orderId: id,
-        token,
-      }),
-      despatches: await getDespatchByOrderId({
-        orderId: id,
-        token,
-      }),
-      // TODO: History尚未接
-      history: mockHistory,
+      id,
+      token,
     },
   };
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function RecordDetailPage({
-  detail,
-  status,
-  despatches,
-  history,
-}: Props) {
+export default function RecordDetailPage({ id, token }: Props) {
+  const [
+    { data: order },
+    { data: dispatch },
+    { data: history },
+  ] = useQueriesTyped([
+    {
+      queryKey: ["Order", id],
+      queryFn: () => getOrder({ token: token!, id: id! }),
+      enabled: Boolean(token && id),
+    },
+    {
+      queryKey: ["Dispatch", id],
+      queryFn: () => getDispatch({ token: token!, id: id! }),
+      enabled: Boolean(token && id),
+    },
+    {
+      queryKey: ["History", id],
+      queryFn: () => getOrderHistory({ token: token!, id: id! }),
+      enabled: Boolean(token && id),
+    },
+  ]);
+
+  if (!order || !dispatch || !history) return <></>;
+
   return (
     <Layout.Normal title={content.title} prev="/client/record">
       <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
-        {/* TODO: status取回為array, 取得最新status的規則? */}
-        <BasicTitle
-          detail={detail}
-          status={status ? status[0].status : undefined}
-        />
+        <BasicTitle detail={order} />
 
-        <BasicInfo detail={detail} />
+        <BasicInfo detail={order} />
 
-        <CaseInfo journey={detail} despatches={despatches} />
+        <CaseInfo detail={{ ...order, ...dispatch }} />
 
-        {/* <PaymentInfo payment={payment} /> */}
+        <PaymentInfo detail={order} />
 
-        <HistoryList history={history} />
+        <HistoryList detail={history} />
       </div>
     </Layout.Normal>
   );

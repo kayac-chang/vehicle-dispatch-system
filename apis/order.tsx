@@ -1,6 +1,13 @@
 import { format, parse } from "date-fns";
-import { prop } from "ramda";
-import { Record, OrderDetail, OrderDetailRecord, OrderAmount } from "types";
+import { map, prop } from "ramda";
+import {
+  Record,
+  OrderDetail,
+  OrderDetailRecord,
+  OrderAmount,
+  Dispatch,
+  OrderHistory,
+} from "types";
 import { BaseResponse, get, KHH_API, post, Token } from "./base";
 
 interface OrderResponse {
@@ -105,20 +112,24 @@ function toRecord(data: OrderResponse): OrderDetailRecord {
     id: data.id,
     order: data.orderNo,
     caseID: data.caseUserId,
+    caseNo: data.caseUserNo,
     date: parse(data.reserveDate, "yyyy-MM-dd HH:mm:ss", new Date()),
     status: data.status,
     name: data.userName,
+    userPhone: data.userPhone,
     from: {
       id: "",
       address: data.fromAddr,
       lat: data.fromLat,
       lon: data.fromLon,
+      note: data.fromAddrRemark || undefined,
     },
     to: {
       id: "",
       address: data.toAddr,
       lat: data.toLat,
       lon: data.toLon,
+      note: data.toAddrRemark || undefined,
     },
     accompanying: data.familyWith,
     userID: data.userUID,
@@ -132,6 +143,15 @@ function toRecord(data: OrderResponse): OrderDetailRecord {
     },
     wheelchair: data.wealTypeName,
     phone: data.noticePhone,
+    createdAt: parse(data.createDate, "yyyy-MM-dd HH:mm:ss", new Date()),
+    amount: {
+      accompany: Number(data.etWithAmt),
+      subsidy: Number(data.etDiscountAmt),
+      self: Number(data.etSelfPay),
+      total: Number(data.etTotalAmt),
+    },
+    mileage: Number(data.totalMileage),
+    timeCost: Number(data.expectedMinute),
   };
 }
 
@@ -212,4 +232,76 @@ export function getOrderAmount({
   )
     .then(prop("result"))
     .then(toOrderAmount);
+}
+
+interface DespatchResponse {
+  driverName: string;
+  carNo: string;
+  orderNos: string[];
+}
+
+interface GetDespatchResponse extends BaseResponse {
+  result: DespatchResponse;
+}
+
+function toDispatch({
+  driverName,
+  carNo,
+  orderNos,
+}: DespatchResponse): Dispatch {
+  return {
+    driver: driverName,
+    carNo,
+    orderNos,
+  };
+}
+
+/**
+ * [GET /api/Despatchs/GetByOrderId]
+ *
+ * get Case Dispatch info by orderId from service
+ */
+export function getDispatch({ id, token }: Token & { id: string }) {
+  return get<GetDespatchResponse>(
+    KHH_API("Despatchs/GetByOrderId", { orderId: id }),
+    {
+      "X-Token": token,
+    }
+  )
+    .then(prop("result"))
+    .then(toDispatch);
+}
+
+interface StatusLogResponse {
+  status: number;
+  createDate: string;
+  createUserName: string;
+}
+
+interface GetStatueLogResponse extends BaseResponse {
+  result: StatusLogResponse[];
+}
+
+function toHistory(data: StatusLogResponse): OrderHistory {
+  return {
+    status: data.status,
+    createdAt: parse(data.createDate, "yyyy-MM-dd HH:mm:ss", new Date()),
+    creator: data.createUserName,
+  };
+}
+
+/**
+ * [GET /api/OrderOfCaseUsers/GetStatusLog]
+ *
+ * get Case Despatch info by orderId from service
+ */
+export function getOrderHistory({ id, token }: Token & { id: string }) {
+  return get<GetStatueLogResponse>(
+    KHH_API("OrderOfCaseUsers/GetStatusLog", { orderId: id }),
+    {
+      "X-Token": token,
+    }
+  )
+    .then(prop("result"))
+    .then(map(toHistory));
 }
