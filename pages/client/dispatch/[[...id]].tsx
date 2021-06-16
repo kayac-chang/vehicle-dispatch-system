@@ -16,11 +16,14 @@ import {
   getCaseUser,
   getDiscount,
   getGeocode,
+  getOrder,
+  getFavorite,
 } from "apis";
 import {
   addDays,
   addMinutes,
   endOfDay,
+  format,
   isSameDay,
   parse,
   roundToNearestMinutes,
@@ -49,7 +52,7 @@ const content = {
 };
 
 type Context = GetServerSidePropsContext<{ id: string }>;
-export async function getServerSideProps({ req }: Context) {
+export async function getServerSideProps({ params, req, query }: Context) {
   const session = await getSession({ req });
 
   if (!session) {
@@ -74,6 +77,60 @@ export async function getServerSideProps({ req }: Context) {
     getCaseUser({ token, caseID }),
     getDiscount({ token, caseID }),
   ]);
+
+  if (params?.id) {
+    const data = await getOrder({ token, id: params.id });
+
+    const order = {
+      date: format(data.date, "yyyy-MM-dd"),
+      time: format(data.date, "HH:mm"),
+      case: data.identity,
+      from: data.from.address,
+      "from-note-type": data.from.note || "",
+      to: data.to.address,
+      "to-note-type": data.to.note || "",
+      share: data.share,
+      "is-round-trip": data.isRoundTrip,
+      "car-type": data.carCategory.id,
+      "wheelchair-type": data.wheelchair,
+      "accompanying-number": String(data.accompanying),
+      "sms-code": data.phone,
+    };
+
+    return {
+      props: {
+        order,
+        caseID,
+        user: user,
+        token,
+        organizations: organizations.filter(({ id }) =>
+          caseUser.organizationIDs.includes(id)
+        ),
+        address: caseUser.address,
+        discount,
+        cartype,
+      },
+    };
+  }
+
+  if (query.favorite && typeof query.favorite === "string") {
+    const { from, to } = await getFavorite({ token, id: query.favorite });
+
+    return {
+      props: {
+        order: { from, to },
+        caseID,
+        user: user,
+        token,
+        organizations: organizations.filter(({ id }) =>
+          caseUser.organizationIDs.includes(id)
+        ),
+        address: caseUser.address,
+        discount,
+        cartype,
+      },
+    };
+  }
 
   return {
     props: {
@@ -145,6 +202,7 @@ function useOrderAmount(
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function News({
+  order,
   caseID,
   token,
   user,
@@ -157,16 +215,11 @@ export default function News({
     defaultValues: {
       organizations: [],
       from: address && `${address.county}${address.district}${address.street}`,
+      ...(order || {}),
     },
   });
 
   const [modal, setModal] = useState<"balance" | undefined>(undefined);
-
-  const minDay = addDays(new Date(), 5);
-  const isMinDay = isSameDay(
-    parse(watch("date"), "yyyy-MM-dd", new Date()),
-    minDay
-  );
 
   const [fromGeo, setFromAddress] = useGeocode();
   const from = watch("from");
@@ -177,7 +230,6 @@ export default function News({
   useEffect(() => setToAddress(to), [to]);
 
   const [amount, setFrom, setTo] = useOrderAmount(token, caseID);
-
   useEffect(() => setFrom(fromGeo), [fromGeo]);
   useEffect(() => setTo(toGeo), [toGeo]);
 
@@ -224,6 +276,12 @@ export default function News({
       date: parse(`${data.date} ${data.time}`, "yyyy-MM-dd HH:mm", new Date()),
     }).then(() => console.log("success"));
   }
+
+  const minDay = addDays(new Date(), 5);
+  const isMinDay = isSameDay(
+    parse(watch("date"), "yyyy-MM-dd", new Date()),
+    minDay
+  );
 
   return (
     <>
