@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { History } from "types/record";
+import { format } from "date-fns";
+import { OrderHistory, statusDecoder } from "types";
 
 const content = {
   title: "訂單歷程",
@@ -11,10 +12,9 @@ const content = {
 };
 
 type Props = {
-  history: History[] | undefined;
+  detail: OrderHistory[];
 };
-export function HistoryList({ history }: Props) {
-  if (!history) <></>;
+export function HistoryList({ detail }: Props) {
   return (
     <div
       className={clsx(
@@ -42,18 +42,21 @@ export function HistoryList({ history }: Props) {
         </thead>
 
         <tbody className="text-sm text-left">
-          {history &&
-            history.map((item: History, index: number) => (
-              <tr key={index} className="border-b">
-                <th className="py-4 pl-4 font-semibold">{item.status}</th>
-                <th className="py-4 font-normal text-center lg:text-left">
-                  {item.editDate}
-                </th>
-                <th className="py-4 px-2 lg:px-0 font-normal text-left lg:text-center">
-                  {item.editor}
-                </th>
-              </tr>
-            ))}
+          {detail.map((item, index) => (
+            <tr key={index} className="border-b">
+              <th className="py-4 pl-4 font-semibold">
+                {statusDecoder(item.status)}
+              </th>
+
+              <th className="py-4 font-normal text-center lg:text-left">
+                {format(item.createdAt, "yyyy-MM-dd HH:mm:ss")}
+              </th>
+
+              <th className="py-4 px-2 lg:px-0 font-normal text-left lg:text-center">
+                {item.creator}
+              </th>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -7,7 +7,16 @@ import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/client";
-import { getCarType, getCaseID, getOrderAmount, getUserProfile } from "apis";
+import {
+  getCarType,
+  getCaseID,
+  getOrderAmount,
+  getUserProfile,
+  addOrder,
+  getCaseUser,
+  getDiscount,
+  getGeocode,
+} from "apis";
 import {
   addDays,
   addMinutes,
@@ -17,9 +26,7 @@ import {
   roundToNearestMinutes,
 } from "date-fns";
 import { getAllOrganizations } from "apis/organization";
-import { addOrder, getCaseUser, getDiscount } from "apis/caseuser";
 import { useQuery } from "react-query";
-import { getGeocode } from "apis/map";
 import { useDebounce } from "@react-hook/debounce";
 import { useEffect } from "react";
 import { Geocode, OrderAmount } from "types";
@@ -126,14 +133,8 @@ function useOrderAmount(
     getOrderAmount({
       token,
       caseID,
-      from: {
-        id: from.id,
-        address: from.address,
-      },
-      to: {
-        id: to.id,
-        address: to.address,
-      },
+      from,
+      to,
       accompanying: 0,
       date: new Date(),
     }).then(setAmount);
@@ -186,6 +187,8 @@ export default function News({
     const car = cartype.find(({ value }) => data["car-type"] === value);
     if (!car) return;
 
+    if (!fromGeo || !toGeo) return;
+
     // TODO form submit check...
 
     addOrder({
@@ -198,11 +201,15 @@ export default function News({
         id: data["from-note-type"],
         address: data.from,
         note: data["from-note"],
+        lat: fromGeo.lat,
+        lon: fromGeo.lon,
       },
       to: {
         id: data["to-note-type"],
         address: data.to,
         note: data["to-note"],
+        lat: toGeo.lat,
+        lon: toGeo.lon,
       },
       note: "",
       isRoundTrip: Boolean(data["is-round-trip"]),

@@ -3,20 +3,11 @@ import { Tag, CanShared, InfoSet, DecorationTag } from "components/record";
 import { Button, Icon } from "components/atoms";
 import clsx from "clsx";
 import { ReactNode } from "react";
-import { Record } from "types/record";
+import { OrderStatus, Record, statusDecoder } from "types";
 import { format, isAfter, isBefore, subHours } from "date-fns";
 
 const content = {
   title: "長照",
-
-  status: {
-    newOrder: "新訂單",
-    booked: "已排班",
-    arrived: "已抵達",
-    driving: "客上",
-    done: "完成",
-    canceled: "取消",
-  },
 
   canShared: "已共乘",
 
@@ -48,34 +39,6 @@ const content = {
     question: "填寫問卷",
   },
 };
-
-enum OrderStatus {
-  NewOrder = 1,
-  Booked = 2,
-  Arrived = 3,
-  Driving = 4,
-  Done = 5,
-  Canceled = 9,
-}
-
-function statusDecoder(status: OrderStatus): string {
-  switch (status) {
-    case OrderStatus.NewOrder:
-      return content.status.newOrder;
-    case OrderStatus.Booked:
-      return content.status.booked;
-    case OrderStatus.Arrived:
-      return content.status.arrived;
-    case OrderStatus.Driving:
-      return content.status.driving;
-    case OrderStatus.Done:
-      return content.status.done;
-    case OrderStatus.Canceled:
-      return content.status.canceled;
-    default:
-      return "";
-  }
-}
 
 export function FromTitle() {
   return (

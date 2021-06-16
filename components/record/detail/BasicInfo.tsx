@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { RecordDetail } from "types/record";
 import { DecorationTag, InfoSet, Tag, CanShared } from "components/record";
+import { OrderDetailRecord, statusDecoder } from "types";
+import { format } from "date-fns";
 
 const content = {
   title: "長照",
@@ -29,41 +30,12 @@ const content = {
     yes: "可共乘",
     no: "不願共乘",
   },
-  status: {
-    newOrder: "新訂單",
-    booked: "已排班",
-    arrived: "已抵達",
-    driving: "客上",
-    done: "完成",
-    canceled: "取消",
-  },
 };
 
-function statusDecoder(status: number): string {
-  switch (status) {
-    case 1:
-      return content.status.newOrder;
-    case 2:
-      return content.status.booked;
-    case 3:
-      return content.status.arrived;
-    case 4:
-      return content.status.driving;
-    case 5:
-      return content.status.done;
-    case 9:
-      return content.status.canceled;
-    default:
-      return "";
-  }
-}
-
-type BasicTitleProps = {
-  detail: RecordDetail | undefined;
-  status: number | undefined;
+type Props = {
+  detail: OrderDetailRecord;
 };
-export function BasicTitle({ detail, status }: BasicTitleProps) {
-  if (!detail) return <></>;
+export function BasicTitle({ detail }: Props) {
   return (
     <div
       className={clsx(
@@ -77,42 +49,44 @@ export function BasicTitle({ detail, status }: BasicTitleProps) {
         <div className="flex-1 items-center space-x-4 hidden lg:flex">
           <InfoSet
             title={content.order.orderNo}
-            content={detail.orderNo}
+            content={detail.order}
             titleSize="sm"
             contentClass="text-sm text-blue-darker font-semibold"
           />
 
           <InfoSet
             title={content.order.reserveDate}
-            content={detail.reserveDate}
+            content={format(detail.date, "yyyy-MM-dd")}
             titleSize="sm"
             contentClass="text-sm text-blue-darker font-semibold"
           />
         </div>
 
         <div className="flex">
-          {detail.canShared && (
+          {detail.share && (
             <CanShared
               className="space-x-1 mr-3 lg:mr-6"
               label={content.order.canShared}
             />
           )}
 
-          {status && <Tag status={status} label={statusDecoder(status)} />}
+          {detail.status && (
+            <Tag status={detail.status} label={statusDecoder(detail.status)} />
+          )}
         </div>
       </div>
 
       <div className="px-4 pt-3 flex-1 items-center space-x-4 flex lg:hidden">
         <InfoSet
           title={content.order.orderNo}
-          content={detail.orderNo}
+          content={detail.order}
           titleSize="sm"
           contentClass="text-sm text-blue-darker font-semibold"
         />
 
         <InfoSet
           title={content.order.reserveDate}
-          content={detail.reserveDate}
+          content={format(detail.date, "yyyy-MM-dd")}
           titleSize="sm"
           contentClass="text-sm text-blue-darker font-semibold"
         />
@@ -121,25 +95,23 @@ export function BasicTitle({ detail, status }: BasicTitleProps) {
   );
 }
 
-type BasicInfoProps = {
-  detail: RecordDetail | undefined;
-};
-export function BasicInfo({ detail }: BasicInfoProps) {
-  if (!detail) return <></>;
+export function BasicInfo({ detail }: Props) {
   const basicInfo = [
-    { title: content.label.createdIdentity, content: detail.createdIdentity },
+    { title: content.label.createdIdentity, content: detail.identity },
     {
       title: content.label.canShared,
-      content: detail.canShared ? content.canShared.yes : content.canShared.no,
+      content: detail.share ? content.canShared.yes : content.canShared.no,
     },
-    { title: content.label.familyWith, content: `${detail.familyWith}人` },
-    { title: content.label.wealTypeName, content: detail.wealTypeName },
-    { title: content.label.createDate, content: detail.createDate },
-    { title: content.label.etTotalAmt, content: detail.etTotalAmt },
-    { title: content.label.etDiscountAmt, content: detail.etDiscountAmt },
-    { title: content.label.etSelfPay, content: detail.etSelfPay },
-    { title: content.label.etWithAmt, content: detail.etWithAmt },
-    { title: content.label.etSelfPay, content: `${detail.etSelfPay}?` },
+    { title: content.label.familyWith, content: `${detail.accompanying}人` },
+    { title: content.label.wealTypeName, content: detail.wheelchair },
+    {
+      title: content.label.createDate,
+      content: format(detail.createdAt, "yyyy-MM-dd"),
+    },
+    { title: content.label.etTotalAmt, content: detail.amount.total },
+    { title: content.label.etDiscountAmt, content: detail.amount.subsidy },
+    { title: content.label.etSelfPay, content: detail.amount.self },
+    { title: content.label.etWithAmt, content: detail.amount.accompany },
   ];
 
   return (
@@ -151,12 +123,12 @@ export function BasicInfo({ detail }: BasicInfoProps) {
         )}
       >
         <strong className="text-2xl text-gray-900 font-semibold">
-          {detail.userName}
+          {detail.name}
         </strong>
 
         <InfoSet
           title={content.order.case}
-          content={"1081213001"}
+          content={detail.caseNo}
           titleSize="sm"
           align="h"
         />
@@ -170,7 +142,7 @@ export function BasicInfo({ detail }: BasicInfoProps) {
 
         <InfoSet
           title={content.order.sms}
-          content={detail.noticePhone}
+          content={detail.phone}
           titleSize="sm"
           align="h"
         />

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
-import { OrderPayOfCaseUsers } from "types/record";
 import { InfoSet } from "components/record";
+import { OrderDetailRecord } from "types";
 
 const content = {
   title: "付款資訊",
@@ -10,21 +10,20 @@ const content = {
 };
 
 type Props = {
-  payment: OrderPayOfCaseUsers | undefined;
+  detail: OrderDetailRecord;
 };
-export function PaymentInfo({ payment }: Props) {
-  if (!payment) return <></>;
+export function PaymentInfo({ detail }: Props) {
   const paymentInfoData = [
     { title: "營收金額", content: "??" },
-    { title: "實際政府補助", content: payment.realDiscountAmt },
-    { title: "實際自付額", content: payment.realSelfPay },
-    { title: "實際陪同金額", content: payment.realWithAmt },
+    { title: "實際政府補助", content: detail.amount.subsidy },
+    { title: "實際自付額", content: detail.amount.self },
+    { title: "實際陪同金額", content: detail.amount.accompany },
     {
       title: "實際陪同人數",
-      content: payment.realFamilyWith + payment.realMaidWith,
+      content: detail.accompanying,
     },
-    { title: "使用額度", content: payment.useDiscount },
-    { title: "實收金額", content: payment.receivePay },
+    { title: "使用額度", content: "" },
+    { title: "實收金額", content: "" },
   ];
   return (
     <div className="p-6 py-3 bg-white flex flex-col space-y-3">
@@ -61,7 +60,7 @@ export function PaymentInfo({ payment }: Props) {
         <InfoSet
           className="w-auto lg:w-40 mb-0 lg:mb-4"
           title={content.note}
-          content={payment.remark}
+          content={""}
           titleSize="xs"
           align="v"
         />
@@ -71,16 +70,16 @@ export function PaymentInfo({ payment }: Props) {
             {content.sign}
           </span>
 
-          <div className="w-40 h-32 bg-gray-extralight">
+          {/* <div className="w-40 h-32 bg-gray-extralight">
             <Image
               className="w-6 h-6 overflow-hidden"
-              src={payment.signPic}
+              src={}
               alt="client signature"
               width={160}
               height={128}
               unoptimized
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
