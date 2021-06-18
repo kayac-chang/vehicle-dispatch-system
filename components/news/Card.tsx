@@ -1,7 +1,6 @@
 import { Pagination } from "components/molecules";
-import { NoData, Tag } from "components/atoms";
+import { NoData, Tag, Link } from "components/atoms";
 import { News } from "types";
-import Link from "next/link";
 import clsx from "clsx";
 
 type CardViewProps = {
@@ -30,25 +29,23 @@ export function CardView({
             {items.map(({ id, category, title, date }, index) => (
               <li key={index}>
                 <Link href={`/client/news/${id}`}>
-                  <a>
-                    <article className="px-6 py-2 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <Tag
-                          className={clsx(
-                            category === "長照"
-                              ? "border-orange-dark bg-orange-light text-orange-dark"
-                              : "bg-gray-extralight"
-                          )}
-                        >
-                          {category}
-                        </Tag>
+                  <article className="px-6 py-2 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Tag
+                        className={clsx(
+                          category === "長照"
+                            ? "border-orange-dark bg-orange-light text-orange-dark"
+                            : "bg-gray-extralight"
+                        )}
+                      >
+                        {category}
+                      </Tag>
 
-                        <span className="text-xs">{date}</span>
-                      </div>
+                      <span className="text-xs">{date}</span>
+                    </div>
 
-                      <h3 className="text-sm">{title}</h3>
-                    </article>
-                  </a>
+                    <h3 className="text-sm">{title}</h3>
+                  </article>
                 </Link>
               </li>
             ))}

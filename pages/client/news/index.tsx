@@ -119,7 +119,7 @@ export default function News() {
             </div>
 
             <div className="lg:w-20">
-              <Button.Flat type="submit" className="py-2">
+              <Button.Flat type="submit" className="py-2 lg:py-0 h-full">
                 {content.form.submit}
               </Button.Flat>
             </div>
