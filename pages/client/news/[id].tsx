@@ -9,7 +9,7 @@ export async function getServerSideProps({ params }: Context) {
   if (!params) {
     return {
       redirect: {
-        destination: "/client/news",
+        destination: "/",
         permanent: true,
       },
       props: {
@@ -41,7 +41,7 @@ export default function News({ news }: Props) {
   if (!news) return <></>;
 
   return (
-    <Layout.Sub title={news.title} prev="/client/news">
+    <Layout.Sub title={news.title} prev="/">
       <article className="space-y-4 pb-8">
         <h1 className="text-blue-dark text-xl font-semibold">{news.title}</h1>
 
