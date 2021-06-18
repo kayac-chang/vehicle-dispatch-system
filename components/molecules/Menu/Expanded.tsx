@@ -11,6 +11,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { VirtualElement } from "@popperjs/core";
+import Collapse from "@material-ui/core/Collapse";
 
 type MenuProps = {
   name: string;
@@ -125,6 +126,19 @@ export function Expanded({ label, icon, items, className }: ExpandedProps) {
 
           <span>{label}</span>
         </button>
+
+        <Collapse in={open}>
+          <ul role="menu" id={label} aria-label={label} className="lg:hidden">
+            {items.map((item) => (
+              <li key={item.label}>
+                <Item
+                  className="pl-24 lg:pl-0 lg:text-black lg:hover:bg-white mx-auto"
+                  {...item}
+                />
+              </li>
+            ))}
+          </ul>
+        </Collapse>
 
         <Menu
           name={label}
