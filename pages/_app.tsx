@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider as AuthProvider } from "next-auth/client";
 import { HistoryProvider } from "contexts";
 
@@ -18,8 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </AuthProvider>
         </HistoryProvider>
-
-        <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>
   );

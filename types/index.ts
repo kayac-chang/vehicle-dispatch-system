@@ -9,7 +9,6 @@ export interface QNA {
   description: string;
 }
 
-// TODO:改成正確的資料型態
 export interface Corporation {
   name: string;
   tel: string;
