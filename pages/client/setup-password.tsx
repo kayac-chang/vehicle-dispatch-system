@@ -3,7 +3,7 @@ import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import Rule from "functions/regexp";
 import { changePassword, getUsername, logout } from "apis";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/dist/client/router";
 

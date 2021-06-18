@@ -3,7 +3,7 @@ import { Card } from "components/molecules";
 import { Button, Form } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 import { getUserProfile } from "apis";
 import { useRouter } from "next/dist/client/router";
 import { addFavorite } from "apis/favorite";

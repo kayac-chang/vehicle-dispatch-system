@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
 import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 import {
   getCarType,
   getCaseID,

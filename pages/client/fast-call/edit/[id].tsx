@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getFavorite, getUserProfile, updateFavorite } from "apis";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 
 const content = {
   title: "編輯常用路線",

@@ -154,3 +154,14 @@ export function checkVerification({
     })
   ).then(() => true);
 }
+
+/**
+ * [GET /api/Check/GetStatus]
+ *
+ * check token status
+ */
+export function checkToken({ token }: Token) {
+  return get(KHH_API("Check/GetStatus"), {
+    "X-Token": token,
+  }).then(() => true);
+}

@@ -8,7 +8,7 @@ import { addMonths, format, subMonths } from "date-fns";
 import { useQuery } from "react-query";
 import { deleteOrder, getRecord } from "apis";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 import { Record as IRecord } from "types";
 
 const content = {

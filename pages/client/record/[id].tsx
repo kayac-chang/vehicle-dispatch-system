@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getSession } from "next-auth/client";
+import { getSession } from "functions/auth";
 import Layout from "components/templates";
 import {
   BasicTitle,
@@ -68,7 +68,7 @@ export default function RecordDetailPage({ id, token }: Props) {
 
   return (
     <Layout.Normal title={content.title} prev="/client/record">
-      <div className="-mx-6 m-0 lg:m-10 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
+      <div className="-mx-6 sm:mx-0 sm:mb-8 shadow-none rounded-none lg:shadow-md lg:rounded-lg">
         <BasicTitle detail={order} />
 
         <BasicInfo detail={order} />
