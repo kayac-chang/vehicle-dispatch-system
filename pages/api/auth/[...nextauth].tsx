@@ -1,4 +1,4 @@
-import { login } from "apis/auth";
+import { login, logout } from "apis/auth";
 import NextAuth from "next-auth";
 import { JWT } from "next-auth/jwt";
 import Providers from "next-auth/providers";
@@ -44,6 +44,12 @@ export default NextAuth({
       }
 
       return token;
+    },
+  },
+
+  events: {
+    async signOut(message: JWT) {
+      await logout({ token: message.accessToken });
     },
   },
 });
