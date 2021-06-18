@@ -3,7 +3,7 @@ import {
   PaginationItem as Item,
 } from "@material-ui/core";
 import { useRouter } from "next/dist/client/router";
-import Link from "next/link";
+import { Link } from "components/atoms";
 
 type PaginationProps = {
   total: number;
@@ -19,10 +19,10 @@ export function Pagination({ total, page, onChange }: PaginationProps) {
       page={page}
       onChange={(_, page) => onChange?.(page)}
       renderItem={(item) => (
-        <Link href={{ pathname: router.pathname, query: { page: item.page } }}>
-          <a>
-            <Item {...item} />
-          </a>
+        <Link href={`${router.pathname}?page=${item.page}`}>
+          <Item {...item} />
+
+          <span className="sr-only">前往 ${item.page} 頁</span>
         </Link>
       )}
     />

@@ -28,7 +28,7 @@ export function Logo() {
         aria-hidden
       />
 
-      <span className={clsx("text-base font-medium tracking-wider")}>
+      <span className={clsx("text-base font-medium tracking-wider bg-white")}>
         {content.title}
       </span>
     </Link>

@@ -202,7 +202,7 @@ export function RecordCard({
             <RecordButton
               type="anchor"
               href={`/client/record/${item.id}`}
-              className="bg-blue-bright"
+              className="bg-blue-light"
             >
               {content.button.detail}
             </RecordButton>
@@ -228,7 +228,7 @@ export function RecordCard({
             )}
 
             {isDone && (
-              <RecordButton className="bg-blue-bright">
+              <RecordButton className="bg-blue-light">
                 {content.button.question}
               </RecordButton>
             )}

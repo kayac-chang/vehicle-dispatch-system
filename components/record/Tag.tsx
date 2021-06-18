@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Icon } from "components/atoms";
+import { OrderStatus } from "types";
 
 type TagProps = {
   status: number;
@@ -10,19 +11,17 @@ export function Tag({ status, label }: TagProps) {
     <span
       className={clsx(
         "border rounded-sm px-2 text-xs leading-5 whitespace-no-wrap",
-        status === 1 &&
+        status === OrderStatus.NewOrder &&
           "border-orange-darker bg-orange-light text-orange-darker",
-        status === 2 && " border-green-300 bg-green-100  text-green-500",
-        status === 3 && " border-blue-bright bg-blue-100  text-blue-bright",
-        status === 4 && " border-red-300 bg-red-100  text-red-500",
-        status === 5 && " border-green-300 bg-green-100  text-green-500",
-        // status === 6 &&
-        //   "border-orange-darker bg-orange-light text-orange-darker",
-        // status === 7 &&
-        //   "border-orange-darker bg-orange-light text-orange-darker",
-        // status === 8 &&
-        //   "border-orange-darker bg-orange-light text-orange-darker",
-        status === 9 &&
+        status === OrderStatus.Booked &&
+          "border-green-darker bg-green-100 text-green-darker",
+        status === OrderStatus.Arrived &&
+          "border-blue-light bg-blue-100  text-blue-light",
+        status === OrderStatus.Driving &&
+          "border-red-dark bg-red-100  text-red-dark",
+        status === OrderStatus.Done &&
+          " border-green-darker bg-green-100  text-green-darker",
+        status === OrderStatus.Canceled &&
           "border-orange-darker bg-orange-light text-orange-darker"
       )}
     >

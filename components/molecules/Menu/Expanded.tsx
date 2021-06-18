@@ -128,7 +128,7 @@ export function Expanded({ label, icon, items, className }: ExpandedProps) {
         <Collapse in={open}>
           <ul role="menu" id={label} aria-label={label} className="lg:hidden">
             {items.map((item) => (
-              <li key={item.label}>
+              <li role="menuitem" key={item.label}>
                 <Item
                   className="pl-24 lg:pl-0 lg:text-black lg:hover:bg-white mx-auto"
                   {...item}
@@ -149,7 +149,7 @@ export function Expanded({ label, icon, items, className }: ExpandedProps) {
           {items.map((item) => (
             <MenuItem key={item.label}>
               <Item
-                className="lg:text-black lg:hover:bg-white mx-auto"
+                className="lg:text-black lg:hover:text-gold-darker mx-auto"
                 onClick={handleClose}
                 {...item}
               />

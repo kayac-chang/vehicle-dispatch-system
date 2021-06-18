@@ -38,9 +38,7 @@ function CarItem({ label, value, control, seleted }: CarItemProps) {
         <div
           className={clsx(
             "rounded-sm border",
-            order !== -1
-              ? "bg-black bg-opacity-75 relative"
-              : "border-black-light"
+            order !== -1 ? "bg-gray-darker relative" : "border-black-light"
           )}
         >
           <Checkbox
@@ -68,7 +66,7 @@ function CarItem({ label, value, control, seleted }: CarItemProps) {
                 "transform -translate-y-1/2 -translate-x-1",
                 "w-6 h-6",
                 "flex justify-center items-center",
-                "bg-yellow-dark text-black text-sm"
+                "bg-yellow-dark text-gray-dark text-sm"
               )}
             >
               {order + 1}
@@ -111,7 +109,7 @@ export function CarSelection({
       <div className="flex justify-between items-center lg:justify-start space-x-4 py-2">
         <p className="text-sm space-x-1">
           <span>{content.describe.main}</span>
-          <span className="text-red-light">{content.describe.sub}</span>
+          <span className="text-red-dark">{content.describe.sub}</span>
         </p>
 
         {organizations.length > 1 && (

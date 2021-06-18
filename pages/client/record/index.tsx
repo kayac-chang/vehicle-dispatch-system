@@ -1,6 +1,6 @@
 import Layout from "components/templates";
 import { Pagination, Modal } from "components/molecules";
-import { Form, NoData } from "components/atoms";
+import { Button, Form, NoData } from "components/atoms";
 import { useForm } from "react-hook-form";
 import { RecordCard } from "components/record";
 import { useState } from "react";
@@ -27,6 +27,8 @@ const content = {
       from: "開始時間",
       end: "結束時間",
     },
+
+    submit: "查詢",
   },
 
   cancel: {
@@ -160,6 +162,12 @@ export default function Record({ token }: Props) {
                   max: filter.end,
                 }}
               />
+            </div>
+
+            <div className="lg:w-20">
+              <Button.Flat type="submit" className="py-2 lg:py-0 h-full">
+                {content.form.submit}
+              </Button.Flat>
             </div>
           </div>
         </form>

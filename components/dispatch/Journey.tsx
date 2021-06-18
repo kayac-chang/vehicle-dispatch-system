@@ -343,7 +343,7 @@ export function Journey({ control, watch, cartype, amount }: JourneyProps) {
 
             <div className="text-xs">
               <p>{content.form.note.main}</p>
-              <p className="text-red-light">{content.form.note.sub}</p>
+              <p className="text-red-dark">{content.form.note.sub}</p>
             </div>
           </div>
 

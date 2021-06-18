@@ -13,7 +13,7 @@ export function InfoSet({
   title,
   content,
   titleSize = "lg-sm",
-  titleClass = "text-gray-lighter",
+  titleClass = "text-gray-dark",
   contentClass = "font-normal",
   align = "lg-h",
   className = "",

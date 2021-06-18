@@ -27,7 +27,7 @@ const heads = [
   {
     label: "個案負擔",
     key: "speical",
-    className: "text-red-light",
+    className: "text-red-dark",
   },
 ];
 

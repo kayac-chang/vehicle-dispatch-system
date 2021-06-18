@@ -11,8 +11,7 @@ export function Item(props: ItemProps) {
   const defaultClass = clsx(
     "flex items-center space-x-4 text-white w-full py-4",
     "lg:flex-col lg:space-x-0 xl:w-32",
-    "lg:border-b-4 lg:border-transparent",
-    "hover:bg-green-darkest hover:text-gold-light"
+    "lg:border-b-4 lg:border-transparent hover:text-gold-light"
   );
 
   if (props.items) {
@@ -36,7 +35,9 @@ export function Item(props: ItemProps) {
         onClick={props.onClick}
       >
         {icon ? (
-          <span className="w-8">{icon}</span>
+          <span className="w-8" aria-hidden>
+            {icon}
+          </span>
         ) : (
           <span
             className="bg-gold-light w-3 h-3 rounded-full lg:hidden"

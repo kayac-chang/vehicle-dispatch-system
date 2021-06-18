@@ -298,7 +298,7 @@ export default function News({
                   <Button.Icon
                     type="button"
                     icon={<Icon.Search />}
-                    className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center"
+                    className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center truncate"
                     onClick={() => setModal("balance")}
                   >
                     {content.search}

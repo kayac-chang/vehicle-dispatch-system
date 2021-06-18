@@ -48,7 +48,7 @@ export function Table({ id, name, from, to, onDeleteClick }: Props) {
 
         <Button.Icon
           type="button"
-          className="text-red-light"
+          className="text-red-dark"
           icon={<Icon.Delete />}
           onClick={onDeleteClick}
         >

@@ -4,7 +4,7 @@ import { Popper } from "@material-ui/core";
 import { useState } from "react";
 
 const links = [
-  { label: "最新消息", icon: <Icon.News />, href: "/client/news" },
+  { label: "最新消息", icon: <Icon.News />, href: "/" },
   {
     label: "預約訂車",
     icon: <Icon.Order />,
@@ -35,7 +35,6 @@ export function Header() {
 
         <button
           className="lg:hidden bg-green-dark text-white px-5 rounded-bl-3xl"
-          aria-describedby="menu"
           onClick={handleClick}
         >
           <span className="block w-6" aria-hidden>
