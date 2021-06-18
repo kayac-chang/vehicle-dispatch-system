@@ -1,6 +1,7 @@
 import { Icon, Logo } from "components/atoms";
-import { Disclosure } from "@headlessui/react";
 import { Menu } from "components/molecules";
+import { Popper } from "@material-ui/core";
+import { useState } from "react";
 
 const links = [
   { label: "最新消息", icon: <Icon.News />, href: "/client/news" },
@@ -19,21 +20,43 @@ const links = [
 ];
 
 export function Header() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
   return (
-    <Disclosure>
-      {({ open }) => (
-        <header className="z-10">
-          <div className="shadow flex relative z-10 bg-white lg:bg-green-dark">
-            <Logo />
+    <header className="z-10">
+      <div className="shadow flex relative z-10 bg-white lg:bg-green-dark">
+        <Logo />
 
-            <Menu.Desktop items={links} />
+        <Menu.Desktop items={links} />
 
-            <Menu.Button open={open} />
-          </div>
+        <button
+          className="lg:hidden bg-green-dark text-white px-5 rounded-bl-3xl"
+          aria-describedby="menu"
+          onClick={handleClick}
+        >
+          <span className="block w-6" aria-hidden>
+            <Icon.Menu />
+          </span>
 
-          <Menu.Mobile items={links} />
-        </header>
-      )}
-    </Disclosure>
+          <span className="sr-only">
+            {anchorEl ? "Close Menu" : "Open Menu"}
+          </span>
+        </button>
+      </div>
+
+      <Popper
+        id="menu"
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        placement="bottom"
+        className="z-10"
+      >
+        <Menu.Mobile items={links} />
+      </Popper>
+    </header>
   );
 }
