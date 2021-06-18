@@ -1,8 +1,7 @@
 import { Pagination } from "components/molecules";
-import { Icon, NoData, Tag } from "components/atoms";
+import { Icon, NoData, Tag, Link } from "components/atoms";
 import clsx from "clsx";
 import { News } from "types";
-import Link from "next/link";
 
 const content = {
   table: {
@@ -54,10 +53,12 @@ export function TableView({ items, total, page, onChange }: TableViewProps) {
               <td className="w-9/12 py-2">{title}</td>
               <td className="w-1/12 py-2">
                 <div className="w-full h-full flex justify-center">
-                  <Link href={`/client/news/${id}`}>
-                    <a className="w-10 p-2">
-                      <Icon.ArrowRight />
-                    </a>
+                  <Link
+                    href={`/client/news/${id}`}
+                    className="w-10 p-2"
+                    label={`前往 ${title}`}
+                  >
+                    <Icon.ArrowRight />
                   </Link>
                 </div>
               </td>
