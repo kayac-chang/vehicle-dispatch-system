@@ -1,10 +1,11 @@
 import clsx from "clsx";
+import { Link } from "components/atoms";
 import { Link as ILink } from ".";
 import { Expanded } from "./Expanded";
-import Link from "next/link";
 
 type ItemProps = {
   className?: string;
+  onClick?: () => void;
 } & ILink;
 export function Item(props: ItemProps) {
   const defaultClass = clsx(
@@ -29,19 +30,21 @@ export function Item(props: ItemProps) {
     const { label, icon, href, className } = props;
 
     return (
-      <Link href={href}>
-        <a className={clsx(defaultClass, className || "pl-12 lg:pl-0")}>
-          {icon ? (
-            <span className="w-8">{icon}</span>
-          ) : (
-            <span
-              className="bg-gold-light w-3 h-3 rounded-full lg:hidden"
-              aria-hidden
-            />
-          )}
+      <Link
+        href={href}
+        className={clsx(defaultClass, className || "pl-12 lg:pl-0")}
+        onClick={props.onClick}
+      >
+        {icon ? (
+          <span className="w-8">{icon}</span>
+        ) : (
+          <span
+            className="bg-gold-light w-3 h-3 rounded-full lg:hidden"
+            aria-hidden
+          />
+        )}
 
-          <span>{label}</span>
-        </a>
+        <span>{label}</span>
       </Link>
     );
   }

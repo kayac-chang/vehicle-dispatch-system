@@ -73,14 +73,12 @@ export function Expanded({ label, icon, items, className }: ExpandedProps) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+  const handleToggle = () => setOpen(!open);
 
-  const handleClose = (event: MouseEvent | TouchEvent) => {
+  const handleClose = (event?: MouseEvent | TouchEvent) => {
     if (
       anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
+      anchorRef.current.contains(event?.target as HTMLElement)
     ) {
       return;
     }
@@ -151,7 +149,8 @@ export function Expanded({ label, icon, items, className }: ExpandedProps) {
           {items.map((item) => (
             <MenuItem key={item.label}>
               <Item
-                className="lg:text-black lg:hover:bg-white  mx-auto"
+                className="lg:text-black lg:hover:bg-white mx-auto"
+                onClick={handleClose}
                 {...item}
               />
             </MenuItem>

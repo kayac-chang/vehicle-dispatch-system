@@ -9,6 +9,7 @@ type LinkProps = {
   className?: string;
   accessKey?: string;
   children: ReactNode;
+  onClick?: () => void;
 };
 export function Link({
   href,
@@ -17,6 +18,7 @@ export function Link({
   accessKey,
   className,
   children,
+  onClick,
 }: LinkProps) {
   return (
     <_Link href={href}>
@@ -25,6 +27,7 @@ export function Link({
         access-key={accessKey}
         className={className}
         aria-label={label}
+        onClick={onClick}
       >
         {children}
       </a>

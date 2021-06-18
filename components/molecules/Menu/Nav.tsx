@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { Link } from ".";
 import { Item } from "./Item";
 
-// TODO. support  https://www.w3.org/TR/wai-aria-practices/examples/menubar/menubar-1/menubar-1.html#
 type NavProps = {
   items: Link[];
   name?: string;
