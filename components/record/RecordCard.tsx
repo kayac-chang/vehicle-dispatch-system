@@ -140,7 +140,7 @@ export function RecordCard({
 
             <InfoSet
               title={content.order.reserveDate}
-              content={format(item.date, "yyyy-MM-dd")}
+              content={format(item.date, "yyyy-MM-dd HH:mm")}
             />
 
             <div className="flex space-x-4">

@@ -56,7 +56,7 @@ export function BasicTitle({ detail }: Props) {
 
           <InfoSet
             title={content.order.reserveDate}
-            content={format(detail.date, "yyyy-MM-dd")}
+            content={format(detail.date, "yyyy-MM-dd HH:mm")}
             titleSize="sm"
             contentClass="text-sm text-blue-darker font-semibold"
           />
