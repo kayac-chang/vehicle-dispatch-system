@@ -59,12 +59,12 @@ export default function Login() {
       redirect: false,
     })
       .then((res) => {
-        if (!res) return;
+        if (!res) return Promise.reject();
 
         if (res.error) {
           setError("password", { type: "manual", message: res.error });
 
-          return;
+          return Promise.reject(res.error);
         }
       })
       .then(() => getSession())
@@ -74,7 +74,8 @@ export default function Login() {
         }
 
         return router.replace(String(router.query.from || "/"));
-      });
+      })
+      .catch((err) => console.error(err));
   }
 
   return (
