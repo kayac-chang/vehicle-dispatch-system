@@ -9,7 +9,7 @@ import { useQuery } from "react-query";
 import { deleteOrder, getRecord } from "apis";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "functions/auth";
-import { Record as IRecord } from "types";
+import { OrderStatus, Record as IRecord } from "types";
 
 const content = {
   title: "訂單檢視",
@@ -99,6 +99,17 @@ export default function Record({ token }: Props) {
       ? { from: subMonths(new Date(), 1), end: new Date() }
       : { from: new Date(), end: addMonths(new Date(), 1) };
 
+  const filterByStatus =
+    watch("topic") === "future"
+      ? (item: IRecord) =>
+          [
+            OrderStatus.NewOrder,
+            OrderStatus.Booked,
+            OrderStatus.Arrived,
+            OrderStatus.Driving,
+          ].includes(item.status)
+      : () => true;
+
   const { data, refetch } = useQuery({
     queryKey: [
       "Record",
@@ -177,6 +188,7 @@ export default function Record({ token }: Props) {
             <ul aria-live="polite" className="space-y-4">
               {records
                 .sort((a, b) => Number(a.date) - Number(b.date))
+                .filter(filterByStatus)
                 .map((item) => (
                   <li key={item.order}>
                     <RecordCard
