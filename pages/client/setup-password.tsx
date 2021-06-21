@@ -20,13 +20,13 @@ const content = {
 };
 
 type Context = GetServerSidePropsContext<{ id: string }>;
-export async function getServerSideProps({ req }: Context) {
+export async function getServerSideProps({ req, resolvedUrl }: Context) {
   const session = await getSession({ req });
 
   if (!session) {
     return {
       redirect: {
-        destination: "/client/login",
+        destination: `/client/login?from=${resolvedUrl}`,
         permanent: true,
       },
       props: {},

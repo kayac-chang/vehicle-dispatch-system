@@ -5,6 +5,7 @@ import { List } from "components/molecules";
 import { useCallback } from "react";
 import { signIn } from "next-auth/client";
 import { useHistory } from "contexts";
+import { useRouter } from "next/dist/client/router";
 
 const content = {
   title: "登入",
@@ -50,17 +51,18 @@ export default function Login() {
     formState: { errors },
   } = useForm<Request>();
 
-  const history = useHistory();
+  const router = useRouter();
 
-  const onSubmit = useCallback(async (data: Request) => {
-    const prev = history[history.length - 2] || "/";
-
+  async function onSubmit(data: Request) {
     await signIn("credentials", {
       username: data.username,
       password: data.password,
-      callbackUrl: prev,
+      redirect: false,
     });
-  }, []);
+
+    const prev = router.query.from || "/";
+    router.replace(String(prev));
+  }
 
   return (
     <Layout.Form
