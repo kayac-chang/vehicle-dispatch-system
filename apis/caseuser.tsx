@@ -1,18 +1,6 @@
 import { prop } from "ramda";
-import { Discount } from "types";
+import { Discount, CaseUser } from "types";
 import { BaseResponse, get, KHH_API, Token } from "./base";
-
-interface Address {
-  county: string;
-  district: string;
-  street: string;
-}
-
-interface CaseUser {
-  id: string;
-  organizationIDs: string[];
-  address: Address;
-}
 
 interface CaseUserResponse {
   id: string;
@@ -55,6 +43,12 @@ function toCaseUser(data: CaseUserResponse): CaseUser {
       county: data.county,
       district: data.district,
       street: data.addr,
+    },
+    urgent: {
+      name: data.urgentName,
+      relationship: data.urgentRelationship,
+      phone: data.urgentPhone,
+      tel: data.urgentTel,
     },
   };
 }

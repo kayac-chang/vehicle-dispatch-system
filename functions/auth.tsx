@@ -9,7 +9,11 @@ export async function getSession(props: Parameters<typeof _getSession>[0]) {
 
   if (!session?.accessToken) return;
 
-  await checkToken({ token: session.accessToken });
+  try {
+    await checkToken({ token: session.accessToken });
+  } catch (err) {
+    return;
+  }
 
   return session;
 }

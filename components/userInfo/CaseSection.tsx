@@ -1,4 +1,4 @@
-import { User } from "types";
+import { CaseUser } from "types";
 import { Button } from "components/atoms";
 import { InfoField } from "components/userInfo";
 
@@ -19,7 +19,7 @@ const content = {
 };
 
 type CaseSectionProps = {
-  data: User;
+  data: CaseUser;
   onBalanceClick: () => void;
 };
 export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
@@ -45,36 +45,39 @@ export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
       <hr className="my-3 border-gold-darker" />
 
       <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3">
-        {/* <InfoField
+        <InfoField
           className="w-full lg:w-1/5"
           title={content.case.caseNo}
-          content={data.caseUserNo}
+          content={data.id}
         />
 
         <InfoField
           className="w-full lg:w-1/2"
           title={content.case.address}
-          content={`${data.county}${data.district}${data.addr}`}
-        /> */}
+          content={`${data.address.county}${data.address.district}${data.address.street}`}
+        />
       </div>
 
       <div className="flex flex-col lg:flex-row items-end space-y-10 lg:space-x-10 pt-3 mt-6 pb-12">
-        {/* <InfoField
+        <InfoField
           title={content.case.urgent.name}
-          content={data.urgentName || content.case.urgent.none}
+          content={data.urgent.name || content.case.urgent.none}
         />
+
         <InfoField
           title={content.case.urgent.relationship}
-          content={data.urgentRelationship || content.case.urgent.none}
+          content={data.urgent.relationship || content.case.urgent.none}
         />
+
         <InfoField
           title={content.case.urgent.phone}
-          content={data.urgentPhone || content.case.urgent.none}
+          content={data.urgent.phone || content.case.urgent.none}
         />
+
         <InfoField
           title={content.case.urgent.tel}
-          content={data.urgentTel || content.case.urgent.none}
-        /> */}
+          content={data.urgent.tel || content.case.urgent.none}
+        />
       </div>
     </article>
   );

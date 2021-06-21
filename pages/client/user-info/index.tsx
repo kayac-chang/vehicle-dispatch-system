@@ -58,13 +58,13 @@ export default function UserInfo({
   userInfo,
   discount,
 }: Props) {
-  if (!userInfo) return <></>;
-
   const [modal, setModal] = useState<
     "password" | "balance" | "phone" | undefined
   >();
 
   const close = () => setModal(undefined);
+
+  if (!userInfo) return <></>;
 
   return (
     <Layout.Normal title={content.title}>

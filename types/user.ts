@@ -14,3 +14,23 @@ export interface User {
   gender: "male" | "female";
   phone: string;
 }
+
+export interface Address {
+  county: string;
+  district: string;
+  street: string;
+}
+
+export interface Urgent {
+  name: string;
+  relationship: string;
+  phone: string;
+  tel: string;
+}
+
+export interface CaseUser {
+  id: string;
+  organizationIDs: string[];
+  address: Address;
+  urgent: Urgent;
+}
