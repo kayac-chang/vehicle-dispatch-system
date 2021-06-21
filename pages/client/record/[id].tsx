@@ -10,6 +10,7 @@ import {
 } from "components/record/detail";
 import { getDispatch, getOrder, getOrderHistory } from "apis";
 import { useQueriesTyped } from "functions/async";
+import { OrderStatus } from "types";
 
 const content = {
   title: "乘車明細",
@@ -79,7 +80,7 @@ export default function RecordDetailPage({ id, token }: Props) {
 
         <CaseInfo detail={{ ...order, ...dispatch }} />
 
-        <PaymentInfo detail={order} />
+        {order.status === OrderStatus.Done && <PaymentInfo detail={order} />}
 
         <HistoryList detail={history} />
       </div>

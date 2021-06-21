@@ -172,9 +172,9 @@ export default function Record({ token }: Props) {
           </div>
         </form>
 
-        <div className="space-y-4 pb-8">
+        <div className="pb-8">
           {records.length ? (
-            <ul aria-live="polite">
+            <ul aria-live="polite" className="space-y-4">
               {records
                 .sort((a, b) => Number(a.date) - Number(b.date))
                 .map((item) => (
@@ -191,7 +191,7 @@ export default function Record({ token }: Props) {
             <NoData />
           )}
 
-          {records.length && (
+          {records.length > 0 && (
             <div className="flex justify-end pt-2">
               <Pagination total={total} page={page} onChange={setPage} />
             </div>
