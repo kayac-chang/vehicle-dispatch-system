@@ -49,19 +49,28 @@ export default function Login() {
     handleSubmit,
     control,
     formState: { errors },
+    setError,
   } = useForm<Request>();
 
   const router = useRouter();
 
-  async function onSubmit(data: Request) {
-    await signIn("credentials", {
+  function onSubmit(data: Request) {
+    signIn("credentials", {
       username: data.username,
       password: data.password,
       redirect: false,
-    });
+    }).then((res) => {
+      if (!res) return;
 
-    const prev = router.query.from || "/";
-    router.replace(String(prev));
+      if (res.error) {
+        setError("password", { type: "manual", message: res.error });
+
+        return;
+      }
+
+      const prev = router.query.from || "/";
+      router.replace(String(prev));
+    });
   }
 
   return (
