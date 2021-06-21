@@ -2,9 +2,7 @@ import { Icon, Form, Button, Link } from "components/atoms";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import { List } from "components/molecules";
-import { useCallback } from "react";
-import { signIn } from "next-auth/client";
-import { useHistory } from "contexts";
+import { getSession, signIn } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 
 const content = {
@@ -59,18 +57,24 @@ export default function Login() {
       username: data.username,
       password: data.password,
       redirect: false,
-    }).then((res) => {
-      if (!res) return;
+    })
+      .then((res) => {
+        if (!res) return;
 
-      if (res.error) {
-        setError("password", { type: "manual", message: res.error });
+        if (res.error) {
+          setError("password", { type: "manual", message: res.error });
 
-        return;
-      }
+          return;
+        }
+      })
+      .then(() => getSession())
+      .then((session) => {
+        if (session?.first) {
+          return router.push("/client/setup-password");
+        }
 
-      const prev = router.query.from || "/";
-      router.replace(String(prev));
-    });
+        return router.replace(String(router.query.from || "/"));
+      });
   }
 
   return (

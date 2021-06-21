@@ -1,5 +1,6 @@
 import { login, logout } from "apis/auth";
 import NextAuth from "next-auth";
+import { signIn } from "next-auth/client";
 import { JWT } from "next-auth/jwt";
 import Providers from "next-auth/providers";
 
@@ -22,12 +23,12 @@ export default NextAuth({
       },
 
       async authorize({ username, password }: Credentials) {
-        const token = await login({
+        const { token, first } = await login({
           username,
           password,
         });
 
-        return token ? { token, username } : null;
+        return token ? { token, username, first } : null;
       },
     }),
   ],
@@ -35,12 +36,14 @@ export default NextAuth({
   callbacks: {
     async session(session, token: JWT) {
       session.accessToken = token.accessToken;
+      session.first = token.first;
 
       return session;
     },
     async jwt(token, user) {
       if (user) {
         token.accessToken = user.token;
+        token.first = user.first;
       }
 
       return token;

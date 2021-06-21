@@ -7,19 +7,25 @@ interface Request {
   password: string;
 }
 
-type LoginResponse = BaseResponse & Token;
+type LoginResponse = BaseResponse & Token & { result: string };
 
 /**
  * [POST /api/Check/Login]
  *
  * login with username and password
  */
-export function login({ username, password }: Request): Promise<string> {
+export function login({
+  username,
+  password,
+}: Request): Promise<{ token: string; first: boolean }> {
   return post<LoginResponse>(KHH_API("Check/Login"), {
     account: username,
     password: password,
     appKey: process.env.API_KEY,
-  }).then(prop("token"));
+  }).then(({ token, result }) => ({
+    token,
+    first: Boolean(result),
+  }));
 }
 
 /**
