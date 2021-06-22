@@ -172,9 +172,15 @@ type DispatchGeocode = (location?: Geocode) => void;
 function useOrderAmount(
   token?: string,
   caseID?: string
-): [OrderAmount, DispatchGeocode, DispatchGeocode] {
+): [
+  OrderAmount,
+  DispatchGeocode,
+  DispatchGeocode,
+  (accompanying: number) => void
+] {
   const [from, setFrom] = useState<Geocode | undefined>(undefined);
   const [to, setTo] = useState<Geocode | undefined>(undefined);
+  const [accompanying, setAccompanying] = useState<number>(0);
   const [amount, setAmount] = useState<OrderAmount>({
     accompany: 0,
     subsidy: 0,
@@ -199,12 +205,12 @@ function useOrderAmount(
       caseID,
       from,
       to,
-      accompanying: 0,
+      accompanying,
       date: new Date(),
     }).then(setAmount);
-  }, [token, caseID, from, to, setAmount]);
+  }, [token, caseID, from, to, accompanying, setAmount]);
 
-  return [amount, setFrom, setTo];
+  return [amount, setFrom, setTo, setAccompanying];
 }
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
@@ -239,9 +245,15 @@ export default function News({
   const to = watch("to");
   useEffect(() => setToAddress(to), [to]);
 
-  const [amount, setFrom, setTo] = useOrderAmount(token, caseID);
+  const [amount, setFrom, setTo, setAccompanying] = useOrderAmount(
+    token,
+    caseID
+  );
   useEffect(() => setFrom(fromGeo), [fromGeo]);
   useEffect(() => setTo(toGeo), [toGeo]);
+
+  const accompanying = watch("accompanying-number");
+  useEffect(() => setAccompanying(Number(accompanying)), [accompanying]);
 
   const onSubmit = handleSubmit((data: Request) => {
     if (!token || !caseID || !user) return;
