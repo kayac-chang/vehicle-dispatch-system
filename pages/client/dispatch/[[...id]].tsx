@@ -384,6 +384,7 @@ export default function News({
 
               <Journey
                 control={control}
+                setValue={setValue}
                 watch={watch}
                 cartype={cartype}
                 amount={amount}

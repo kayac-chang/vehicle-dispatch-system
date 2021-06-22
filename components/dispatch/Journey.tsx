@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
-import { Control, UseFormWatch } from "react-hook-form";
+import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
 import {
   add,
@@ -123,13 +123,35 @@ const content = {
 
 type JourneyProps = {
   control: Control<Request>;
+  setValue: UseFormSetValue<Request>;
   watch: UseFormWatch<Request>;
   cartype: CarType[];
   amount: OrderAmount;
 };
-export function Journey({ control, watch, cartype, amount }: JourneyProps) {
+export function Journey({
+  control,
+  setValue,
+  watch,
+  cartype,
+  amount,
+}: JourneyProps) {
   const time = watch("time") && parse(watch("time"), "HH:mm", new Date());
-  const minBackTime = set(new Date(), { hours: 18, minutes: 15 });
+
+  function swap() {
+    const from = watch("from");
+    const fromType = watch("from-note-type");
+    const fromNote = watch("from-note");
+    const to = watch("to");
+    const toType = watch("to-note-type");
+    const toNote = watch("to-note");
+
+    setValue("from", to);
+    setValue("from-note-type", toType);
+    setValue("from-note", toNote);
+    setValue("to", from);
+    setValue("to-note-type", fromType);
+    setValue("to-note", fromNote);
+  }
 
   return (
     <Form.FieldSet
@@ -161,6 +183,7 @@ export function Journey({ control, watch, cartype, amount }: JourneyProps) {
                 <Icon.Swap />
               </span>
             }
+            onClick={swap}
           >
             {content.swap}
           </Button.Icon>
@@ -212,6 +235,7 @@ export function Journey({ control, watch, cartype, amount }: JourneyProps) {
                   <Icon.Swap />
                 </span>
               }
+              onClick={swap}
             >
               {content.swap}
             </Button.Icon>
