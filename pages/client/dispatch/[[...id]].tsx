@@ -34,6 +34,7 @@ import { useQuery } from "react-query";
 import { useDebounce } from "@react-hook/debounce";
 import { useEffect } from "react";
 import { Geocode, OrderAmount } from "types";
+import { useRouter } from "next/dist/client/router";
 
 const content = {
   title: "預約訂車",
@@ -217,6 +218,7 @@ export default function News({
   discount,
   cartype = [],
 }: Props) {
+  const router = useRouter();
   const { control, watch, setValue, handleSubmit } = useForm<Request>({
     defaultValues: {
       organizations: [],
@@ -280,7 +282,7 @@ export default function News({
       accompanying: Number(data["accompanying-number"]),
       phone: data["sms-code"],
       date: parse(`${data.date} ${data.time}`, "yyyy-MM-dd HH:mm", new Date()),
-    }).then(() => console.log("success"));
+    }).then(() => router.push("/client/record"));
   }
 
   const minDay = addDays(new Date(), 5);
