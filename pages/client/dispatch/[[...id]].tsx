@@ -4,7 +4,7 @@ import { Card, Modal } from "components/molecules";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "functions/auth";
 import {
