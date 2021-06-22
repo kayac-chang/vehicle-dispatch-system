@@ -21,12 +21,13 @@ import {
 } from "apis";
 import {
   addDays,
-  addMinutes,
-  endOfDay,
+  eachMinuteOfInterval,
   format,
+  getMinutes,
   isSameDay,
   parse,
   roundToNearestMinutes,
+  set,
 } from "date-fns";
 import { getAllOrganizations } from "apis/organization";
 import { useQuery } from "react-query";
@@ -283,10 +284,9 @@ export default function News({
   }
 
   const minDay = addDays(new Date(), 5);
-  const isMinDay = isSameDay(
-    parse(watch("date"), "yyyy-MM-dd", new Date()),
-    minDay
-  );
+
+  const selectDate = parse(watch("date"), "yyyy-MM-dd", new Date());
+  const isMinDaySelected = isSameDay(selectDate, minDay);
 
   return (
     <>
@@ -332,22 +332,38 @@ export default function News({
                   required
                 />
 
-                <Form.Input
-                  type="time"
-                  name="time"
-                  control={control}
-                  label={content.form.time}
-                  className="flex-1"
-                  min={
-                    isMinDay
-                      ? roundToNearestMinutes(addMinutes(new Date(), 15), {
-                          nearestTo: 15,
-                        })
-                      : undefined
-                  }
-                  max={isMinDay ? endOfDay(new Date()) : undefined}
-                  required
-                />
+                {watch("date") && (
+                  <Form.Input
+                    type="select"
+                    name="time"
+                    control={control}
+                    label={content.form.time}
+                    className="flex-1"
+                    required
+                    options={eachMinuteOfInterval(
+                      {
+                        start: isMinDaySelected
+                          ? roundToNearestMinutes(
+                              set(new Date(), {
+                                minutes: getMinutes(new Date()) + 5,
+                              }),
+                              { nearestTo: 15 }
+                            )
+                          : set(new Date(), { hours: 6, minutes: 0 }),
+                        end: set(new Date(), { hours: 23, minutes: 0 }),
+                      },
+                      {
+                        step: 15,
+                      }
+                    )
+                      .map((date) => format(date, "HH:mm"))
+                      .map((time) => ({
+                        id: time,
+                        value: time,
+                        label: time,
+                      }))}
+                  />
+                )}
 
                 <Form.Input
                   type="select"

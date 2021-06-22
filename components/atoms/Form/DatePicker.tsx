@@ -1,7 +1,6 @@
 import { TextField } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 import { CommonProps } from "./types";
-import { DatePicker as _DatePicker } from "@material-ui/lab";
 import clsx from "clsx";
 import { format } from "date-fns";
 

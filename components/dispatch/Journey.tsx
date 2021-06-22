@@ -3,7 +3,18 @@ import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
 import { Control, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
-import { endOfDay, isAfter, isSameHour, parse, set, setHours } from "date-fns";
+import {
+  add,
+  eachMinuteOfInterval,
+  endOfDay,
+  format,
+  isAfter,
+  isSameHour,
+  parse,
+  roundToNearestMinutes,
+  set,
+  setHours,
+} from "date-fns";
 import Rule from "functions/regexp";
 import { CarType, OrderAmount } from "types";
 
@@ -279,15 +290,34 @@ export function Journey({ control, watch, cartype, amount }: JourneyProps) {
               <div className="lg:w-1/3">
                 {watch("is-round-trip") && (
                   <Form.Input
-                    type="time"
+                    type="select"
                     name="round-trip-time"
                     control={control}
                     label={content.form.check.time}
                     required
-                    min={
-                      time && isAfter(time, minBackTime) ? time : minBackTime
-                    }
-                    max={endOfDay(new Date())}
+                    options={eachMinuteOfInterval(
+                      {
+                        start: add(
+                          watch("time")
+                            ? roundToNearestMinutes(
+                                parse(watch("time"), "HH:mm", new Date()),
+                                { nearestTo: 15 }
+                              )
+                            : set(new Date(), { hours: 6, minutes: 15 }),
+                          { minutes: 15 }
+                        ),
+                        end: set(new Date(), { hours: 23, minutes: 0 }),
+                      },
+                      {
+                        step: 15,
+                      }
+                    )
+                      .map((date) => format(date, "HH:mm"))
+                      .map((time) => ({
+                        id: time,
+                        value: time,
+                        label: time,
+                      }))}
                   />
                 )}
               </div>

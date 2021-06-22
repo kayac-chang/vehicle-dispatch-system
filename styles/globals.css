@@ -28,3 +28,7 @@ body {
 .MuiOutlinedInput-notchedOutline legend {
   max-width: none;
 }
+
+[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}

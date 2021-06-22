@@ -24,7 +24,7 @@ export function Select<T>({
         rules={{ required }}
         defaultValue={options[0].value}
         render={({ field, fieldState: { error } }) => (
-          <FormControl variant="outlined" fullWidth>
+          <FormControl variant="outlined" fullWidth required={required}>
             <InputLabel htmlFor={name} shrink>
               {label}
             </InputLabel>
@@ -32,6 +32,7 @@ export function Select<T>({
             <_Select
               native
               label={label}
+              required={required}
               inputProps={{
                 name,
                 id: name,
