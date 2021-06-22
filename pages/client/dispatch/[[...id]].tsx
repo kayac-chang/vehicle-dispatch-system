@@ -4,7 +4,7 @@ import { Card, Modal } from "components/molecules";
 import Layout from "components/templates";
 import { useForm } from "react-hook-form";
 import { CarSelection, RouteMap, Journey, Request } from "components/dispatch";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "functions/auth";
 import {
@@ -219,12 +219,14 @@ export default function News({
   cartype = [],
 }: Props) {
   const router = useRouter();
-  const { control, watch, setValue, handleSubmit } = useForm<Request>({
-    defaultValues: {
-      organizations: [],
-      from: address && `${address.county}${address.district}${address.street}`,
-      ...(order || {}),
-    },
+  const defaultValues = {
+    organizations: [],
+    from: address && `${address.county}${address.district}${address.street}`,
+    ...(order || {}),
+  };
+
+  const { control, watch, setValue, reset, handleSubmit } = useForm<Request>({
+    defaultValues,
   });
 
   const [modal, setModal] = useState<"balance" | undefined>(undefined);
@@ -241,7 +243,7 @@ export default function News({
   useEffect(() => setFrom(fromGeo), [fromGeo]);
   useEffect(() => setTo(toGeo), [toGeo]);
 
-  function onSubmit(data: Request) {
+  const onSubmit = handleSubmit((data: Request) => {
     if (!token || !caseID || !user) return;
 
     const car = cartype.find(({ value }) => data["car-type"] === value);
@@ -251,7 +253,7 @@ export default function News({
 
     // TODO form submit check...
 
-    addOrder({
+    return addOrder({
       token,
       caseID,
       userID: user.id,
@@ -282,11 +284,10 @@ export default function News({
       accompanying: Number(data["accompanying-number"]),
       phone: data["sms-code"],
       date: parse(`${data.date} ${data.time}`, "yyyy-MM-dd HH:mm", new Date()),
-    }).then(() => router.push("/client/record"));
-  }
+    }).catch((error) => console.error(error));
+  });
 
   const minDay = addDays(new Date(), 5);
-
   const selectDate = parse(watch("date"), "yyyy-MM-dd", new Date());
   const isMinDaySelected = isSameDay(selectDate, minDay);
 
@@ -316,7 +317,7 @@ export default function News({
           >
             <form
               className="flex flex-col space-y-4"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={(event) => event.preventDefault()}
             >
               <div
                 className={clsx(
@@ -392,7 +393,13 @@ export default function News({
                 amount={amount}
               />
 
-              <RouteMap watch={watch} />
+              <RouteMap
+                watch={watch}
+                onAdd={() => onSubmit().then(() => reset(defaultValues))}
+                onSubmit={() =>
+                  onSubmit().then(() => router.push("/client/record"))
+                }
+              />
             </form>
           </Card.Panel>
         </div>
