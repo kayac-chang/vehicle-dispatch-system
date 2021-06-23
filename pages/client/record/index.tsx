@@ -1,10 +1,10 @@
 import Layout from "components/templates";
 import { Pagination, Modal } from "components/molecules";
 import { Button, Form, NoData } from "components/atoms";
-import { useForm } from "react-hook-form";
 import { RecordCard } from "components/record";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { addMonths, format, subMonths } from "date-fns";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { deleteOrder, getRecord } from "apis";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -108,7 +108,8 @@ export default function Record({ token }: Props) {
             OrderStatus.Arrived,
             OrderStatus.Driving,
           ].includes(item.status)
-      : () => true;
+      : (item: IRecord) =>
+          [OrderStatus.Done, OrderStatus.Canceled].includes(item.status);
 
   const { data, refetch } = useQuery({
     queryKey: [
