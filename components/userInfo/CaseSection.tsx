@@ -48,7 +48,7 @@ export function CaseSection({ data, onBalanceClick }: CaseSectionProps) {
         <InfoField
           className="w-full lg:w-1/5"
           title={content.case.caseNo}
-          content={data.id}
+          content={data.no}
         />
 
         <InfoField

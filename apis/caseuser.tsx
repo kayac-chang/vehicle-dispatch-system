@@ -38,6 +38,7 @@ interface CaseUserResponse {
 function toCaseUser(data: CaseUserResponse): CaseUser {
   return {
     id: data.id,
+    no: data.caseUserNo,
     organizationIDs: [data.orgBId1, data.orgBId2, data.orgBId3].filter(Boolean),
     address: {
       county: data.county,

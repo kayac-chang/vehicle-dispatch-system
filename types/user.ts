@@ -30,6 +30,7 @@ export interface Urgent {
 
 export interface CaseUser {
   id: string;
+  no: string;
   organizationIDs: string[];
   address: Address;
   urgent: Urgent;
