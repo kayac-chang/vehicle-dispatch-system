@@ -131,7 +131,9 @@ export default function Record({ token }: Props) {
     refetchOnReconnect: false,
   });
 
-  const { total, records } = data || { total: 0, records: [] };
+  const { records: _records } = data || { total: 0, records: [] };
+  const records = _records.filter(filterByStatus);
+  const total = Math.ceil(records.length / LIMIT);
 
   return (
     <Layout.Normal title={content.title}>
@@ -189,7 +191,6 @@ export default function Record({ token }: Props) {
             <ul aria-live="polite" className="space-y-4">
               {records
                 .sort((a, b) => Number(a.date) - Number(b.date))
-                .filter(filterByStatus)
                 .map((item) => (
                   <li key={item.order}>
                     <RecordCard
@@ -204,7 +205,7 @@ export default function Record({ token }: Props) {
             <NoData />
           )}
 
-          {records.length > 0 && (
+          {total && (
             <div className="flex justify-end pt-2">
               <Pagination total={total} page={page} onChange={setPage} />
             </div>
