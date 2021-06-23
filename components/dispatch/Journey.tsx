@@ -1,14 +1,11 @@
-import clsx from "clsx";
 import { Button, Form, Icon } from "components/atoms";
 import { Card } from "components/molecules";
-import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { JourneyTable, Request } from "components/dispatch";
+import { Control, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import {
   add,
   eachMinuteOfInterval,
-  endOfDay,
   format,
-  isAfter,
   isSameHour,
   parse,
   roundToNearestMinutes,
@@ -17,6 +14,7 @@ import {
 } from "date-fns";
 import Rule from "functions/regexp";
 import { CarType, OrderAmount } from "types";
+import clsx from "clsx";
 
 const content = {
   title: "行程",
@@ -115,8 +113,7 @@ const content = {
 
     note: {
       main: "註：陪同人數",
-      sub:
-        "第一人免費、第二人自費加價50元、第三人(含)及以上每位自費加價200元。",
+      sub: "第一位免費，第二位(含以上)每位50元",
     },
   },
 };
