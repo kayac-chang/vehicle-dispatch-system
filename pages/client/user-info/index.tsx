@@ -11,6 +11,8 @@ import {
 import { Modal } from "components/molecules";
 import { getCaseID, getUserProfile } from "apis";
 import { getCaseUser, getDiscount } from "apis";
+import { useQuery } from "react-query";
+import { Token } from "apis/base";
 
 const content = {
   title: "用戶資料",
@@ -31,40 +33,55 @@ export async function getServerSideProps({ req, resolvedUrl }: Context) {
     };
   }
 
-  const token = session.accessToken;
-  const user = await getUserProfile({ token });
-  const caseID = await getCaseID({ ...user, token });
-
-  const [caseUser, discount] = await Promise.all([
-    getCaseUser({ caseID, token }),
-    getDiscount({ caseID, token }),
-  ]);
-
   return {
     props: {
-      username: user.name,
-      token,
-      userInfo: { ...user, ...caseUser },
-      discount: discount,
+      token: session.accessToken,
     },
   };
 }
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+function useUserInfo({ token }: Token) {
+  const { data: user } = useQuery({
+    queryKey: ["User", token],
+    queryFn: () => getUserProfile({ token }),
+    enabled: Boolean(token),
+  });
 
-export default function UserInfo({
-  username,
-  token,
-  userInfo,
-  discount,
-}: Props) {
+  const { data: caseID } = useQuery({
+    queryKey: ["CaseID", token, user?.id],
+    queryFn: () => getCaseID({ token, ...user! }),
+    enabled: Boolean(token && user),
+  });
+
+  const { data: caseUser } = useQuery({
+    queryKey: ["User", token, caseID],
+    queryFn: () => getCaseUser({ token, caseID: caseID! }),
+    enabled: Boolean(token && caseID),
+  });
+
+  const { data: discount } = useQuery({
+    queryKey: ["Discount", token, caseID],
+    queryFn: () => getDiscount({ token, caseID: caseID! }),
+    enabled: Boolean(token && caseID),
+  });
+
+  if (!user || !caseUser || !discount) return;
+
+  return { userInfo: { ...user, ...caseUser }, discount };
+}
+
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export default function UserInfo({ token }: Props) {
   const [modal, setModal] = useState<
     "password" | "balance" | "phone" | undefined
   >();
 
   const close = () => setModal(undefined);
 
-  if (!userInfo) return <></>;
+  const data = useUserInfo({ token: token! });
+  if (!data) return <></>;
+
+  const { userInfo, discount } = data;
 
   return (
     <Layout.Normal title={content.title}>
@@ -82,11 +99,7 @@ export default function UserInfo({
       </div>
 
       {modal === "password" && (
-        <PasswordModal
-          onClose={close}
-          username={username}
-          token={token as string}
-        />
+        <PasswordModal onClose={close} username={userInfo.name} token={token} />
       )}
 
       {modal === "balance" && discount && (
@@ -94,11 +107,7 @@ export default function UserInfo({
       )}
 
       {modal === "phone" && (
-        <PhoneModal
-          onClose={close}
-          username={username}
-          token={token as string}
-        />
+        <PhoneModal onClose={close} username={userInfo.name} token={token} />
       )}
     </Layout.Normal>
   );

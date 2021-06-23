@@ -130,7 +130,7 @@ export function PhoneModal({ onClose, username, token }: Props) {
         </div>
       }
       onClose={onClose}
-      className="space-y-8 py-2 w-64"
+      className="space-y-8 p-4 w-64"
     >
       <form className="space-y-4 pb-4 text-sm">
         {state.type === "init" && <Init control={control} />}
@@ -140,107 +140,3 @@ export function PhoneModal({ onClose, username, token }: Props) {
     </Modal.Dialog>
   );
 }
-
-// type Action =
-//   | { type: "send" }
-//   | { type: "stop" }
-//   | { type: "resend" }
-//   | { type: "submit" };
-// type State = {
-//   type: "init" | "sending" | "stop-send" | "success";
-// };
-// function reducer(state: State, action: Action): State {
-//   if (action.type === "send") {
-//     return { ...state, type: "sending" };
-//   }
-
-//   if (action.type === "stop") {
-//     return { ...state, type: "stop-send" };
-//   }
-
-//   if (action.type === "resend") {
-//     return { ...state, type: "sending" };
-//   }
-
-//   if (action.type === "submit") {
-//     return { ...state, type: "success" };
-//   }
-
-//   return state;
-// }
-
-// type SendingProps = {
-//   control: Control<Response>;
-// };
-// function Sending({ control }: SendingProps) {
-//   return (
-//     <>
-//       <p className="text-gold-darker font-semibold">{content.send.note}</p>
-
-//       <Form.Input
-//         type="text"
-//         name="phone"
-//         control={control}
-//         label={content.send.phone}
-//       />
-
-//       <Form.Input
-//         type="text"
-//         name="captcha"
-//         control={control}
-//         label={content.send.captcha}
-//       />
-
-//       <Button.Outline
-//         type="button"
-//         className="px-4 py-1 bg-gray-extralight pointer-events-none"
-//       >
-//         {content.send.sending}
-//       </Button.Outline>
-//     </>
-//   );
-// }
-
-// type StopSendProps = {
-//   control: Control<Response>;
-//   onClick: () => void;
-// };
-// function StopSend({ control, onClick }: StopSendProps) {
-//   return (
-//     <>
-//       <p className="text-gold-darker font-semibold">{content.send.note}</p>
-
-//       <Form.Input
-//         type="text"
-//         name="phone"
-//         control={control}
-//         label={content.send.phone}
-//       />
-
-//       <Form.Input
-//         type="text"
-//         name="captcha"
-//         control={control}
-//         label={content.send.captcha}
-//       />
-
-//       <Button.Flat type="button" className="px-4 py-1" onClick={onClick}>
-//         {content.send.resend}
-//       </Button.Flat>
-//     </>
-//   );
-// }
-
-// useEffect(() => {
-//   if (state.type !== "sending") {
-//     return;
-//   }
-
-//   const time = 30 * 1000;
-
-//   const { cancel, finish } = wait(time);
-
-//   finish.then(() => dispatch({ type: "stop" }));
-
-//   return () => cancel();
-// }, [state]);
