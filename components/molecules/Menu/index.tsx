@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ReactNode } from "react";
 import { Account } from "./Account";
 import { Nav } from "./Nav";
@@ -13,9 +14,19 @@ export type Link = {
   href?: string;
 };
 
-function Mobile({ items }: { items: Link[] }) {
+type Props = {
+  items: Link[];
+  className?: string;
+};
+
+function Mobile({ items, className }: Props) {
   return (
-    <div className="lg:hidden w-screen h-screen bg-green-dark text-xl">
+    <div
+      className={clsx(
+        "lg:hidden w-screen h-screen bg-green-dark text-xl",
+        className
+      )}
+    >
       <Account />
 
       <Nav items={items} name={content.titel} />
@@ -23,7 +34,7 @@ function Mobile({ items }: { items: Link[] }) {
   );
 }
 
-function Desktop({ items }: { items: Link[] }) {
+function Desktop({ items }: Props) {
   return (
     <div className="hidden flex-1 lg:flex text-sm text-white">
       <Nav items={items} name={content.titel} />

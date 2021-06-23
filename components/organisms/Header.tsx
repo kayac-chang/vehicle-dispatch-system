@@ -1,6 +1,6 @@
 import { Icon, Logo } from "components/atoms";
 import { Menu } from "components/molecules";
-import { Popper } from "@material-ui/core";
+import Drawer from "@material-ui/core/Drawer";
 import { useState } from "react";
 
 const links = [
@@ -20,11 +20,7 @@ const links = [
 ];
 
 export function Header() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <header className="z-10">
@@ -35,27 +31,25 @@ export function Header() {
 
         <button
           className="lg:hidden bg-green-dark text-white px-5 rounded-bl-3xl"
-          onClick={handleClick}
+          onClick={() => setOpen(!open)}
         >
           <span className="block w-6" aria-hidden>
             <Icon.Menu />
           </span>
 
-          <span className="sr-only">
-            {anchorEl ? "Close Menu" : "Open Menu"}
-          </span>
+          <span className="sr-only">{open ? "Close Menu" : "Open Menu"}</span>
         </button>
       </div>
 
-      <Popper
+      <Drawer
         id="menu"
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        placement="bottom"
-        className="z-10"
+        open={open}
+        anchor="top"
+        style={{ zIndex: 9 }}
+        className="lg:hidden"
       >
-        <Menu.Mobile items={links} />
-      </Popper>
+        <Menu.Mobile items={links} className="mt-10" />
+      </Drawer>
     </header>
   );
 }
