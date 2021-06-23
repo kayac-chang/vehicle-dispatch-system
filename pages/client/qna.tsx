@@ -31,7 +31,7 @@ export default function QNA({ posts }: Props) {
             <li
               key={title}
               className={clsx(
-                "border-b",
+                "border-b border-gray-extralight",
                 name === expanded && "border-gold-light"
               )}
             >

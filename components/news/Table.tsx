@@ -36,7 +36,7 @@ export function TableView({ items, total, page, onChange }: TableViewProps) {
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-gray-extralight">
           {items.map(({ id, category, title, date }) => (
             <tr key={id}>
               <td className="w-1/12 py-2 pl-4">

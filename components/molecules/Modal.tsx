@@ -39,7 +39,7 @@ function Dialog({
       <DialogTitle
         disableTypography
         id={`${name}-dialog`}
-        className="w-full flex justify-between border-b"
+        className="w-full flex justify-between border-b border-gray-extralight"
       >
         <strong>{title}</strong>
 
@@ -56,7 +56,11 @@ function Dialog({
         <div className={className}>{children}</div>
       </DialogContent>
 
-      {actions && <DialogActions className="border-t">{actions}</DialogActions>}
+      {actions && (
+        <DialogActions className="border-t border-gray-extralight">
+          {actions}
+        </DialogActions>
+      )}
     </_Dialog>
   );
 }

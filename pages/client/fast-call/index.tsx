@@ -101,7 +101,7 @@ function TableView({
         </div>
 
         <ul
-          className="divide-y"
+          className="divide-y divide-gray-extralight"
           aria-live="polite"
           aria-busy={loading ? "true" : "false"}
         >
