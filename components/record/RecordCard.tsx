@@ -126,7 +126,7 @@ export function RecordCard({
               {item.name}
             </h2>
 
-            <div className="block lg:flex lg:ㄒspace-x-2">
+            <div className="block lg:flex lg:space-x-2">
               <Tag status={item.status} label={status} />
 
               {item.share && (

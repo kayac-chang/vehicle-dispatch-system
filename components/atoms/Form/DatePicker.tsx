@@ -27,7 +27,11 @@ function Base<T>({
       name={name}
       control={control}
       rules={{ required }}
-      render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
+      defaultValue={value && format(value, "yyyy-MM-dd")}
+      render={({
+        field: { value, onChange, name, ref },
+        fieldState: { error },
+      }) => (
         <TextField
           type={type}
           id={name}
@@ -39,7 +43,7 @@ function Base<T>({
           }}
           error={Boolean(error)}
           inputRef={ref}
-          value={value && format(value, "yyyy-MM-dd")}
+          value={value}
           onChange={onChange}
           required={required}
           className={clsx("w-full", className)}
