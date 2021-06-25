@@ -205,7 +205,7 @@ export default function Record({ token }: Props) {
             <NoData />
           )}
 
-          {total && (
+          {Boolean(total) && (
             <div className="flex justify-end pt-2">
               <Pagination total={total} page={page} onChange={setPage} />
             </div>
