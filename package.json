@@ -37,7 +37,6 @@
     "@babel/preset-env": "^7.14.2",
     "@babel/preset-typescript": "^7.13.0",
     "@svgr/webpack": "^5.5.0",
-    "@tailwindcss/custom-forms": "^0.2.1",
     "@types/google-map-react": "^2.1.1",
     "@types/invariant": "^2.2.34",
     "@types/jest": "^26.0.23",

@@ -89,13 +89,21 @@ function Alert({
       onClose={onClose}
       actions={
         <div className="text-sm flex space-x-2 px-4">
-          <Button.Outline className="px-4 py-2" type="button" onClick={onClose}>
-            {label?.cancel}
-          </Button.Outline>
+          {label?.cancel && (
+            <Button.Outline
+              className="px-4 py-2"
+              type="button"
+              onClick={onClose}
+            >
+              {label.cancel}
+            </Button.Outline>
+          )}
 
-          <Button.Flat className="px-4 py-2" type="button" onClick={onSubmit}>
-            {label?.submit}
-          </Button.Flat>
+          {label?.submit && (
+            <Button.Flat className="px-4 py-2" type="button" onClick={onSubmit}>
+              {label.submit}
+            </Button.Flat>
+          )}
         </div>
       }
     >

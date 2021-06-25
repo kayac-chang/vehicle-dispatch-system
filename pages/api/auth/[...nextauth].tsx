@@ -1,6 +1,5 @@
 import { login, logout } from "apis/auth";
 import NextAuth from "next-auth";
-import { signIn } from "next-auth/client";
 import { JWT } from "next-auth/jwt";
 import Providers from "next-auth/providers";
 

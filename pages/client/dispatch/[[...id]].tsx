@@ -33,7 +33,7 @@ import { getAllOrganizations } from "apis/organization";
 import { useQuery } from "react-query";
 import { useDebounce } from "@react-hook/debounce";
 import { useEffect } from "react";
-import { Geocode, OrderAmount } from "types";
+import { Discount, Geocode, OrderAmount } from "types";
 import { useRouter } from "next/dist/client/router";
 
 const content = {
@@ -88,6 +88,8 @@ export async function getServerSideProps({
   if (params?.id) {
     const data = await getOrder({ token, id: params.id });
 
+    const car = cartype.find(({ label }) => label === data.carCategory.name);
+
     const order = {
       date: format(data.date, "yyyy-MM-dd"),
       time: format(data.date, "HH:mm"),
@@ -98,7 +100,7 @@ export async function getServerSideProps({
       "to-note-type": data.to.note || "",
       share: data.share,
       "is-round-trip": data.isRoundTrip,
-      "car-type": data.carCategory.id,
+      "car-type": car?.value || "",
       "wheelchair-type": data.wheelchair,
       "accompanying-number": String(data.accompanying),
       "sms-code": data.phone,
@@ -235,7 +237,8 @@ export default function News({
     defaultValues,
   });
 
-  const [modal, setModal] = useState<"balance" | undefined>(undefined);
+  const [balance, setBalance] = useState<Discount | undefined>(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   const [fromGeo, setFromAddress] = useGeocode();
   const from = watch("from");
@@ -255,49 +258,56 @@ export default function News({
   const accompanying = watch("accompanying-number");
   useEffect(() => setAccompanying(Number(accompanying)), [accompanying]);
 
-  const onSubmit = handleSubmit((data: Request) => {
-    if (!token || !caseID || !user) return;
+  const onSubmit = (fn: () => void) =>
+    handleSubmit((data: Request) => {
+      if (!token || !caseID || !user) return;
 
-    const car = cartype.find(({ value }) => data["car-type"] === value);
-    if (!car) return;
+      const car = cartype.find(({ value }) => data["car-type"] === value);
+      if (!car) return;
 
-    if (!fromGeo || !toGeo) return;
+      if (!fromGeo || !toGeo) return;
 
-    // TODO form submit check...
+      // TODO form submit check...
 
-    return addOrder({
-      token,
-      caseID,
-      userID: user.id,
-      identity: data.case,
-      organizations: data.organizations,
-      from: {
-        id: data["from-note-type"],
-        address: data.from,
-        note: data["from-note"],
-        lat: fromGeo.lat,
-        lon: fromGeo.lon,
-      },
-      to: {
-        id: data["to-note-type"],
-        address: data.to,
-        note: data["to-note"],
-        lat: toGeo.lat,
-        lon: toGeo.lon,
-      },
-      note: "",
-      isRoundTrip: Boolean(data["is-round-trip"]),
-      share: Boolean(data.share),
-      carCategory: {
-        id: car.value,
-        name: car.label,
-      },
-      wheelchair: data["wheelchair-type"],
-      accompanying: Number(data["accompanying-number"]),
-      phone: data["sms-code"],
-      date: parse(`${data.date} ${data.time}`, "yyyy-MM-dd HH:mm", new Date()),
-    }).catch((error) => console.error(error));
-  });
+      return addOrder({
+        token,
+        caseID,
+        userID: user.id,
+        identity: data.case,
+        organizations: data.organizations,
+        from: {
+          id: data["from-note-type"],
+          address: data.from,
+          note: data["from-note"],
+          lat: fromGeo.lat,
+          lon: fromGeo.lon,
+        },
+        to: {
+          id: data["to-note-type"],
+          address: data.to,
+          note: data["to-note"],
+          lat: toGeo.lat,
+          lon: toGeo.lon,
+        },
+        note: "",
+        isRoundTrip: Boolean(data["is-round-trip"]),
+        share: Boolean(data.share),
+        carCategory: {
+          id: car.value,
+          name: car.label,
+        },
+        wheelchair: data["wheelchair-type"],
+        accompanying: Number(data["accompanying-number"]),
+        phone: data["sms-code"],
+        date: parse(
+          `${data.date} ${data.time}`,
+          "yyyy-MM-dd HH:mm",
+          new Date()
+        ),
+      })
+        .then(fn)
+        .catch(setError);
+    });
 
   const minDay = addDays(new Date(), 5);
   const selectDate = parse(watch("date"), "yyyy-MM-dd", new Date());
@@ -319,7 +329,7 @@ export default function News({
                     type="button"
                     icon={<Icon.Search />}
                     className="bg-white w-full py-1 px-2 rounded-sm shadow border-black flex items-center justify-center truncate"
-                    onClick={() => setModal("balance")}
+                    onClick={() => setBalance(discount)}
                   >
                     {content.search}
                   </Button.Icon>
@@ -407,22 +417,31 @@ export default function News({
 
               <RouteMap
                 watch={watch}
-                onAdd={() => onSubmit().then(() => reset(defaultValues))}
-                onSubmit={() =>
-                  onSubmit().then(() => router.push("/client/record"))
-                }
+                onAdd={onSubmit(() => reset(defaultValues))}
+                onSubmit={onSubmit(() => router.push("/client/record"))}
               />
             </form>
           </Card.Panel>
         </div>
       </Layout.Normal>
 
-      {modal === "balance" && discount && (
+      {balance && (
         <Modal.Balance
           name="balance"
-          data={discount}
-          onClose={() => setModal(undefined)}
+          data={balance}
+          onClose={() => setBalance(undefined)}
         />
+      )}
+
+      {error && (
+        <Modal.Alert
+          name="error"
+          title="發生錯誤"
+          onClose={() => setError(undefined)}
+          label={{ cancel: "確定" }}
+        >
+          {error.message}
+        </Modal.Alert>
       )}
     </>
   );
