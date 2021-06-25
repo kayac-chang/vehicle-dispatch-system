@@ -10,6 +10,7 @@ import { deleteOrder, getRecord } from "apis";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getSession } from "functions/auth";
 import { OrderStatus, Record as IRecord } from "types";
+import { useEffect } from "react";
 
 const content = {
   title: "訂單檢視",
@@ -73,8 +74,8 @@ export async function getServerSideProps({ req, resolvedUrl }: Context) {
 
 interface Request {
   topic: string;
-  from: Date;
-  end: Date;
+  from: string;
+  end: string;
 }
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 export default function Record({ token }: Props) {
@@ -84,30 +85,26 @@ export default function Record({ token }: Props) {
 
   const [page, setPage] = useState(() => INIT_PAGE);
 
-  const { control, handleSubmit, getValues } = useForm<Request>({
+  const { control, handleSubmit, watch, getValues, setValue } = useForm<
+    Request
+  >({
     defaultValues: {
       topic: content.form.topic.options[0].value,
     },
   });
 
-  const filter =
-    getValues("topic") !== "future"
-      ? { from: subMonths(new Date(), 1), end: new Date() }
-      : { from: new Date(), end: addMonths(new Date(), 1) };
+  function filterByTopic(topic: string) {
+    return topic === "future"
+      ? { from: new Date(), end: addMonths(new Date(), 1) }
+      : { from: subMonths(new Date(), 1), end: new Date() };
+  }
 
-  const filterByStatus =
-    getValues("topic") === "future"
-      ? (item: IRecord) =>
-          [
-            OrderStatus.NewOrder,
-            OrderStatus.Booked,
-            OrderStatus.Arrived,
-            OrderStatus.Driving,
-          ].includes(item.status)
-      : (item: IRecord) =>
-          [OrderStatus.Done, OrderStatus.Canceled].includes(item.status);
+  const [records, setRecords] = useState<IRecord[]>([]);
+  const total = Math.ceil(records.length / LIMIT);
 
-  const { data, refetch } = useQuery({
+  const filter = filterByTopic(getValues("topic"));
+
+  const { refetch } = useQuery({
     queryKey: [
       "Record",
       format(filter.from, "yyyy-MM-dd"),
@@ -122,14 +119,31 @@ export default function Record({ token }: Props) {
         from: filter.from,
         end: filter.end,
       }),
-    enabled: Boolean(token),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    enabled: false,
+    keepPreviousData: true,
+    onSuccess: (data) => {
+      const filterByStatus =
+        getValues("topic") === "future"
+          ? (item: IRecord) =>
+              [
+                OrderStatus.NewOrder,
+                OrderStatus.Booked,
+                OrderStatus.Arrived,
+                OrderStatus.Driving,
+              ].includes(item.status)
+          : (item: IRecord) =>
+              [OrderStatus.Done, OrderStatus.Canceled].includes(item.status);
+
+      setRecords(data.records.filter(filterByStatus));
+    },
   });
 
-  const { records: _records } = data || { total: 0, records: [] };
-  const records = _records.filter(filterByStatus);
-  const total = Math.ceil(records.length / LIMIT);
+  useEffect(() => void refetch(), []);
+  useEffect(() => {
+    const filter = filterByTopic(getValues("topic"));
+    setValue("from", format(filter.from, "yyyy-MM-dd"));
+    setValue("end", format(filter.end, "yyyy-MM-dd"));
+  }, [watch("topic")]);
 
   return (
     <Layout.Normal title={content.title}>
