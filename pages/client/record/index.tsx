@@ -84,23 +84,19 @@ export default function Record({ token }: Props) {
 
   const [page, setPage] = useState(() => INIT_PAGE);
 
-  const { control, handleSubmit, watch } = useForm<Request>({
+  const { control, handleSubmit, getValues } = useForm<Request>({
     defaultValues: {
       topic: content.form.topic.options[0].value,
     },
   });
 
-  function onSubmit(data: Request) {
-    console.log(data);
-  }
-
   const filter =
-    watch("topic") !== "future"
+    getValues("topic") !== "future"
       ? { from: subMonths(new Date(), 1), end: new Date() }
       : { from: new Date(), end: addMonths(new Date(), 1) };
 
   const filterByStatus =
-    watch("topic") === "future"
+    getValues("topic") === "future"
       ? (item: IRecord) =>
           [
             OrderStatus.NewOrder,
@@ -140,7 +136,7 @@ export default function Record({ token }: Props) {
       <div className="space-y-6">
         <form
           className="lg:flex lg:justify-end"
-          onChange={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(refetch)}
         >
           <div className="xl:w-1/2 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="lg:w-1/3">
